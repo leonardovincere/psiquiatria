@@ -10,7 +10,7 @@
 //      (heading-normal.woff2, heading-italic.woff2, body-normal.woff2).
 //      Sem elas, o build baixa as fontes do Google Fonts automaticamente.
 //   5. `npm run build` → a página sai em /<slug>
-//      e, no ar, em https://<slug>.preview.vincereai.online
+//      e, no ar, em https://<slug>.preview.vincereai.tech
 //
 // Regras da Resolução CFM nº 2.336/2023 (o build confere e falha se encontrar):
 //   - Nada de promessa de cura/resultado, "garantia", "100%", "o melhor…",

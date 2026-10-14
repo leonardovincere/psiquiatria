@@ -5,7 +5,7 @@
   "redirects": [
     {
       "source": "/",
-      "missing": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.online" }],
+      "missing": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech" }],
       "destination": "https://vincereai.tech",
       "permanent": false
     }
@@ -13,19 +13,19 @@
   "rewrites": [
     {
       "source": "/",
-      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.online" }],
+      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech" }],
       "destination": "/:slug"
     },
     {
       "source": "/robots.txt",
-      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.online" }],
+      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech" }],
       "destination": "/:slug/robots.txt"
     }
   ],
   "headers": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.online" }],
+      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech" }],
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ]

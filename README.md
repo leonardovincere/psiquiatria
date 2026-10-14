@@ -1,7 +1,7 @@
 # Landing pages para clínicas de psiquiatria
 
 Astro + Tailwind CSS v4, multi-clínica. Cada clínica é um arquivo `src/clinics/<slug>.ts`; o build gera uma página
-estática por clínica em `/<slug>`. No ar, cada uma fica em `https://<slug>.preview.vincereai.online`.
+estática por clínica em `/<slug>`. No ar, cada uma fica em `https://<slug>.preview.vincereai.tech`.
 
 ## Uso
 
@@ -28,12 +28,12 @@ Textos de seção têm padrão em `src/lib/copy.ts` e podem ser sobrescritos por
 ## Deploy (Vercel)
 
 `vercel.json`:
-- `<slug>.preview.vincereai.online/` serve `/<slug>` e `/robots.txt` serve `/<slug>/robots.txt`;
+- `<slug>.preview.vincereai.tech/` serve `/<slug>` e `/robots.txt` serve `/<slug>/robots.txt`;
 - qualquer outro host em `/` redireciona para https://vincereai.tech (a home não lista clínicas);
 - todo o domínio de prévia recebe `X-Robots-Tag: noindex, nofollow`;
 - `cleanUrls`: `/animus.html` é servido como `/animus`.
 
-Na Vercel, adicione o domínio curinga `*.preview.vincereai.online` ao projeto (exige os nameservers do
+Na Vercel, adicione o domínio curinga `*.preview.vincereai.tech` ao projeto (exige os nameservers do
 domínio na Vercel ou a configuração de DNS que ela indicar).
 
 ### `isPreview`

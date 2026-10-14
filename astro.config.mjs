@@ -4,8 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 import { existsSync, readdirSync } from 'node:fs';
 
 // URL base (só usada como fallback; cada clínica define a sua em siteUrl ou usa
-// o subdomínio <slug>.preview.vincereai.online).
-const site = process.env.SITE_URL || 'https://preview.vincereai.online';
+// o subdomínio <slug>.preview.vincereai.tech).
+const site = process.env.SITE_URL || 'https://preview.vincereai.tech';
 
 // Todas as clínicas de src/clinics (cada uma vira /<slug>). Arquivos "_*.ts",
 // index.ts e types.ts não são clínicas.

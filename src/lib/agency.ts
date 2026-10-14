@@ -6,7 +6,7 @@ export const AGENCY = {
   name: 'Vincere.AI',
   url: 'https://vincereai.tech',
   /** Cada clínica fica em <slug>.<previewDomain> (ver vercel.json). */
-  previewDomain: 'preview.vincereai.online',
+  previewDomain: 'preview.vincereai.tech',
 } as const;
 
 /** URL pública da clínica: domínio próprio (siteUrl) ou o subdomínio de prévia. */

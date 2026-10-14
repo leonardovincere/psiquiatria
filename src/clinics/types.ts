@@ -182,9 +182,9 @@ type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? (T[K] extends unk
 export type CopyOverrides = DeepPartial<SiteCopy>;
 
 export interface ClinicConfig {
-  /** Identificador e caminho da página (/<slug>, <slug>.preview.vincereai.online). Igual ao nome do arquivo; minúsculas, números e hífen. */
+  /** Identificador e caminho da página (/<slug>, <slug>.preview.vincereai.tech). Igual ao nome do arquivo; minúsculas, números e hífen. */
   slug: string;
-  /** Domínio próprio quando o site sair da prévia (canonical/OG). Padrão: https://<slug>.preview.vincereai.online/ */
+  /** Domínio próprio quando o site sair da prévia (canonical/OG). Padrão: https://<slug>.preview.vincereai.tech/ */
   siteUrl?: string | null;
   /** Sobrescreve textos padrão das seções. */
   copy?: CopyOverrides;
