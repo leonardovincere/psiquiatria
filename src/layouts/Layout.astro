@@ -70,7 +70,14 @@ const jsonLd = {
     }
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content={t.primary} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {
+      clinic.clinic.favicon ? (
+        <link rel="icon" href={clinic.clinic.favicon} />
+      ) : (
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      )
+    }
+    {clinic.clinic.appleTouchIcon && <link rel="apple-touch-icon" href={clinic.clinic.appleTouchIcon} />}
 
     <!-- Google Fonts sem bloquear a renderização (display=swap + carregamento assíncrono). -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -86,6 +93,7 @@ const jsonLd = {
     <meta property="og:description" content={seo.description} />
     <meta property="og:url" content={canonical} />
     {doctor.photo && <meta property="og:image" content={doctor.photo} />}
+    {clinic.clinic.logo && <link rel="preload" as="image" href={clinic.clinic.logo} fetchpriority="high" />}
     <meta name="format-detection" content="telephone=no" />
 
     {!clinic.isPreview && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

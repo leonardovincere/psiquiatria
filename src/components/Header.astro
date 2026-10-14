@@ -18,10 +18,27 @@ const nav = [
 
 <header class="border-b border-line/70">
   <div class="container-page flex h-16 items-center justify-between gap-4 md:h-20">
-    <a href="#inicio" class="flex flex-col leading-tight">
-      <span class="font-serif text-lg font-semibold text-ink md:text-xl">{clinic.clinic.name}</span>
-      <span class="text-xs text-muted">{clinic.doctor.shortName} · {clinic.doctor.title}</span>
-    </a>
+    {
+      clinic.clinic.logo ? (
+        <a href="#inicio" class="flex shrink-0 items-center">
+          <img
+            src={clinic.clinic.logo}
+            alt={clinic.clinic.fullName}
+            width="471"
+            height="96"
+            class="h-10 w-auto md:h-12"
+            fetchpriority="high"
+          />
+        </a>
+      ) : (
+        <a href="#inicio" class="flex flex-col leading-tight">
+          <span class="font-serif text-lg font-semibold text-ink md:text-xl">{clinic.clinic.name}</span>
+          <span class="text-xs text-muted">
+            {clinic.doctor.shortName} · {clinic.doctor.title}
+          </span>
+        </a>
+      )
+    }
     <nav aria-label="Seções" class="hidden lg:block">
       <ul class="flex gap-6 text-sm text-muted">
         {

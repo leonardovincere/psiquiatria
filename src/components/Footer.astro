@@ -27,7 +27,13 @@ const links = [
 
     <div class="grid gap-8 md:grid-cols-3">
       <div>
-        <p class="font-serif text-lg text-ink">{clinic.clinic.fullName}</p>
+        {
+          clinic.clinic.logo ? (
+            <img src={clinic.clinic.logo} alt={clinic.clinic.fullName} width="471" height="96" class="h-11 w-auto" loading="lazy" />
+          ) : (
+            <p class="font-serif text-lg text-ink">{clinic.clinic.fullName}</p>
+          )
+        }
         <p class="mt-3 leading-relaxed">{formatAddress(clinic.address)}</p>
       </div>
 

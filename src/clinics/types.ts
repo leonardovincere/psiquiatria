@@ -13,6 +13,12 @@ export interface ClinicIdentity {
   tagline: string;
   city: string;
   state: string;
+  /** Logo horizontal (em /public), usado no cabeçalho e no rodapé. Sem logo, exibe o nome. */
+  logo?: string | null;
+  /** Ícone da aba (PNG/SVG em /public). Sem ícone, gera um a partir da cor primária. */
+  favicon?: string | null;
+  /** Ícone 180×180 para atalho na tela inicial do iOS. */
+  appleTouchIcon?: string | null;
 }
 
 export interface Doctor {
