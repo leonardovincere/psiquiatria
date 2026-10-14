@@ -1,6 +1,6 @@
 ---
+import Icon from './Icon.astro';
 import type { ClinicConfig } from '../clinics/types';
-import { formatAddress } from '../lib/links';
 
 interface Props {
   clinic: ClinicConfig;
@@ -8,51 +8,52 @@ interface Props {
 const { clinic } = Astro.props;
 const { doctor, contact } = clinic;
 const year = new Date().getFullYear();
-const links = [
-  { href: `https://wa.me/${contact.whatsapp}`, label: 'WhatsApp' },
-  contact.phone && { href: `tel:${contact.phone.replace(/\D/g, '')}`, label: contact.phone },
-  contact.email && { href: `mailto:${contact.email}`, label: contact.email },
-  contact.instagram && { href: contact.instagram, label: 'Instagram' },
-  contact.facebook && { href: contact.facebook, label: 'Facebook' },
-  contact.doctoralia && { href: contact.doctoralia, label: 'Doctoralia' },
-].filter((l) => !!l) as { href: string; label: string }[];
+const social = [
+  { href: `https://wa.me/${contact.whatsapp}`, label: 'WhatsApp', icon: 'whatsapp' },
+  contact.instagram && { href: contact.instagram, label: 'Instagram', icon: 'instagram' },
+  contact.facebook && { href: contact.facebook, label: 'Facebook', icon: 'facebook' },
+  contact.doctoralia && { href: contact.doctoralia, label: 'Doctoralia', icon: 'calendar' },
+].filter((l) => !!l) as { href: string; label: string; icon: 'whatsapp' | 'instagram' | 'facebook' | 'calendar' }[];
 ---
 
-<footer class="bg-ink-deep pt-16 pb-12 text-[15px] text-white/80">
+<footer class="bg-ink-deep pt-14 pb-10 text-[14px] leading-relaxed text-white/75">
   <div class="container-page flex flex-col gap-10">
-    <p class="rounded-2xl border border-white/20 px-5 py-4 leading-relaxed text-white" role="note">
+    <p class="rounded-2xl border border-white/20 px-5 py-4 text-white" role="note">
       Este canal não atende emergências. Em situação de crise ou risco, procure o pronto-socorro mais próximo, ligue para o
       SAMU (192) ou para o CVV (188), disponível 24 horas.
     </p>
 
-    <div class="grid gap-10 leading-relaxed md:grid-cols-[1.2fr_1.2fr_0.6fr]">
-      <div>
+    <div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-10">
         {
           clinic.clinic.logoLight ? (
-            <img src={clinic.clinic.logoLight} alt={clinic.clinic.fullName} width="471" height="96" class="h-11 w-auto" loading="lazy" />
+            <img src={clinic.clinic.logoLight} alt={clinic.clinic.fullName} width="471" height="96" class="h-10 w-auto self-start md:self-auto" loading="lazy" />
           ) : (
             <p class="font-serif text-xl text-white">{clinic.clinic.fullName}</p>
           )
         }
-        <p class="mt-5">{formatAddress(clinic.address)}</p>
-      </div>
-
-      <div>
-        <p class="font-semibold text-white">Responsável médica</p>
-        <p class="mt-2">
-          {doctor.name}<br />
-          {doctor.title} · {doctor.crm} · {doctor.rqe}
+        <p>
+          <span class="text-white">{doctor.name}</span> · {doctor.title} · {doctor.crm} · {doctor.rqe}
+          {clinic.compliance.technicalDirector && (
+            <>
+              <br />
+              Diretor(a) técnico(a): {clinic.compliance.technicalDirector}
+            </>
+          )}
         </p>
-        {clinic.compliance.technicalDirector && <p class="mt-3">Diretor(a) técnico(a): {clinic.compliance.technicalDirector}</p>}
       </div>
-
-      <ul class="flex flex-col gap-1.5">
-        <li class="font-semibold text-white">Contato</li>
+      <ul class="flex gap-2">
         {
-          links.map((l) => (
+          social.map((s) => (
             <li>
-              <a class="transition-colors hover:text-accent" href={l.href} {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})}>
-                {l.label}
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener"
+                aria-label={s.label}
+                class="flex size-11 items-center justify-center rounded-full border border-white/20 text-white transition-colors hover:border-accent hover:text-accent"
+              >
+                <Icon name={s.icon} class="size-[18px]" />
               </a>
             </li>
           ))
@@ -60,10 +61,10 @@ const links = [
       </ul>
     </div>
 
-    <div class="flex flex-col gap-3 border-t border-white/15 pt-6 text-[13px] leading-relaxed text-white/65 md:flex-row md:items-start md:justify-between md:gap-10">
+    <div class="flex flex-col gap-3 border-t border-white/15 pt-6 text-[13px] text-white/65 md:flex-row md:items-start md:justify-between md:gap-10">
       <p>
-        © {year} {clinic.clinic.fullName}. As informações deste site têm caráter informativo e não substituem a consulta
-        médica. Publicidade médica em conformidade com a Resolução CFM nº 2.336/2023.
+        © {year} {clinic.clinic.fullName}. Conteúdo informativo, que não substitui a consulta médica. Publicidade médica
+        conforme a Resolução CFM nº 2.336/2023.
       </p>
       <p class="shrink-0">
         Desenvolvido por{' '}

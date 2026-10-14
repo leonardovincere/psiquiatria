@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import Words from './Words.astro';
 import type { ClinicConfig } from '../clinics/types';
 
@@ -9,10 +10,10 @@ const { clinic } = Astro.props;
 const { doctor, contact } = clinic;
 const [lead, ...rest] = doctor.bio;
 const links = [
-  contact.doctoralia && { href: contact.doctoralia, label: 'Doctoralia' },
-  contact.instagram && { href: contact.instagram, label: 'Instagram' },
-  contact.facebook && { href: contact.facebook, label: 'Facebook' },
-].filter((l) => !!l) as { href: string; label: string }[];
+  contact.doctoralia && { href: contact.doctoralia, label: 'Doctoralia', icon: 'calendar' },
+  contact.instagram && { href: contact.instagram, label: 'Instagram', icon: 'instagram' },
+  contact.facebook && { href: contact.facebook, label: 'Facebook', icon: 'facebook' },
+].filter((l) => !!l) as { href: string; label: string; icon: 'calendar' | 'instagram' | 'facebook' }[];
 ---
 
 <section id="sobre" data-tone-at="base" class="section-y container-page grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-24" aria-labelledby="sobre-titulo">
@@ -23,36 +24,40 @@ const links = [
       {doctor.title}<br />
       <span class="font-medium text-ink">{doctor.crm} · {doctor.rqe}</span>
     </p>
-  </div>
-
-  <div class="flex flex-col gap-6">
     {
-      lead && (
-        <p class="font-serif text-2xl leading-snug text-ink md:text-[2rem] md:leading-[1.35]" data-scrub>
-          {lead.split(' ').map((w, i) => (i ? [' ', <span class="sw">{w}</span>] : <span class="sw">{w}</span>))}
+      links.length > 0 && (
+        <p class="mt-6 flex gap-2" data-reveal style="--i:2">
+          {links.map((l) => (
+            <a
+              href={l.href}
+              target="_blank"
+              rel="noopener"
+              aria-label={l.label}
+              class="flex size-11 items-center justify-center rounded-full border border-line text-primary transition-colors hover:border-primary"
+            >
+              <Icon name={l.icon} class="size-[18px]" />
+            </a>
+          ))}
         </p>
       )
     }
-    {
-      rest.map((p, i) => (
-        <p class="text-lg leading-relaxed text-muted md:text-[19px]" data-reveal style={`--i:${i + 1}`}>
-          {p}
-        </p>
-      ))
-    }
-    <div class="flex flex-wrap items-center justify-between gap-4 pt-6" data-rule>
-      {doctor.education.length > 0 && <p class="text-base text-ink/85">{doctor.education.join(' · ')}</p>}
-      {
-        links.length > 0 && (
-          <p class="flex gap-5 text-[15px]">
-            {links.map((l) => (
-              <a href={l.href} target="_blank" rel="noopener" class="text-primary underline-offset-4 hover:underline">
-                {l.label}
-              </a>
-            ))}
-          </p>
-        )
-      }
-    </div>
   </div>
+
+  <figure class="relative m-0">
+    <!-- Citação: o texto "acende" palavra por palavra ao rolar. -->
+    <svg class="mb-4 h-10 w-12 text-accent md:h-14 md:w-16" viewBox="0 0 48 40" fill="currentColor" aria-hidden="true">
+      <path d="M0 40V24C0 11 6.5 3 19.5 0l2.5 5C14 7.5 10.5 12.5 10 19h10v21H0Zm26 0V24c0-13 6.5-21 19.5-24l2.5 5C40 7.5 36.5 12.5 36 19h10v21H26Z" />
+    </svg>
+    {
+      lead && (
+        <blockquote class="m-0 font-serif text-[1.7rem] leading-[1.3] text-ink md:text-[2.4rem]" data-scrub>
+          {lead.split(' ').map((w, i) => (i ? [' ', <span class="sw">{w}</span>] : <span class="sw">{w}</span>))}
+        </blockquote>
+      )
+    }
+    <figcaption class="mt-8 flex flex-col gap-3 pt-6 text-[15px] text-muted" data-rule>
+      {rest.map((p) => <p class="text-base leading-relaxed text-muted md:text-lg" data-reveal>{p}</p>)}
+      {doctor.education.length > 0 && <p data-reveal style="--i:1">{doctor.education.join(' · ')}</p>}
+    </figcaption>
+  </figure>
 </section>

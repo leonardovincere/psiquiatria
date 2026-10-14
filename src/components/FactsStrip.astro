@@ -1,40 +1,50 @@
 ---
-import type { ClinicConfig } from '../clinics/types';
+import type { ClinicConfig, Highlight } from '../clinics/types';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
 const { modalities, socialProof } = clinic;
-const facts = [
-  ...clinic.doctor.education,
-  modalities.presencial && modalities.teleconsulta
-    ? 'Presencial e teleconsulta'
-    : modalities.teleconsulta
-      ? 'Teleconsulta'
-      : 'Atendimento presencial',
-];
+
+// Sem highlights no config: formação + modalidades + avaliações, em texto.
+const items: Highlight[] = clinic.highlights?.length
+  ? clinic.highlights
+  : [
+      ...clinic.doctor.education.map((e) => ({ value: '', label: e })),
+      {
+        value: '',
+        label: modalities.presencial && modalities.teleconsulta ? 'Presencial e teleconsulta' : modalities.teleconsulta ? 'Teleconsulta' : 'Atendimento presencial',
+      },
+      ...(socialProof.enabled ? [{ value: '', label: socialProof.label, href: socialProof.sourceUrl }] : []),
+    ];
 ---
 
-<section aria-label="Em resumo" data-tone-at="base" class="card-light border-y border-line bg-surface">
-  <ul class="container-page flex flex-wrap gap-x-10 gap-y-3 py-7 text-[15px] text-ink/85">
+<section aria-label="Em destaque" data-tone-at="base" class="card-light border-y border-line bg-surface">
+  <ul class="container-page grid divide-line py-8 sm:grid-cols-3 sm:divide-x md:py-10">
     {
-      facts.map((f, i) => (
-        <li class="flex items-center gap-3" data-reveal style={`--i:${i}`}>
-          <span class="size-2 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-          {f}
-        </li>
-      ))
-    }
-    {
-      socialProof.enabled && (
-        <li data-reveal style={`--i:${facts.length}`}>
-          <a href={socialProof.sourceUrl} target="_blank" rel="noopener" class="arrow-nudge flex items-center gap-3 font-medium text-primary">
-            <span class="size-2 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-            {socialProof.label} <span class="arrow" aria-hidden="true">↗</span>
-          </a>
-        </li>
-      )
+      items.map((it, i) => {
+        const body = (
+          <>
+            {it.value && <span class="block font-serif text-[2rem] leading-none text-primary md:text-[2.6rem]">{it.value}</span>}
+            <span class:list={['block text-[15px] text-ink/80', it.value && 'mt-2']}>
+              {it.label}
+              {it.href && <span class="arrow ml-1 text-primary" aria-hidden="true">↗</span>}
+            </span>
+          </>
+        );
+        return (
+          <li class="py-4 sm:px-8 sm:py-0 sm:first:pl-0" data-reveal style={`--i:${i}`}>
+            {it.href ? (
+              <a href={it.href} target="_blank" rel="noopener" class="arrow-nudge block">
+                {body}
+              </a>
+            ) : (
+              body
+            )}
+          </li>
+        );
+      })
     }
   </ul>
 </section>

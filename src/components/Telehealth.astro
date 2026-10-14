@@ -8,10 +8,10 @@ interface Props {
 }
 const { clinic } = Astro.props;
 const points = [
-  'Plataforma segura, com sigilo e privacidade',
-  'Receita enviada digitalmente',
-  'Pelo celular ou computador, de onde você estiver',
-];
+  { icon: 'video', text: 'Link enviado antes do horário' },
+  { icon: 'lock', text: 'Sigilo e privacidade' },
+  { icon: 'doc', text: 'Receita digital válida' },
+] as const;
 ---
 
 <!-- Ao chegar aqui, o fundo da página inteira escurece para o azul (data-tone-at="deep"). -->
@@ -29,30 +29,26 @@ const points = [
       />
     )
   }
-  <div class="container-page relative grid items-center gap-12 md:grid-cols-2 md:gap-20">
-    <div>
-      <p class="eyebrow mb-3.5" data-reveal>Teleconsulta</p>
-      <h2 id="teleconsulta-titulo" class="text-4xl leading-[1.05] text-ink md:text-[3.25rem]" data-words>
-        <Words text="O mesmo cuidado," /> <em class="text-primary"><Words text="de onde você estiver" from={3} /></em>
-      </h2>
-      <p class="mt-6 text-lg leading-relaxed text-muted md:text-[19px]" data-reveal>
-        Para quem mora longe, tem uma rotina corrida ou se sente mais à vontade em casa, a consulta com a {clinic.doctor.shortName} pode acontecer por vídeo, com o mesmo cuidado do atendimento presencial.
-      </p>
-    </div>
-    <div class="flex flex-col gap-4">
-      <ul class="space-y-4">
-        {
-          points.map((p, i) => (
-            <li class="flex gap-3.5 text-lg text-ink" data-reveal style={`--i:${i}`}>
-              <Icon name="check" class="mt-1 size-5 shrink-0 text-accent" />
-              {p}
-            </li>
-          ))
-        }
-      </ul>
-      <p class="mt-4 text-[13px] leading-relaxed text-muted" data-reveal style="--i:3">
-        Atendimento conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.
-      </p>
-    </div>
+  <div class="container-page relative">
+    <p class="eyebrow mb-3.5" data-reveal>Teleconsulta</p>
+    <h2 id="teleconsulta-titulo" class="max-w-3xl text-4xl leading-[1.05] text-ink md:text-[3.5rem]" data-words>
+      <Words text="O mesmo cuidado," /> <em class="text-primary"><Words text="de onde você estiver" from={3} /></em>
+    </h2>
+    <p class="mt-5 text-lg text-muted md:text-xl" data-reveal>Consulta por vídeo, pelo celular ou computador.</p>
+    <ul class="mt-12 grid gap-6 sm:grid-cols-3 sm:gap-10">
+      {
+        points.map((p, i) => (
+          <li class="flex items-center gap-4 border-t border-line pt-6 text-lg text-ink" data-reveal style={`--i:${i}`}>
+            <span class="flex size-12 shrink-0 items-center justify-center rounded-full border border-line text-accent">
+              <Icon name={p.icon} class="size-[22px]" />
+            </span>
+            {p.text}
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-10 max-w-2xl text-[13px] leading-relaxed text-muted" data-reveal>
+      Conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.
+    </p>
   </div>
 </section>

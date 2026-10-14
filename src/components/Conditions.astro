@@ -6,6 +6,7 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
+const rows = [clinic.conditions, [...clinic.conditions].reverse()];
 ---
 
 <section id="condicoes" data-tone-at="sand" class="section-y" aria-labelledby="condicoes-titulo">
@@ -14,45 +15,34 @@ const { clinic } = Astro.props;
       id="condicoes-titulo"
       layout="split"
       title="Condições acompanhadas"
-      intro="Algumas das situações mais frequentes no consultório. Se você não encontrou o que está sentindo, fale com a gente — conversamos sobre o seu caso."
+      intro="Não encontrou o que está sentindo? Fale com a gente — conversamos sobre o seu caso."
     />
   </div>
-  <!-- Faixas decorativas: os mesmos nomes da lista abaixo, deslizando devagar. -->
-  <div class="marquee mb-14 md:mb-20" aria-hidden="true">
+  <!-- Faixas deslizando: a primeira é a lista acessível; as cópias são decorativas. -->
+  <div class="marquee">
     {
-      [clinic.conditions, [...clinic.conditions].reverse()].map((row, r) => (
-        <div class:list={['marquee-track', r === 1 && 'rev']}>
+      rows.map((row, r) => (
+        <ul
+          class:list={['marquee-track m-0 list-none p-0', r === 1 && 'rev']}
+          aria-label={r === 0 ? 'Condições acompanhadas' : undefined}
+          aria-hidden={r === 1 ? 'true' : undefined}
+        >
           {[...row, ...row].map((c, i) => (
-            <span
+            <li
+              aria-hidden={i >= row.length ? 'true' : undefined}
               class:list={[
-                'rounded-full border border-line bg-white px-5 py-3 font-serif text-xl whitespace-nowrap text-[var(--ink-base)]',
+                'flex items-center gap-3 rounded-full border border-line bg-white px-6 py-3.5 font-serif text-xl whitespace-nowrap text-[var(--ink-base)] md:text-2xl',
                 (i + r) % 2 === 1 && 'text-[var(--primary-base)] italic',
                 i >= row.length && 'dup',
               ]}
             >
+              <span class="size-1.5 rounded-full bg-accent" aria-hidden="true"></span>
               {c.name}
-            </span>
+            </li>
           ))}
-        </div>
+        </ul>
       ))
     }
   </div>
-  <div class="container-page">
-    <ol class="grid gap-x-16 md:grid-cols-2">
-      {
-        clinic.conditions.map((c, i) => (
-          <li class="group flex gap-6 py-6 md:py-7" data-rule style={`--i:${i % 2}`}>
-            <span class="w-8 shrink-0 pt-1 font-serif text-xl text-primary italic transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <div data-reveal style={`--i:${i % 2}`}>
-              <h3 class="text-2xl text-ink md:text-[1.65rem]">{c.name}</h3>
-              <p class="mt-1.5 leading-relaxed text-muted">{c.description}</p>
-            </div>
-          </li>
-        ))
-      }
-    </ol>
-    <p class="mt-10 text-sm text-muted" data-reveal>Cada pessoa é única: a avaliação e o plano de cuidado são sempre individualizados.</p>
-  </div>
+  <p class="container-page mt-10 text-sm text-muted" data-reveal>Cada pessoa é única: a avaliação e o plano de cuidado são sempre individualizados.</p>
 </section>

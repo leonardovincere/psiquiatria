@@ -43,8 +43,10 @@ Com `isPreview: true`:
 
 ## Seções
 
-Hero com CTA WhatsApp · Sobre a médica · Condições · Atendimentos (serviços, convênio, pagamento) · Primeira consulta
-· Teleconsulta · FAQ · Mapa · CTA final · Rodapé com CRM/RQE · botão fixo de WhatsApp (barra no celular, pílula flutuante no desktop), único CTA de agendamento além do final da página; some quando o CTA final ou o rodapé aparecem.
+Hero (texto + foto) · Números em destaque (`highlights`) · Sobre (citação que acende ao rolar) · Condições (faixas deslizando)
+· Primeira consulta (4 passos curtos + laudos, convênio e pagamento numa linha) · Teleconsulta (3 pontos com ícones)
+· FAQ (só o que não está no resto da página) · Onde estamos · Convite final · Rodapé compacto com CRM/RQE, diretora técnica,
+redes e aviso de emergência · botão fixo de WhatsApp (barra no celular, pílula no desktop), que some no convite final.
 
 ## Movimento
 

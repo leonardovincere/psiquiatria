@@ -295,7 +295,8 @@
   animation-direction: reverse;
   animation-duration: 48s;
 }
-.marquee:hover .marquee-track {
+.marquee:hover .marquee-track,
+.marquee:active .marquee-track {
   animation-play-state: paused;
 }
 @keyframes marquee {

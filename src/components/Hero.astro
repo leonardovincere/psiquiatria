@@ -7,7 +7,7 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const { doctor, modalities } = clinic;
+const { doctor } = clinic;
 const photo = await getHeroPhoto(clinic);
 const { city, state, tagline, taglineHighlight, heroEyebrow, logoMark } = clinic.clinic;
 
@@ -18,12 +18,6 @@ const [before, mark, after] =
     ? [tagline.slice(0, idx), taglineHighlight!, tagline.slice(idx + taglineHighlight!.length)]
     : [tagline, '', ''];
 
-const modalityText =
-  modalities.presencial && modalities.teleconsulta
-    ? 'Consultas presenciais e por teleconsulta.'
-    : modalities.teleconsulta
-      ? 'Consultas por teleconsulta.'
-      : 'Consultas presenciais.';
 ---
 
 <!--
@@ -38,7 +32,7 @@ const modalityText =
       {before}{mark && <em class="mark text-primary">{mark}</em>}{after}
     </h1>
     <p class="max-w-xl text-lg leading-relaxed text-muted md:text-xl">
-      Com a {doctor.shortName}, {doctor.title.toLowerCase()} em {city}. {modalityText}
+      Com a {doctor.shortName}, {doctor.title.toLowerCase()} em {city}.
     </p>
     <a
       href="#primeira-consulta"

@@ -76,6 +76,14 @@ export interface Step {
   text: string;
 }
 
+export interface Highlight {
+  /** Valor em destaque, curto. Ex.: "Desde 2012". */
+  value: string;
+  label: string;
+  /** Link opcional (ex.: fonte das avaliações). */
+  href?: string;
+}
+
 export interface SocialProof {
   enabled: boolean;
   /** Ex.: "148 avaliações de pacientes no Doctoralia". */
@@ -167,6 +175,8 @@ export interface ClinicConfig {
   showPrices: boolean;
   firstVisitSteps: Step[];
 
+  /** Até 3 números/fatos em destaque abaixo do topo. Sem eles, mostra formação e modalidades. */
+  highlights?: Highlight[];
   socialProof: SocialProof;
   contact: Contact;
   address: Address;

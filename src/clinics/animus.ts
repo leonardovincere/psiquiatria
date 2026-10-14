@@ -78,10 +78,17 @@ export const animus: ClinicConfig = {
   showPrices: false,
 
   firstVisitSteps: [
-    { title: "Agende pelo WhatsApp", text: "Nossa equipe confirma o melhor horário para você." },
-    { title: "Primeira consulta", text: "Uma conversa sem pressa para entender seus sintomas e sua história." },
-    { title: "Plano de cuidado", text: "Você sai com o diagnóstico explicado e os próximos passos claros." },
-    { title: "Acompanhamento", text: "Retornos para ajustar o tratamento conforme sua evolução." },
+    { title: "Agende pelo WhatsApp", text: "Confirmamos o melhor horário para você." },
+    { title: "Primeira consulta", text: "Conversamos sobre sua história e seus sintomas." },
+    { title: "Plano de cuidado", text: "Diagnóstico explicado e próximos passos claros." },
+    { title: "Acompanhamento", text: "Retornos para ajustar o tratamento." },
+  ],
+
+  // Números em destaque logo abaixo do topo (fatos verificáveis; sem superlativos).
+  highlights: [
+    { value: "Desde 2012", label: "psiquiatra em Campo Grande" },
+    { value: "148", label: "avaliações de pacientes no Doctoralia", href: "https://www.doctoralia.com.br/luciane-cano-martins-silveira/psiquiatra/campo-grande#&tab=profile-reviews" },
+    { value: "Presencial e vídeo", label: "duas formas de atendimento" },
   ],
 
   // ─── Prova social ───────────────────────────────────────────
@@ -121,11 +128,10 @@ export const animus: ClinicConfig = {
 
   // ─── FAQ ────────────────────────────────────────────────────
   faq: [
-    { q: "Vocês atendem por convênio?", a: "O atendimento é particular. Fale com a gente pelo WhatsApp sobre documentação para reembolso." },
+    { q: "Vocês atendem por convênio?", a: "O atendimento é particular. Emitimos documentação para você solicitar reembolso ao seu plano." },
     { q: "Atendem crianças e adolescentes?", a: "A Dra. Luciane atende adultos." },
-    { q: "Como funciona a teleconsulta?", a: "Você recebe o link da videochamada antes do horário e pode participar pelo celular ou computador. A receita é enviada digitalmente." },
     { q: "Preciso levar algo na primeira consulta?", a: "Se tiver, traga exames, receitas e relatórios de tratamentos anteriores." },
-    { q: "Como agendar?", a: "Pelo WhatsApp ou pelo telefone (67) 3029-5656." },
+    { q: "Toda consulta resulta em remédio?", a: "Não. A indicação de medicação depende da avaliação de cada caso e é sempre conversada com você." }, // TODO: validar com a médica
   ],
 
   // ─── Visual ─────────────────────────────────────────────────

@@ -6,6 +6,13 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
+// Serviços que não são a própria consulta/retorno/teleconsulta (ex.: laudos) viram uma linha discreta.
+const extras = clinic.services.filter((s) => !/primeira|acompanhamento|retorno|teleconsulta/i.test(s.name));
+const notes = [
+  ...extras.map((s) => `Também emitimos ${s.name.toLowerCase()}`),
+  clinic.insurance.note,
+  clinic.payment.length > 0 && `Pagamento: ${clinic.payment.join(' ou ').toLowerCase()}`,
+].filter(Boolean) as string[];
 ---
 
 <section id="primeira-consulta" data-tone-at="base" class="section-y container-page" aria-labelledby="primeira-consulta-titulo">
@@ -13,22 +20,35 @@ const { clinic } = Astro.props;
     id="primeira-consulta-titulo"
     eyebrow="Passo a passo"
     title="Como funciona a primeira consulta"
-    intro="Uma conversa sem pressa, para conhecer você e entender o momento que está vivendo."
   />
-  <ol class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+  <ol class="grid gap-7 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4">
     {
       clinic.firstVisitSteps.map((step, i) => (
-        <li class="border-t-2 border-primary pt-6" data-reveal style={`--i:${i}`}>
-          <span class="block font-serif text-6xl leading-none text-primary italic" aria-hidden="true">
+        <li class="flex gap-5 border-t-2 border-primary pt-5 sm:block sm:pt-6" data-reveal style={`--i:${i}`}>
+          <span class="block w-9 shrink-0 font-serif text-5xl leading-none text-primary italic sm:w-auto sm:text-6xl" aria-hidden="true">
             {i + 1}
           </span>
-          <h3 class="mt-5 mb-2 text-2xl text-ink">
+          <div>
+          <h3 class="mb-1.5 text-2xl text-ink sm:mt-5">
             <span class="sr-only">Etapa {i + 1}: </span>
             {step.title}
           </h3>
           <p class="leading-relaxed text-muted">{step.text}</p>
+          </div>
         </li>
       ))
     }
   </ol>
+  {
+    notes.length > 0 && (
+      <ul class="mt-14 flex flex-wrap gap-x-8 gap-y-2 border-t border-line pt-6 text-[15px] text-muted" data-reveal>
+        {notes.map((n) => (
+          <li class="flex items-center gap-2.5">
+            <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+            {n.replace(/\.$/, '')}
+          </li>
+        ))}
+      </ul>
+    )
+  }
 </section>
