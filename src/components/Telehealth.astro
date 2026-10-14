@@ -7,44 +7,54 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const t = {
-  title: 'Teleconsulta',
-  intro: `Para quem mora longe, tem uma rotina corrida ou se sente mais à vontade em casa, a consulta com a ${clinic.doctor.shortName} pode acontecer por vídeo, com o mesmo cuidado do atendimento presencial.`,
-  points: [
-    'Plataforma segura, com sigilo e privacidade',
-    'Receitas e documentos com assinatura digital válida',
-    'Basta um celular ou computador com internet e um lugar reservado',
-  ],
-  note: 'Atendimento realizado conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.',
-};
+const points = [
+  'Plataforma segura, com sigilo e privacidade',
+  'Receita enviada digitalmente',
+  'Pelo celular ou computador, de onde você estiver',
+];
 ---
 
-<section id="teleconsulta" class="section-y" aria-labelledby="teleconsulta-titulo">
-  <div class="container-page">
-    <div class="grid gap-10 rounded-3xl bg-primary px-6 py-12 text-on-primary md:grid-cols-2 md:gap-16 md:px-14 md:py-16">
-      <div>
-        <Icon name="video" class="mb-6 size-10 opacity-80" />
-        <h2 id="teleconsulta-titulo" class="text-3xl leading-tight font-medium md:text-4xl">{t.title}</h2>
-        <p class="mt-4 text-lg leading-relaxed opacity-90">{t.intro}</p>
-      </div>
-      <div class="flex flex-col justify-center">
-        <ul class="space-y-4">
-          {
-            t.points.map((point) => (
-              <li class="flex gap-3 text-lg">
-                <Icon name="check" class="mt-1 size-5 shrink-0" />
-                <span>{point}</span>
-              </li>
-            ))
-          }
-        </ul>
-        <WhatsAppButton
-          clinic={clinic}
-          label="Agendar teleconsulta"
-          class="mt-8 self-start !bg-on-primary !text-primary"
+<section id="teleconsulta" class="px-4 md:px-8" aria-labelledby="teleconsulta-titulo">
+  <div
+    class="relative mx-auto grid max-w-[76rem] items-center gap-12 overflow-hidden rounded-[32px] bg-primary px-6 py-14 text-on-primary md:grid-cols-2 md:gap-20 md:px-14 md:py-20"
+    data-reveal
+  >
+    {
+      clinic.clinic.logoMark && (
+        <img
+          src={clinic.clinic.logoMark}
+          alt=""
+          aria-hidden="true"
+          width="520"
+          height="306"
+          loading="lazy"
+          class="drift pointer-events-none absolute -right-24 -bottom-20 w-[340px] opacity-[0.14] md:w-[520px]"
         />
-        {t.note && <p class="mt-6 text-sm opacity-80">{t.note}</p>}
-      </div>
+      )
+    }
+    <div class="relative">
+      <h2 id="teleconsulta-titulo" class="text-4xl leading-[1.05] md:text-[3.25rem]">
+        Teleconsulta, <em class="text-accent">de onde você estiver</em>
+      </h2>
+      <p class="mt-6 text-lg leading-relaxed opacity-90 md:text-[19px]">
+        Para quem mora longe, tem uma rotina corrida ou se sente mais à vontade em casa, a consulta com a {clinic.doctor.shortName} pode acontecer por vídeo, com o mesmo cuidado do atendimento presencial.
+      </p>
+    </div>
+    <div class="relative flex flex-col gap-4">
+      <ul class="space-y-4">
+        {
+          points.map((p) => (
+            <li class="flex gap-3.5 text-lg">
+              <Icon name="check" class="mt-1 size-5 shrink-0 text-accent" />
+              {p}
+            </li>
+          ))
+        }
+      </ul>
+      <WhatsAppButton clinic={clinic} label="Agendar teleconsulta" variant="accent" class="mt-4 self-start" />
+      <p class="mt-2 text-[13px] leading-relaxed opacity-80">
+        Atendimento conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.
+      </p>
     </div>
   </div>
 </section>

@@ -14,12 +14,18 @@ export const mapsSearchUrl = (a: Address) =>
 export const mapsEmbedUrl = (a: Address) =>
   `https://www.google.com/maps?q=${encodeURIComponent(mapsQuery(a))}&z=17&output=embed`;
 
-/** URL do Google Fonts com as duas famílias do tema (pesos 400–600). */
+const fontParam = (f: string) => encodeURIComponent(f).replace(/%20/g, '+');
+
+/** URL do Google Fonts: títulos com itálico (400/500), texto com pesos 400–600. */
 export const googleFontsUrl = (t: Theme) => {
-  const families = [...new Set([t.fontHeading, t.fontBody])]
-    .map((f) => `family=${encodeURIComponent(f).replace(/%20/g, '+')}:wght@400;500;600`)
-    .join('&');
-  return `https://fonts.googleapis.com/css2?${families}&display=swap`;
+  const families =
+    t.fontHeading === t.fontBody
+      ? [`family=${fontParam(t.fontHeading)}:ital,wght@0,400;0,500;0,600;1,400;1,500`]
+      : [
+          `family=${fontParam(t.fontHeading)}:ital,wght@0,400;0,500;1,400;1,500`,
+          `family=${fontParam(t.fontBody)}:wght@400;500;600`,
+        ];
+  return `https://fonts.googleapis.com/css2?${families.join('&')}&display=swap`;
 };
 
 /** Branco ou quase-preto, o que tiver mais contraste sobre a cor dada. */

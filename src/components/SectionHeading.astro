@@ -2,13 +2,31 @@
 interface Props {
   title: string;
   intro?: string;
+  eyebrow?: string;
   id: string;
-  align?: 'left' | 'center';
+  /** "split": título à esquerda e introdução à direita. */
+  layout?: 'stack' | 'split';
+  class?: string;
 }
-const { title, intro, id, align = 'left' } = Astro.props;
+const { title, intro, eyebrow, id, layout = 'stack', class: className = '' } = Astro.props;
 ---
 
-<div class:list={['mb-10 max-w-2xl md:mb-14', align === 'center' && 'mx-auto text-center']}>
-  <h2 id={id} class="text-3xl leading-tight font-medium text-ink md:text-4xl">{title}</h2>
-  {intro && <p class="mt-4 text-lg leading-relaxed text-muted">{intro}</p>}
+<div
+  class:list={[
+    'mb-12 md:mb-16',
+    layout === 'split' ? 'grid items-end gap-6 md:grid-cols-2 md:gap-24' : 'max-w-2xl',
+    className,
+  ]}
+>
+  <div data-reveal>
+    {eyebrow && <p class="eyebrow mb-3.5">{eyebrow}</p>}
+    <h2 id={id} class="text-4xl leading-[1.08] text-ink md:text-5xl">{title}</h2>
+  </div>
+  {
+    intro && (
+      <p class:list={['text-lg leading-relaxed text-muted', layout === 'stack' && 'mt-5']} data-reveal style="--i:1">
+        {intro}
+      </p>
+    )
+  }
 </div>

@@ -15,9 +15,12 @@ export const animus: ClinicConfig = {
     name: "Animus",
     fullName: "Animus — Psiquiatria Avançada",
     tagline: "Psiquiatria com escuta, tempo e cuidado individual",
+    taglineHighlight: "tempo", // palavra destacada em itálico no título do hero
     city: "Campo Grande",
     state: "MS",
     logo: "/clinics/animus/logo-horizontal.webp", // recortado do logo dos perfis (logo-original.png)
+    logoLight: "/clinics/animus/logo-horizontal-claro.webp", // versão para fundos escuros (rodapé)
+    logoMark: "/clinics/animus/lotus.svg", // flor de lótus vetorizada — ornamento do hero, teleconsulta e CTA
     favicon: "/clinics/animus/favicon.png",
     appleTouchIcon: "/clinics/animus/apple-touch-icon.png",
   },
@@ -128,12 +131,12 @@ export const animus: ClinicConfig = {
   // Paleta extraída do logo da Animus (azul do nome + âmbar da flor de lótus).
   theme: {
     primary: "#254B74",    // azul do logo — botões e destaques
-    secondary: "#A9C0D8",  // azul suave derivado do primário — fundos e bordas
+    secondary: "#D8C7AA",  // areia — fundos suaves e bordas (direção "Lótus editorial")
     accent: "#F9B33B",     // âmbar da flor de lótus — detalhes decorativos (não usar em texto)
     background: "#FBF8F3", // off-white quente, combina com o âmbar
     text: "#1C2B3D",       // azul quase preto
-    fontHeading: "Fraunces",
-    fontBody: "Inter",
+    fontHeading: "Newsreader",
+    fontBody: "Figtree",
   },
 
   // ─── SEO (vale quando sair do modo preview) ─────────────────

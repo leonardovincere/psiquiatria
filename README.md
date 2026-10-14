@@ -46,9 +46,23 @@ Com `isPreview: true`:
 Hero com CTA WhatsApp · Sobre a médica · Condições · Atendimentos (serviços, convênio, pagamento) · Primeira consulta
 · Teleconsulta · FAQ · Mapa · CTA final · Rodapé com CRM/RQE · barra fixa de WhatsApp no mobile.
 
+## Movimento
+
+Camada de animação contida, sem bibliotecas (CSS + ~1 KB de JS), definida em `src/styles/global.css`:
+
+- **Entrada do hero**: textos sobem em sequência, a foto se revela de baixo para cima dentro do arco,
+  a flor de lótus abre e passa a "respirar" lentamente, e o destaque da tagline é sublinhado.
+- **Ao rolar**: blocos com `data-reveal` aparecem uma única vez (IntersectionObserver), em cascata via `--i`;
+  filetes com `data-rule` se desenham da esquerda para a direita.
+- **Parallax** da flor na teleconsulta via scroll-driven animations (`animation-timeline: view()`),
+  ignorado por navegadores sem suporte.
+- **Microinterações**: botões levantam no hover, setas deslizam, cabeçalho fixo ganha fundo ao rolar,
+  FAQ abre suavemente (`interpolate-size`).
+- Tudo respeita `prefers-reduced-motion`, e sem JS a página aparece inteira.
+
 ## Performance
 
-Zero JS de framework; CSS inline; Google Fonts carregado sem bloquear a renderização; foto otimizada em WebP;
+Zero JS de framework; CSS inline; Google Fonts (Newsreader + Figtree) carregado sem bloquear a renderização; foto otimizada em WebP; flor de lótus vetorizada (SVG);
 o iframe do Google Maps só carrega ao clicar (fachada). Lighthouse na prévia `animus`:
-mobile 99 / 100 / 100, desktop 100 / 100 / 100 (performance / acessibilidade / boas práticas);
+mobile 99 / 100 / 100, desktop 99 / 100 / 100 (performance / acessibilidade / boas práticas);
 SEO 100 com `isPreview: false` (na prévia o `noindex` derruba o SEO de propósito).

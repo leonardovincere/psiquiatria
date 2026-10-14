@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PreviewBanner from '../components/PreviewBanner.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import FactsStrip from '../components/FactsStrip.astro';
 import About from '../components/About.astro';
 import Conditions from '../components/Conditions.astro';
 import Services from '../components/Services.astro';
@@ -28,11 +29,12 @@ const clinic = getClinic();
   <Header clinic={clinic} />
   <main id="conteudo">
     <Hero clinic={clinic} />
+    <FactsStrip clinic={clinic} />
     <About clinic={clinic} />
     <Conditions clinic={clinic} />
-    <Services clinic={clinic} />
     <FirstVisit clinic={clinic} />
     {clinic.modalities.teleconsulta && <Telehealth clinic={clinic} />}
+    <Services clinic={clinic} />
     <Faq clinic={clinic} />
     {clinic.modalities.presencial && <Location clinic={clinic} />}
     <FinalCta clinic={clinic} />

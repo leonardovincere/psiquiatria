@@ -12,49 +12,46 @@ const links = [
   { href: `https://wa.me/${contact.whatsapp}`, label: 'WhatsApp' },
   contact.phone && { href: `tel:${contact.phone.replace(/\D/g, '')}`, label: contact.phone },
   contact.email && { href: `mailto:${contact.email}`, label: contact.email },
-  contact.doctoralia && { href: contact.doctoralia, label: 'Doctoralia' },
   contact.instagram && { href: contact.instagram, label: 'Instagram' },
   contact.facebook && { href: contact.facebook, label: 'Facebook' },
+  contact.doctoralia && { href: contact.doctoralia, label: 'Doctoralia' },
 ].filter((l) => !!l) as { href: string; label: string }[];
 ---
 
-<footer class="border-t border-line bg-background pt-12 pb-28 text-sm text-muted sm:pb-12">
-  <div class="container-page">
-    <p class="mb-10 rounded-2xl border border-line bg-surface p-5 leading-relaxed text-ink" role="note">
+<footer class="bg-ink-deep pt-16 pb-28 text-[15px] text-white/80 sm:pb-12">
+  <div class="container-page flex flex-col gap-10">
+    <p class="rounded-2xl border border-white/20 px-5 py-4 leading-relaxed text-white" role="note">
       Este canal não atende emergências. Em situação de crise ou risco, procure o pronto-socorro mais próximo, ligue para o
       SAMU (192) ou para o CVV (188), disponível 24 horas.
     </p>
 
-    <div class="grid gap-8 md:grid-cols-3">
+    <div class="grid gap-10 leading-relaxed md:grid-cols-[1.2fr_1.2fr_0.6fr]">
       <div>
         {
-          clinic.clinic.logo ? (
-            <img src={clinic.clinic.logo} alt={clinic.clinic.fullName} width="471" height="96" class="h-11 w-auto" loading="lazy" />
+          clinic.clinic.logoLight ? (
+            <img src={clinic.clinic.logoLight} alt={clinic.clinic.fullName} width="471" height="96" class="h-11 w-auto" loading="lazy" />
           ) : (
-            <p class="font-serif text-lg text-ink">{clinic.clinic.fullName}</p>
+            <p class="font-serif text-xl text-white">{clinic.clinic.fullName}</p>
           )
         }
-        <p class="mt-3 leading-relaxed">{formatAddress(clinic.address)}</p>
+        <p class="mt-5">{formatAddress(clinic.address)}</p>
       </div>
 
-      <div class="leading-relaxed">
-        <p class="font-medium text-ink">Responsável médica</p>
-        <p class="mt-3">{doctor.name}</p>
-        <p>{doctor.title}</p>
-        <p>{doctor.crm} · {doctor.rqe}</p>
+      <div>
+        <p class="font-semibold text-white">Responsável médica</p>
+        <p class="mt-2">
+          {doctor.name}<br />
+          {doctor.title} · {doctor.crm} · {doctor.rqe}
+        </p>
         {clinic.compliance.technicalDirector && <p class="mt-3">Diretor(a) técnico(a): {clinic.compliance.technicalDirector}</p>}
       </div>
 
-      <ul class="space-y-2">
-        <li class="font-medium text-ink">Contato</li>
+      <ul class="flex flex-col gap-1.5">
+        <li class="font-semibold text-white">Contato</li>
         {
           links.map((l) => (
             <li>
-              <a
-                class="hover:text-primary"
-                href={l.href}
-                {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})}
-              >
+              <a class="transition-colors hover:text-accent" href={l.href} {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})}>
                 {l.label}
               </a>
             </li>
@@ -63,7 +60,7 @@ const links = [
       </ul>
     </div>
 
-    <p class="mt-10 border-t border-line pt-6 text-xs leading-relaxed">
+    <p class="border-t border-white/15 pt-6 text-[13px] leading-relaxed text-white/65">
       © {year} {clinic.clinic.fullName}. As informações deste site têm caráter informativo e não substituem a consulta
       médica. Publicidade médica em conformidade com a Resolução CFM nº 2.336/2023.
     </p>

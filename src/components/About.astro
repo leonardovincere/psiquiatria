@@ -1,87 +1,49 @@
 ---
-import { Image } from 'astro:assets';
-import Icon from './Icon.astro';
-import SectionHeading from './SectionHeading.astro';
 import type { ClinicConfig } from '../clinics/types';
-import { initials } from '../lib/links';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
 const { doctor, contact } = clinic;
+const [lead, ...rest] = doctor.bio;
 const links = [
-  contact.doctoralia && { href: contact.doctoralia, icon: 'calendar', label: 'Perfil na Doctoralia' },
-  contact.instagram && { href: contact.instagram, icon: 'instagram', label: 'Instagram' },
-  contact.facebook && { href: contact.facebook, icon: 'facebook', label: 'Facebook' },
-].filter((l) => !!l) as { href: string; icon: 'calendar' | 'instagram' | 'facebook'; label: string }[];
+  contact.doctoralia && { href: contact.doctoralia, label: 'Doctoralia' },
+  contact.instagram && { href: contact.instagram, label: 'Instagram' },
+  contact.facebook && { href: contact.facebook, label: 'Facebook' },
+].filter((l) => !!l) as { href: string; label: string }[];
 ---
 
-<section id="sobre" class="section-y bg-surface" aria-labelledby="sobre-titulo">
-  <div class="container-page grid gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
-    <div class="mx-auto w-full max-w-sm md:mx-0">
-      {
-        doctor.photo ? (
-          <Image
-            src={doctor.photo}
-            inferSize
-            alt={`Foto de ${doctor.name}`}
-            widths={[320, 480, 640]}
-            sizes="(min-width: 768px) 384px, 90vw"
-            class="aspect-[4/5] w-full rounded-3xl object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <div
-            class="flex aspect-[4/5] w-full items-center justify-center rounded-3xl bg-primary/10 font-serif text-7xl text-primary"
-            role="img"
-            aria-label={doctor.name}
-          >
-            {initials(doctor.name)}
-          </div>
-        )
-      }
-      <div class="mt-5">
-        <p class="font-serif text-xl text-ink">{doctor.name}</p>
-        <p class="text-sm text-muted">{doctor.title}</p>
-        <p class="text-sm font-medium text-ink">{doctor.crm} · {doctor.rqe}</p>
-      </div>
-    </div>
+<section id="sobre" class="section-y container-page grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-24" aria-labelledby="sobre-titulo">
+  <div data-reveal>
+    <p class="eyebrow mb-3.5">Sobre</p>
+    <h2 id="sobre-titulo" class="text-4xl leading-[1.08] text-ink md:text-5xl">{doctor.shortName}</h2>
+    <p class="mt-6 text-[15px] leading-relaxed text-muted">
+      {doctor.title}<br />
+      <span class="font-medium text-ink">{doctor.crm} · {doctor.rqe}</span>
+    </p>
+  </div>
 
-    <div>
-      <SectionHeading id="sobre-titulo" title={`Sobre a ${doctor.shortName}`} />
-      <div class="space-y-5 text-lg leading-relaxed text-ink/90">
-        {doctor.bio.map((paragraph) => <p>{paragraph}</p>)}
-      </div>
-
-      {
-        doctor.education.length > 0 && (
-          <ul class="mt-8 space-y-3 border-t border-line pt-8">
-            {doctor.education.map((item) => (
-              <li class="flex gap-3 text-muted">
-                <Icon name="check" class="mt-0.5 size-5 shrink-0 text-primary" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        )
-      }
-
+  <div class="flex flex-col gap-6">
+    {lead && <p class="font-serif text-2xl leading-snug text-ink md:text-[2rem] md:leading-[1.35]" data-reveal>{lead}</p>}
+    {
+      rest.map((p, i) => (
+        <p class="text-lg leading-relaxed text-muted md:text-[19px]" data-reveal style={`--i:${i + 1}`}>
+          {p}
+        </p>
+      ))
+    }
+    <div class="flex flex-wrap items-center justify-between gap-4 pt-6" data-rule>
+      {doctor.education.length > 0 && <p class="text-base text-ink/85">{doctor.education.join(' · ')}</p>}
       {
         links.length > 0 && (
-          <div class="mt-8 flex flex-wrap gap-3">
+          <p class="flex gap-5 text-[15px]">
             {links.map((l) => (
-              <a
-                href={l.href}
-                target="_blank"
-                rel="noopener"
-                class="inline-flex items-center gap-2 rounded-full border border-line bg-background px-4 py-2 text-sm text-ink transition hover:border-primary hover:text-primary"
-              >
-                <Icon name={l.icon} class="size-4" />
+              <a href={l.href} target="_blank" rel="noopener" class="text-primary underline-offset-4 hover:underline">
                 {l.label}
               </a>
             ))}
-          </div>
+          </p>
         )
       }
     </div>

@@ -7,10 +7,15 @@ interface Props {
   clinic: ClinicConfig;
   label?: string;
   size?: 'md' | 'lg';
+  variant?: 'primary' | 'accent';
   class?: string;
 }
-const { clinic, label = 'Agendar pelo WhatsApp', size = 'lg', class: className = '' } = Astro.props;
-const sizes = { md: 'px-5 py-2.5 text-sm', lg: 'px-6 py-3.5 text-base' };
+const { clinic, label = 'Agendar pelo WhatsApp', size = 'lg', variant = 'primary', class: className = '' } = Astro.props;
+const sizes = { md: 'min-h-11 px-5 text-sm', lg: 'min-h-14 px-7 text-base md:text-[17px]' };
+const variants = {
+  primary: 'bg-primary text-on-primary',
+  accent: 'bg-accent text-ink-deep',
+};
 ---
 
 <a
@@ -18,8 +23,9 @@ const sizes = { md: 'px-5 py-2.5 text-sm', lg: 'px-6 py-3.5 text-base' };
   target="_blank"
   rel="noopener"
   class:list={[
-    'inline-flex items-center justify-center gap-2.5 rounded-full bg-primary font-medium text-on-primary shadow-sm transition hover:brightness-110 active:brightness-95',
+    'btn-lift inline-flex items-center justify-center gap-2.5 rounded-full font-semibold',
     sizes[size],
+    variants[variant],
     className,
   ]}
 >

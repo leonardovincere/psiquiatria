@@ -6,23 +6,34 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const t = {
-  title: 'Quando você quiser, estamos aqui',
-  text: `Tire suas dúvidas ou agende sua consulta com a ${clinic.doctor.shortName} pelo WhatsApp.`,
-};
+const { phone } = clinic.contact;
 ---
 
-<section class="section-y bg-surface" aria-labelledby="contato-titulo">
-  <div class="container-page max-w-2xl text-center">
-    <h2 id="contato-titulo" class="text-3xl leading-tight font-medium text-ink md:text-4xl">{t.title}</h2>
-    <p class="mt-4 text-lg leading-relaxed text-muted">{t.text}</p>
-    <WhatsAppButton clinic={clinic} class="mt-8" />
+<section class="px-5 pb-24 md:pb-32" aria-labelledby="contato-titulo">
+  <div class="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
     {
-      clinic.contact.phone && (
-        <p class="mt-4 text-sm text-muted">
-          ou ligue: <a class="font-medium text-ink hover:text-primary" href={`tel:${clinic.contact.phone.replace(/\D/g, '')}`}>{clinic.contact.phone}</a>
-        </p>
+      clinic.clinic.logoMark && (
+        <img src={clinic.clinic.logoMark} alt="" aria-hidden="true" width="96" height="57" loading="lazy" class="w-24" data-reveal />
       )
     }
+    <h2 id="contato-titulo" class="text-4xl leading-[1.05] text-ink md:text-[3.5rem]" data-reveal style="--i:1">
+      Quando você quiser, <em class="text-primary">estamos aqui.</em>
+    </h2>
+    <p class="text-lg leading-relaxed text-muted md:text-[19px]" data-reveal style="--i:2">
+      Tire suas dúvidas ou agende sua consulta com a {clinic.doctor.shortName} pelo WhatsApp.
+    </p>
+    <div data-reveal style="--i:3" class="flex flex-col items-center gap-3">
+      <WhatsAppButton clinic={clinic} />
+      {
+        phone && (
+          <p class="text-sm text-muted">
+            ou ligue{' '}
+            <a class="font-medium text-ink hover:text-primary" href={`tel:${phone.replace(/\D/g, '')}`}>
+              {phone}
+            </a>
+          </p>
+        )
+      }
+    </div>
   </div>
 </section>

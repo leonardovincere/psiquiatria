@@ -8,31 +8,27 @@ interface Props {
 const { clinic } = Astro.props;
 ---
 
-<section id="primeira-consulta" class="section-y bg-surface" aria-labelledby="primeira-consulta-titulo">
-  <div class="container-page">
-    <SectionHeading
-      id="primeira-consulta-titulo"
-      title="Como funciona a primeira consulta"
-      intro="Uma conversa sem pressa, para conhecer você e entender o momento que está vivendo."
-    />
-    <ol class="grid gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-      {
-        clinic.firstVisitSteps.map((step, i) => (
-          <li>
-            <span
-              class="mb-5 flex size-11 items-center justify-center rounded-full bg-primary font-serif text-lg text-on-primary"
-              aria-hidden="true"
-            >
-              {i + 1}
-            </span>
-            <h3 class="text-xl font-medium text-ink">
-              <span class="sr-only">Etapa {i + 1}: </span>
-              {step.title}
-            </h3>
-            <p class="mt-2 leading-relaxed text-muted">{step.text}</p>
-          </li>
-        ))
-      }
-    </ol>
-  </div>
+<section id="primeira-consulta" class="section-y container-page" aria-labelledby="primeira-consulta-titulo">
+  <SectionHeading
+    id="primeira-consulta-titulo"
+    eyebrow="Passo a passo"
+    title="Como funciona a primeira consulta"
+    intro="Uma conversa sem pressa, para conhecer você e entender o momento que está vivendo."
+  />
+  <ol class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      clinic.firstVisitSteps.map((step, i) => (
+        <li class="border-t-2 border-primary pt-6" data-reveal style={`--i:${i}`}>
+          <span class="block font-serif text-6xl leading-none text-primary italic" aria-hidden="true">
+            {i + 1}
+          </span>
+          <h3 class="mt-5 mb-2 text-2xl text-ink">
+            <span class="sr-only">Etapa {i + 1}: </span>
+            {step.title}
+          </h3>
+          <p class="leading-relaxed text-muted">{step.text}</p>
+        </li>
+      ))
+    }
+  </ol>
 </section>

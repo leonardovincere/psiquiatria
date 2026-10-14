@@ -12,12 +12,12 @@ const nav = [
   { href: '#primeira-consulta', label: 'Primeira consulta' },
   ...(clinic.modalities.teleconsulta ? [{ href: '#teleconsulta', label: 'Teleconsulta' }] : []),
   { href: '#duvidas', label: 'Dúvidas' },
-  ...(clinic.modalities.presencial ? [{ href: '#localizacao', label: 'Localização' }] : []),
+  ...(clinic.modalities.presencial ? [{ href: '#localizacao', label: 'Onde estamos' }] : []),
 ];
 ---
 
-<header class="border-b border-line/70">
-  <div class="container-page flex h-16 items-center justify-between gap-4 md:h-20">
+<header class="site-header sticky top-0 z-40">
+  <div class="container-page flex h-[72px] items-center justify-between gap-4 md:h-20">
     {
       clinic.clinic.logo ? (
         <a href="#inicio" class="flex shrink-0 items-center">
@@ -26,25 +26,22 @@ const nav = [
             alt={clinic.clinic.fullName}
             width="471"
             height="96"
-            class="h-10 w-auto md:h-12"
+            class="h-10 w-auto md:h-[46px]"
             fetchpriority="high"
           />
         </a>
       ) : (
-        <a href="#inicio" class="flex flex-col leading-tight">
-          <span class="font-serif text-lg font-semibold text-ink md:text-xl">{clinic.clinic.name}</span>
-          <span class="text-xs text-muted">
-            {clinic.doctor.shortName} · {clinic.doctor.title}
-          </span>
+        <a href="#inicio" class="font-serif text-xl text-ink">
+          {clinic.clinic.name}
         </a>
       )
     }
     <nav aria-label="Seções" class="hidden lg:block">
-      <ul class="flex gap-6 text-sm text-muted">
+      <ul class="flex gap-7 text-[15px] text-muted">
         {
           nav.map((item) => (
             <li>
-              <a href={item.href} class="transition hover:text-primary">
+              <a href={item.href} class="transition-colors hover:text-primary">
                 {item.label}
               </a>
             </li>

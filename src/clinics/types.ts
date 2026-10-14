@@ -11,10 +11,16 @@ export interface ClinicIdentity {
   fullName: string;
   /** Frase principal do hero. */
   tagline: string;
+  /** Trecho da tagline destacado em itálico (com sublinhado na cor de destaque). */
+  taglineHighlight?: string | null;
   city: string;
   state: string;
   /** Logo horizontal (em /public), usado no cabeçalho e no rodapé. Sem logo, exibe o nome. */
   logo?: string | null;
+  /** Logo para fundos escuros (rodapé). Sem ele, o rodapé usa o nome em texto. */
+  logoLight?: string | null;
+  /** Símbolo do logo (SVG/PNG), usado como ornamento. */
+  logoMark?: string | null;
   /** Ícone da aba (PNG/SVG em /public). Sem ícone, gera um a partir da cor primária. */
   favicon?: string | null;
   /** Ícone 180×180 para atalho na tela inicial do iOS. */
@@ -118,7 +124,7 @@ export interface Theme {
   accent: string;
   background: string;
   text: string;
-  /** Nome da família no Google Fonts. Ex.: "Fraunces". */
+  /** Nome da família no Google Fonts. Ex.: "Newsreader". Precisa ter itálico. */
   fontHeading: string;
   fontBody: string;
 }

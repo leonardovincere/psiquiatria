@@ -1,5 +1,4 @@
 ---
-import Icon from './Icon.astro';
 import SectionHeading from './SectionHeading.astro';
 import type { ClinicConfig } from '../clinics/types';
 
@@ -8,39 +7,22 @@ interface Props {
 }
 const { clinic } = Astro.props;
 // Teleconsulta só aparece se a modalidade estiver ativa.
-const services = clinic.services.filter(
-  (s) => clinic.modalities.teleconsulta || !/teleconsulta/i.test(s.name),
-);
+const services = clinic.services.filter((s) => clinic.modalities.teleconsulta || !/teleconsulta/i.test(s.name));
+const payment = [clinic.insurance.note, clinic.payment.length > 0 && `Formas de pagamento: ${clinic.payment.join(', ')}.`].filter(Boolean);
 ---
 
-<section id="atendimentos" class="section-y" aria-labelledby="atendimentos-titulo">
-  <div class="container-page">
-    <SectionHeading id="atendimentos-titulo" title="Atendimentos" />
-    <ul class="grid gap-4 sm:grid-cols-2">
-      {
-        services.map((s) => (
-          <li class="flex flex-col rounded-2xl border border-line bg-background p-6">
-            <h3 class="text-xl font-medium text-ink">{s.name}</h3>
-            <p class="mt-2 leading-relaxed text-muted">{s.description}</p>
-            {clinic.showPrices && s.price && <p class="mt-4 font-medium text-primary">{s.price}</p>}
-          </li>
-        ))
-      }
-    </ul>
-
-    <div class="mt-8 grid gap-4 rounded-2xl bg-surface p-6 text-ink sm:grid-cols-2">
-      <p class="flex gap-3">
-        <Icon name="shield" class="mt-0.5 size-5 shrink-0 text-primary" />
-        <span>{clinic.insurance.note}</span>
-      </p>
-      {
-        clinic.payment.length > 0 && (
-          <p class="flex gap-3">
-            <Icon name="card" class="mt-0.5 size-5 shrink-0 text-primary" />
-            <span>Formas de pagamento: {clinic.payment.join(', ')}.</span>
-          </p>
-        )
-      }
-    </div>
-  </div>
+<section id="atendimentos" class="section-y container-page" aria-labelledby="atendimentos-titulo">
+  <SectionHeading id="atendimentos-titulo" title="Atendimentos" />
+  <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      services.map((s, i) => (
+        <li class="flex flex-col rounded-[22px] border border-line bg-white p-7 transition-colors duration-300 hover:border-primary/40" data-reveal style={`--i:${i}`}>
+          <h3 class="text-[1.45rem] leading-tight text-ink">{s.name}</h3>
+          <p class="mt-2.5 text-[15px] leading-relaxed text-muted">{s.description}</p>
+          {clinic.showPrices && s.price && <p class="mt-auto pt-5 font-medium text-primary">{s.price}</p>}
+        </li>
+      ))
+    }
+  </ul>
+  <p class="mt-8 text-[15px] leading-relaxed text-muted" data-reveal>{payment.join(' ')}</p>
 </section>

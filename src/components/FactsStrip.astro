@@ -1,0 +1,40 @@
+---
+import type { ClinicConfig } from '../clinics/types';
+
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const { modalities, socialProof } = clinic;
+const facts = [
+  ...clinic.doctor.education,
+  modalities.presencial && modalities.teleconsulta
+    ? 'Presencial e teleconsulta'
+    : modalities.teleconsulta
+      ? 'Teleconsulta'
+      : 'Atendimento presencial',
+];
+---
+
+<section aria-label="Em resumo" class="border-y border-line bg-surface">
+  <ul class="container-page flex flex-wrap gap-x-10 gap-y-3 py-7 text-[15px] text-ink/85">
+    {
+      facts.map((f, i) => (
+        <li class="flex items-center gap-3" data-reveal style={`--i:${i}`}>
+          <span class="size-2 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+          {f}
+        </li>
+      ))
+    }
+    {
+      socialProof.enabled && (
+        <li data-reveal style={`--i:${facts.length}`}>
+          <a href={socialProof.sourceUrl} target="_blank" rel="noopener" class="arrow-nudge flex items-center gap-3 font-medium text-primary">
+            <span class="size-2 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+            {socialProof.label} <span class="arrow" aria-hidden="true">↗</span>
+          </a>
+        </li>
+      )
+    }
+  </ul>
+</section>

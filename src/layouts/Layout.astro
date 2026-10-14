@@ -58,6 +58,7 @@ const jsonLd = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <title>{seo.title}</title>
     <meta name="description" content={seo.description} />
     {seo.keywords.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
@@ -100,5 +101,34 @@ const jsonLd = {
   </head>
   <body class="min-h-dvh antialiased">
     <slot />
+    <script>
+      // Revelação ao rolar: marca [data-reveal] e [data-rule] como visíveis uma única vez.
+      const targets = document.querySelectorAll<HTMLElement>('[data-reveal], [data-rule]');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-visible');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+        );
+        targets.forEach((el) => io.observe(el));
+      } else {
+        targets.forEach((el) => el.classList.add('is-visible'));
+      }
+
+      // Cabeçalho ganha fundo depois que a página rola.
+      const header = document.querySelector('.site-header');
+      if (header) {
+        const sentinel = document.createElement('div');
+        sentinel.style.cssText = 'position:absolute;top:80px;height:1px;width:1px';
+        document.body.prepend(sentinel);
+        new IntersectionObserver(([e]) => header.classList.toggle('is-scrolled', !e.isIntersecting)).observe(sentinel);
+      }
+    </script>
   </body>
 </html>

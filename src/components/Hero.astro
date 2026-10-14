@@ -1,15 +1,22 @@
 ---
-import Icon from './Icon.astro';
-import SocialProof from './SocialProof.astro';
+import { Image } from 'astro:assets';
 import WhatsAppButton from './WhatsAppButton.astro';
 import type { ClinicConfig } from '../clinics/types';
+import { initials } from '../lib/links';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
 const { doctor, modalities } = clinic;
-const { city, state } = clinic.clinic;
+const { city, state, tagline, taglineHighlight, logoMark } = clinic.clinic;
+
+// Divide a tagline em volta do trecho destacado.
+const idx = taglineHighlight ? tagline.indexOf(taglineHighlight) : -1;
+const [before, mark, after] =
+  idx >= 0
+    ? [tagline.slice(0, idx), taglineHighlight!, tagline.slice(idx + taglineHighlight!.length)]
+    : [tagline, '', ''];
 
 const modalityText =
   modalities.presencial && modalities.teleconsulta
@@ -19,59 +26,63 @@ const modalityText =
       : 'Consultas presenciais.';
 ---
 
-<section id="inicio" class="relative overflow-hidden">
-  <div
-    class="pointer-events-none absolute -top-40 right-[-10rem] size-[28rem] rounded-full bg-accent/20 blur-3xl md:size-[40rem]"
-    aria-hidden="true"
-  >
-  </div>
-  <div class="container-page relative pt-14 pb-16 md:pt-24 md:pb-28">
-    <div class="max-w-3xl">
-      <p class="mb-5 text-sm font-medium tracking-wide text-primary uppercase">
-        Psiquiatria · {clinic.audience} · {city}/{state}
-      </p>
-      <h1 class="text-4xl leading-[1.1] font-medium text-ink sm:text-5xl md:text-6xl">{clinic.clinic.tagline}</h1>
-      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">
-        Atendimento com {doctor.shortName}, {doctor.title.toLowerCase()} em {city}. {modalityText}
-      </p>
-
-      <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <WhatsAppButton clinic={clinic} />
-        <a
-          href="#primeira-consulta"
-          class="inline-flex items-center justify-center rounded-full border border-accent px-6 py-3.5 font-medium text-ink transition hover:bg-accent/15"
-        >
-          Como funciona a primeira consulta
-        </a>
-      </div>
-
-      <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted">
-        {
-          modalities.presencial && (
-            <li class="flex items-center gap-2">
-              <Icon name="pin" class="size-4 text-primary" />
-              Presencial em {city}
-            </li>
-          )
-        }
-        {
-          modalities.teleconsulta && (
-            <li class="flex items-center gap-2">
-              <Icon name="video" class="size-4 text-primary" />
-              Teleconsulta
-            </li>
-          )
-        }
-        {
-          clinic.compliance.showCrmRqeEverywhere && (
-            <li class="flex items-center gap-2">
-              <Icon name="shield" class="size-4 text-primary" />
-              {doctor.crm} · {doctor.rqe}
-            </li>
-          )
-        }
-      </ul>
-      <SocialProof data={clinic.socialProof} class="mt-4" />
+<section id="inicio" class="container-page grid items-center gap-14 pt-10 pb-20 md:pt-16 md:pb-28 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-20">
+  <div class="flex flex-col gap-7">
+    <p class="eyebrow hero-in" style="--d:0">Psiquiatria · {clinic.audience} · {city}/{state}</p>
+    <h1 class="hero-in text-[2.75rem] leading-[1.04] text-ink sm:text-6xl lg:text-[4.75rem]" style="--d:1">
+      {before}{mark && <em class="mark text-primary">{mark}</em>}{after}
+    </h1>
+    <p class="hero-in max-w-xl text-lg leading-relaxed text-muted md:text-xl" style="--d:2">
+      Atendimento com a {doctor.shortName}, {doctor.title.toLowerCase()} em {city}. {modalityText}
+    </p>
+    <div class="hero-in flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5" style="--d:3">
+      <WhatsAppButton clinic={clinic} />
+      <a href="#primeira-consulta" class="arrow-nudge inline-flex min-h-14 items-center justify-center gap-2 px-2 font-medium text-ink underline-offset-[6px] hover:underline">
+        Como funciona a primeira consulta <span class="arrow" aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
+
+  <figure class="relative mx-auto mt-16 w-full max-w-[440px] lg:mt-8">
+    {
+      logoMark && (
+        <img
+          src={logoMark}
+          alt=""
+          aria-hidden="true"
+          width="260"
+          height="153"
+          class="hero-lotus pointer-events-none absolute -top-[5.25rem] left-1/2 z-10 w-[200px] md:w-[260px]"
+          style="transform: translateX(-50%)"
+        />
+      )
+    }
+    <div class="hero-photo relative aspect-[4/5] overflow-hidden rounded-t-[240px] rounded-b-[28px] border border-line bg-surface">
+      {
+        doctor.photo ? (
+          <Image
+            src={doctor.photo}
+            inferSize
+            alt={`Foto de ${doctor.name}`}
+            widths={[360, 540, 720]}
+            sizes="(min-width: 1024px) 440px, 90vw"
+            class="size-full object-cover"
+            loading="eager"
+            fetchpriority="high"
+          />
+        ) : (
+          <div class="flex size-full items-center justify-center font-serif text-8xl text-primary" aria-hidden="true">
+            {initials(doctor.name)}
+          </div>
+        )
+      }
+    </div>
+    <figcaption
+      class="hero-in absolute -bottom-6 left-4 rounded-2xl border border-line bg-white px-5 py-4 shadow-[0_18px_40px_-24px_rgba(28,43,61,0.4)] sm:-left-6 sm:bottom-8"
+      style="--d:5"
+    >
+      <span class="block font-serif text-xl text-ink">{doctor.shortName}</span>
+      <span class="mt-0.5 block text-[13px] text-muted">{doctor.title} · {doctor.crm} · {doctor.rqe}</span>
+    </figcaption>
+  </figure>
 </section>
