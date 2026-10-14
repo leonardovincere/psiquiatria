@@ -36,6 +36,8 @@ export interface Doctor {
   shortName: string;
   /** Ex.: "Médica Psiquiatra". */
   title: string;
+  /** Artigo usado nos textos ("com a Dra. …" / "com o Dr. …"). Padrão: deduzido de "Dra."/"Dr.". */
+  article?: 'a' | 'o';
   /** Ex.: "CRM-SP 123456". Obrigatório na publicidade médica (CFM 2.336/2023). */
   crm: string;
   /** Ex.: "RQE 9876". Obrigatório ao anunciar especialidade. */
@@ -154,9 +156,38 @@ export interface Compliance {
   technicalDirector: string | null;
 }
 
+/**
+ * Textos das seções. Todos têm padrão (src/lib/copy.ts); a clínica só
+ * sobrescreve o que quiser em `copy`.
+ * Variáveis: {medico} ("a Dra. Fulana" / "o Dr. Fulano"), {titulo}, {cidade}, {uf}, {publico}.
+ */
+export interface SiteCopy {
+  scheduleCta: string;
+  hero: { eyebrowFallback: string; subtitle: string; link: string };
+  about: { eyebrow: string };
+  conditions: { title: string; intro: string; note: string };
+  firstVisit: { eyebrow: string; title: string; extraPrefix: string; paymentPrefix: string };
+  telehealth: { eyebrow: string; title: string; titleEm: string; subtitle: string; points: [string, string, string]; note: string };
+  faq: { title: string };
+  location: { title: string; mapButton: string; mapsLink: string };
+  finalCta: { title: string; titleEm: string; text: string; callPrefix: string };
+  emergencyNotice: string;
+  legalNotice: string;
+  previewSuffix: string;
+  /** Especialidade no schema.org (dados estruturados). Ex.: "Psychiatric". */
+  schemaSpecialty: string;
+}
+
+type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? (T[K] extends unknown[] ? T[K] : DeepPartial<T[K]>) : T[K] };
+export type CopyOverrides = DeepPartial<SiteCopy>;
+
 export interface ClinicConfig {
-  /** Identificador; deve ser igual ao nome do arquivo. */
+  /** Identificador e caminho da página (/<slug>, <slug>.preview.vincereai.online). Igual ao nome do arquivo; minúsculas, números e hífen. */
   slug: string;
+  /** Domínio próprio quando o site sair da prévia (canonical/OG). Padrão: https://<slug>.preview.vincereai.online/ */
+  siteUrl?: string | null;
+  /** Sobrescreve textos padrão das seções. */
+  copy?: CopyOverrides;
   /** Ativa noindex/nofollow, robots.txt bloqueado e a faixa previewBanner. */
   isPreview: boolean;
   previewBanner: string;

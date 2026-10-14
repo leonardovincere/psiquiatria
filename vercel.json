@@ -1,0 +1,32 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/",
+      "missing": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.online" }],
+      "destination": "https://vincereai.tech",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.online" }],
+      "destination": "/:slug"
+    },
+    {
+      "source": "/robots.txt",
+      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.online" }],
+      "destination": "/:slug/robots.txt"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.online" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
+  ]
+}

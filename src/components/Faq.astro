@@ -1,16 +1,18 @@
 ---
 import Words from './Words.astro';
 import type { ClinicConfig } from '../clinics/types';
+import { getCopy } from '../lib/copy';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
+const copy = getCopy(clinic);
 ---
 
 <section id="duvidas" data-tone-at="sand" class="section-y" aria-labelledby="duvidas-titulo">
   <div class="container-page grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-24">
-    <h2 id="duvidas-titulo" class="text-4xl leading-[1.08] text-ink md:text-5xl" data-words><Words text="Perguntas frequentes" /></h2>
+    <h2 id="duvidas-titulo" class="text-4xl leading-[1.08] text-ink md:text-5xl" data-words><Words text={copy.faq.title} /></h2>
     <div class="border-t border-line">
       {
         clinic.faq.map((item, i) => (

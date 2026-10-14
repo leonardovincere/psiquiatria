@@ -1,10 +1,12 @@
 ---
 import type { ClinicConfig } from '../clinics/types';
+import { assetSize } from '../lib/assetSize';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
+const logoSize = clinic.clinic.logo ? await assetSize(clinic.clinic.logo) : null;
 const nav = [
   { href: '#sobre', label: 'Sobre' },
   { href: '#condicoes', label: 'Condições' },
@@ -23,8 +25,8 @@ const nav = [
           <img
             src={clinic.clinic.logo}
             alt={clinic.clinic.fullName}
-            width="471"
-            height="96"
+            width={logoSize!.width}
+            height={logoSize!.height}
             class="h-11 w-auto md:h-12"
             fetchpriority="high"
           />

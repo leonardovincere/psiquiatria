@@ -3,18 +3,20 @@ import Icon from './Icon.astro';
 import SectionHeading from './SectionHeading.astro';
 import type { ClinicConfig } from '../clinics/types';
 import { formatAddress, mapsEmbedUrl, mapsSearchUrl } from '../lib/links';
+import { getCopy } from '../lib/copy';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
 const { address, contact, hours } = clinic;
+const copy = getCopy(clinic).location;
 ---
 
 <section id="localizacao" data-tone-at="base" class="section-y" aria-labelledby="localizacao-titulo">
   <div class="container-page grid gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-20">
     <div data-reveal>
-      <SectionHeading id="localizacao-titulo" title="Onde estamos" class="!mb-8" />
+      <SectionHeading id="localizacao-titulo" title={copy.title} class="!mb-8" />
       <address class="space-y-6 not-italic">
         <div class="flex gap-3">
           <Icon name="pin" class="mt-0.5 size-5 shrink-0 text-primary" />
@@ -58,13 +60,13 @@ const { address, contact, hours } = clinic;
         rel="noopener"
         class="arrow-nudge mt-8 inline-flex items-center gap-2 font-medium text-primary underline-offset-4 hover:underline"
       >
-        Abrir no Google Maps <span class="arrow" aria-hidden="true">↗</span>
+        {copy.mapsLink} <span class="arrow" aria-hidden="true">↗</span>
       </a>
     </div>
 
     <!-- Fachada: o iframe do Google Maps (~1 MB de JS) só carrega no clique. -->
     <div
-      class="card-light relative aspect-[4/3] overflow-hidden rounded-[28px] border border-line bg-[#EEF2F6] md:aspect-auto md:min-h-[22rem]"
+      class="card-light relative aspect-[4/3] overflow-hidden rounded-[28px] border border-line bg-[color-mix(in_srgb,var(--primary-base)_7%,white)] md:aspect-auto md:min-h-[22rem]"
       data-reveal
       style="--i:1"
       data-map
@@ -73,7 +75,7 @@ const { address, contact, hours } = clinic;
     >
       <div
         class="absolute inset-0 opacity-60"
-        style="background-image:linear-gradient(#DCE4EE 1px,transparent 1px),linear-gradient(90deg,#DCE4EE 1px,transparent 1px);background-size:44px 44px"
+        style="--grid:color-mix(in srgb,var(--primary-base) 14%,white);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:44px 44px"
         aria-hidden="true"
       >
       </div>
@@ -81,12 +83,12 @@ const { address, contact, hours } = clinic;
         type="button"
         class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-ink transition hover:text-primary"
       >
-        <span class="inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 text-[15px] font-medium shadow-[0_10px_30px_-18px_rgba(28,43,61,.5)] transition-transform duration-300 hover:-translate-y-0.5">
+        <span class="inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 text-[15px] font-medium shadow-[0_10px_30px_-18px_color-mix(in_srgb,var(--ink-base)_50%,transparent)] transition-transform duration-300 hover:-translate-y-0.5">
           <span class="relative flex size-3">
             <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden"></span>
             <span class="relative inline-flex size-3 rounded-full bg-primary"></span>
           </span>
-          Ver mapa interativo
+          {copy.mapButton}
         </span>
       </button>
     </div>

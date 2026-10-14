@@ -1,10 +1,14 @@
 ---
-/** Faixa exibida apenas quando isPreview = true. "Vincere.AI" no texto vira link. */
+import { AGENCY } from '../lib/agency';
+
+/** Faixa exibida sempre que isPreview = true. O nome da agência no texto vira link. */
 interface Props {
   text: string;
+  suffix: string;
 }
-const { text } = Astro.props;
-const [before, after] = text.includes('Vincere.AI') ? text.split(/Vincere\.AI(.*)/s) : [text, undefined];
+const { text, suffix } = Astro.props;
+const at = text.indexOf(AGENCY.name);
+const [before, after] = at >= 0 ? [text.slice(0, at), text.slice(at + AGENCY.name.length)] : [text, undefined];
 ---
 
 <div class="bg-ink px-4 py-2 text-center text-xs text-background sm:text-sm" role="note">
@@ -12,13 +16,13 @@ const [before, after] = text.includes('Vincere.AI') ? text.split(/Vincere\.AI(.*
     {before}{
       after !== undefined && (
         <>
-          <a href="https://vincereai.tech" target="_blank" rel="noopener" class="underline decoration-accent underline-offset-2 hover:text-accent">
-            Vincere.AI
+          <a href={AGENCY.url} target="_blank" rel="noopener" class="underline decoration-accent underline-offset-2 hover:text-accent">
+            {AGENCY.name}
           </a>
           {after}
         </>
       )
     }
   </span>
-  <span class="opacity-75"> · versão de demonstração, não indexada</span>
+  <span class="opacity-75"> · {suffix}</span>
 </div>

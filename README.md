@@ -1,36 +1,46 @@
 # Landing pages para clínicas de psiquiatria
 
-Astro + Tailwind CSS v4. Cada clínica é um arquivo de configuração em `src/clinics/<slug>.ts`;
-o build gera um site estático para a clínica escolhida pela variável `CLINIC`.
+Astro + Tailwind CSS v4, multi-clínica. Cada clínica é um arquivo `src/clinics/<slug>.ts`; o build gera uma página
+estática por clínica em `/<slug>`. No ar, cada uma fica em `https://<slug>.preview.vincereai.online`.
 
 ## Uso
 
 ```bash
 npm install
-npm run dev                          # http://localhost:4321 (clínica padrão: animus)
-CLINIC=animus SITE_URL=https://animus.com.br npm run build   # gera dist/
+npm run dev        # http://localhost:4321/animus
+npm run build      # gera dist/ com todas as clínicas
 npm run preview
 ```
 
 ## Nova clínica
 
-1. Copie `src/clinics/animus.ts` para `src/clinics/<slug>.ts` e ajuste `slug` (igual ao nome do arquivo).
-2. Preencha os campos; o tipo `ClinicConfig` (`src/clinics/types.ts`) documenta cada um.
-3. Build com `CLINIC=<slug>`.
+1. Copie `src/clinics/_template.ts` para `src/clinics/<slug>.ts` (minúsculas, números e hífen) e ajuste `slug`.
+   O template é comentado campo a campo; o tipo `ClinicConfig` (`src/clinics/types.ts`) documenta o resto.
+2. Imagens em `public/clinics/<slug>/` (logo, símbolo, favicon). Tamanhos são lidos dos arquivos no build.
+3. Opcional: fontes recortadas em `src/assets/fonts/<slug>/` (`heading-normal.woff2`, `heading-italic.woff2`,
+   `body-normal.woff2`). Sem elas, o build baixa do Google Fonts.
+4. `npm run build` → `/<slug>`. Arquivos que começam com `_` são ignorados.
 
-Comportamento dos campos:
-- `null` (ex.: `contact.email`, `hours`) → o item simplesmente não aparece.
-- `modalities.teleconsulta` → liga/desliga a seção e o serviço de teleconsulta; `modalities.presencial` → seção de mapa.
-- `showPrices` → exibe `services[].price` (opcional) só quando `true`.
-- `socialProof` → mostra apenas o `label` com link para `sourceUrl`; sem depoimentos (`highlights` não é exibido).
-- `theme` → cores-base viram variáveis CSS (tons de fundo/borda/texto secundário são derivados) e as fontes são carregadas do Google Fonts.
-- `doctor.photo` → URL remota, baixada e otimizada (WebP) no build. Sem foto, aparece um monograma.
+Nada da clínica fica no código dos componentes: dados, cores, fontes, imagens e textos vêm da config.
+Textos de seção têm padrão em `src/lib/copy.ts` e podem ser sobrescritos por clínica em `copy`
+(variáveis: `{medico}`, `{titulo}`, `{cidade}`, `{uf}`, `{publico}`). Dados da agência ficam em `src/lib/agency.ts`.
+
+## Deploy (Vercel)
+
+`vercel.json`:
+- `<slug>.preview.vincereai.online/` serve `/<slug>` e `/robots.txt` serve `/<slug>/robots.txt`;
+- qualquer outro host em `/` redireciona para https://vincereai.tech (a home não lista clínicas);
+- todo o domínio de prévia recebe `X-Robots-Tag: noindex, nofollow`;
+- `cleanUrls`: `/animus.html` é servido como `/animus`.
+
+Na Vercel, adicione o domínio curinga `*.preview.vincereai.online` ao projeto (exige os nameservers do
+domínio na Vercel ou a configuração de DNS que ela indicar).
 
 ### `isPreview`
 
-Com `isPreview: true`:
+Com `isPreview: true` (sempre, para cada clínica):
 - `<meta name="robots" content="noindex, nofollow, noarchive">` e `robots.txt` com `Disallow: /`;
-- faixa com o texto de `previewBanner` no topo;
+- faixa com o texto de `previewBanner` no topo ("Vincere.AI" vira link);
 - JSON-LD omitido.
 
 ## Publicidade médica (Resolução CFM nº 2.336/2023)

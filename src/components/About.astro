@@ -2,12 +2,14 @@
 import Icon from './Icon.astro';
 import Words from './Words.astro';
 import type { ClinicConfig } from '../clinics/types';
+import { getCopy } from '../lib/copy';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
 const { doctor, contact } = clinic;
+const copy = getCopy(clinic);
 const [lead, ...rest] = doctor.bio;
 const links = [
   contact.doctoralia && { href: contact.doctoralia, label: 'Doctoralia', icon: 'calendar' },
@@ -18,7 +20,7 @@ const links = [
 
 <section id="sobre" data-tone-at="base" class="section-y container-page grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-24" aria-labelledby="sobre-titulo">
   <div>
-    <p class="eyebrow mb-3.5" data-reveal>Sobre</p>
+    <p class="eyebrow mb-3.5" data-reveal>{copy.about.eyebrow}</p>
     <h2 id="sobre-titulo" class="text-4xl leading-[1.08] text-ink md:text-5xl" data-words><Words text={doctor.shortName} /></h2>
     <p class="mt-6 text-[15px] leading-relaxed text-muted" data-reveal style="--i:1">
       {doctor.title}<br />

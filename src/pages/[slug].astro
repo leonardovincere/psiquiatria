@@ -14,9 +14,16 @@ import LotusDivider from '../components/LotusDivider.astro';
 import FinalCta from '../components/FinalCta.astro';
 import Footer from '../components/Footer.astro';
 import StickyCta from '../components/StickyCta.astro';
-import { getClinic } from '../clinics';
+import type { GetStaticPaths } from 'astro';
+import { clinics } from '../clinics';
+import type { ClinicConfig } from '../clinics/types';
+import { getCopy } from '../lib/copy';
 
-const clinic = getClinic();
+/** Uma página estática por clínica: /animus, /outra-clinica… */
+export const getStaticPaths = (() => clinics.map((clinic) => ({ params: { slug: clinic.slug }, props: { clinic } }))) satisfies GetStaticPaths;
+
+const { clinic } = Astro.props as { clinic: ClinicConfig };
+const copy = getCopy(clinic);
 ---
 
 <Layout clinic={clinic}>
@@ -25,7 +32,7 @@ const clinic = getClinic();
     class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-on-primary"
     >Pular para o conteúdo</a
   >
-  {clinic.isPreview && <PreviewBanner text={clinic.previewBanner} />}
+  {clinic.isPreview && <PreviewBanner text={clinic.previewBanner} suffix={copy.previewSuffix} />}
   <Header clinic={clinic} />
   <main id="conteudo" data-tone-root data-tone="base">
     <Hero clinic={clinic} />

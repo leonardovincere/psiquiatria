@@ -25,15 +25,21 @@ const FORBIDDEN: { pattern: RegExp; reason: string }[] = [
 ];
 
 // Campos técnicos ou não exibidos, que não são texto publicitário.
-const SKIP_KEYS = new Set(['theme', 'photo', 'slug', 'contact', 'sourceUrl', 'mapsUrl', 'highlights', 'keywords']);
+const SKIP_KEYS = new Set([
+  'theme', 'photo', 'slug', 'siteUrl', 'contact', 'sourceUrl', 'mapsUrl', 'href', 'keywords',
+  'logo', 'logoLight', 'logoMark', 'favicon', 'appleTouchIcon',
+]);
+// Caminhos específicos não exibidos na página.
+const SKIP_PATHS = new Set(['socialProof.highlights']);
 
 function collectStrings(value: unknown, path: string, out: { path: string; text: string }[]) {
   if (typeof value === 'string') out.push({ path, text: value });
   else if (Array.isArray(value)) value.forEach((v, i) => collectStrings(v, `${path}[${i}]`, out));
   else if (value && typeof value === 'object') {
     for (const [k, v] of Object.entries(value)) {
-      if (SKIP_KEYS.has(k)) continue;
-      collectStrings(v, path ? `${path}.${k}` : k, out);
+      const next = path ? `${path}.${k}` : k;
+      if (SKIP_KEYS.has(k) || SKIP_PATHS.has(next)) continue;
+      collectStrings(v, next, out);
     }
   }
 }

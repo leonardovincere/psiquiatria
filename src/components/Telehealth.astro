@@ -2,16 +2,18 @@
 import Icon from './Icon.astro';
 import Words from './Words.astro';
 import type { ClinicConfig } from '../clinics/types';
+import { getCopy } from '../lib/copy';
+import { heightFor } from '../lib/assetSize';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const points = [
-  { icon: 'video', text: 'Link enviado antes do horário' },
-  { icon: 'lock', text: 'Sigilo e privacidade' },
-  { icon: 'doc', text: 'Receita digital válida' },
-] as const;
+const copy = getCopy(clinic).telehealth;
+const icons = ['video', 'lock', 'doc'] as const;
+const points = copy.points.map((text, i) => ({ icon: icons[i], text }));
+const titleWords = copy.title.trim().split(/\s+/).length;
+const markH = clinic.clinic.logoMark ? await heightFor(clinic.clinic.logoMark, 520) : 0;
 ---
 
 <!-- Ao chegar aqui, o fundo da página inteira escurece para o azul (data-tone-at="deep"). -->
@@ -23,18 +25,18 @@ const points = [
         alt=""
         aria-hidden="true"
         width="520"
-        height="306"
+        height={markH}
         loading="lazy"
         class="drift pointer-events-none absolute -right-24 bottom-0 w-[340px] opacity-[0.14] md:right-0 md:w-[560px]"
       />
     )
   }
   <div class="container-page relative">
-    <p class="eyebrow mb-3.5" data-reveal>Teleconsulta</p>
+    <p class="eyebrow mb-3.5" data-reveal>{copy.eyebrow}</p>
     <h2 id="teleconsulta-titulo" class="max-w-3xl text-4xl leading-[1.05] text-ink md:text-[3.5rem]" data-words>
-      <Words text="O mesmo cuidado," /> <em class="text-primary"><Words text="de onde você estiver" from={3} /></em>
+      <Words text={copy.title} /> <em class="text-primary"><Words text={copy.titleEm} from={titleWords} /></em>
     </h2>
-    <p class="mt-5 text-lg text-muted md:text-xl" data-reveal>Consulta por vídeo, pelo celular ou computador.</p>
+    <p class="mt-5 text-lg text-muted md:text-xl" data-reveal>{copy.subtitle}</p>
     <ul class="mt-12 grid gap-6 sm:grid-cols-3 sm:gap-10">
       {
         points.map((p, i) => (
@@ -48,7 +50,7 @@ const points = [
       }
     </ul>
     <p class="mt-10 max-w-2xl text-[13px] leading-relaxed text-muted" data-reveal>
-      Conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.
+      {copy.note}
     </p>
   </div>
 </section>

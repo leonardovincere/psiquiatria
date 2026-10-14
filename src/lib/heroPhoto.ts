@@ -9,7 +9,22 @@ import type { ClinicConfig } from '../clinics/types';
 export const heroPhotoSizes =
   '(min-width: 1280px) 520px, (min-width: 1024px) 460px, (min-width: 768px) 620px, 100vw';
 
-export async function getHeroPhoto(clinic: ClinicConfig) {
-  if (!clinic.doctor.photo) return null;
-  return getImage({ src: clinic.doctor.photo, inferSize: true, widths: [390, 529], format: 'webp' });
+const cache = new Map<string, ReturnType<typeof getImage>>();
+
+export function getHeroPhoto(clinic: ClinicConfig) {
+  const src = clinic.doctor.photo;
+  if (!src) return Promise.resolve(null);
+  if (!cache.has(src)) {
+    cache.set(
+      src,
+      (async () => {
+        // Larguras: 390 (celular) e a largura original (até 1040), sem ampliar a foto.
+        const original = await getImage({ src, inferSize: true, format: 'webp' });
+        const max = Math.min(Number(original.attributes.width) || 1040, 1040);
+        const widths = [...new Set([Math.min(390, max), max])];
+        return getImage({ src, inferSize: true, widths, format: 'webp' });
+      })(),
+    );
+  }
+  return cache.get(src)!;
 }

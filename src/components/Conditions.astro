@@ -1,11 +1,13 @@
 ---
 import SectionHeading from './SectionHeading.astro';
 import type { ClinicConfig } from '../clinics/types';
+import { getCopy } from '../lib/copy';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
+const copy = getCopy(clinic).conditions;
 const rows = [clinic.conditions, [...clinic.conditions].reverse()];
 ---
 
@@ -14,8 +16,8 @@ const rows = [clinic.conditions, [...clinic.conditions].reverse()];
     <SectionHeading
       id="condicoes-titulo"
       layout="split"
-      title="Condições acompanhadas"
-      intro="Não encontrou o que está sentindo? Fale com a gente — conversamos sobre o seu caso."
+      title={copy.title}
+      intro={copy.intro}
     />
   </div>
   <!-- Faixas deslizando: a primeira é a lista acessível; as cópias são decorativas. -->
@@ -24,7 +26,7 @@ const rows = [clinic.conditions, [...clinic.conditions].reverse()];
       rows.map((row, r) => (
         <ul
           class:list={['marquee-track m-0 list-none p-0', r === 1 && 'rev']}
-          aria-label={r === 0 ? 'Condições acompanhadas' : undefined}
+          aria-label={r === 0 ? copy.title : undefined}
           aria-hidden={r === 1 ? 'true' : undefined}
         >
           {[...row, ...row].map((c, i) => (
@@ -44,5 +46,5 @@ const rows = [clinic.conditions, [...clinic.conditions].reverse()];
       ))
     }
   </div>
-  <p class="container-page mt-10 text-sm text-muted" data-reveal>Cada pessoa é única: a avaliação e o plano de cuidado são sempre individualizados.</p>
+  <p class="container-page mt-10 text-sm text-muted" data-reveal>{copy.note}</p>
 </section>

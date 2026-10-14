@@ -2,11 +2,13 @@
 import Icon from './Icon.astro';
 import type { ClinicConfig } from '../clinics/types';
 import { whatsappUrl } from '../lib/links';
+import { getCopy } from '../lib/copy';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
+const copy = getCopy(clinic);
 ---
 
 <!--
@@ -22,10 +24,10 @@ const { clinic } = Astro.props;
     href={whatsappUrl(clinic)}
     target="_blank"
     rel="noopener"
-    class="btn-lift flex min-h-14 w-full items-center justify-center gap-2.5 rounded-full bg-primary px-7 font-semibold text-on-primary sm:w-auto sm:shadow-[0_18px_40px_-14px_rgba(28,43,61,0.55)]"
+    class="btn-lift flex min-h-14 w-full items-center justify-center gap-2.5 rounded-full bg-primary px-7 font-semibold text-on-primary sm:w-auto sm:shadow-[0_18px_40px_-14px_color-mix(in_srgb,var(--ink-base)_55%,transparent)]"
   >
     <Icon name="whatsapp" class="size-5" />
-    <span>Agendar pelo WhatsApp</span>
+    <span>{copy.scheduleCta}</span>
     <span class="sr-only">(abre o WhatsApp em nova aba)</span>
   </a>
 </div>

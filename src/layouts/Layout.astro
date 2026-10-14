@@ -4,6 +4,8 @@ import '../styles/global.css';
 import type { ClinicConfig } from '../clinics/types';
 import { readableOn } from '../lib/links';
 import { getHeroPhoto, heroPhotoSizes } from '../lib/heroPhoto';
+import { clinicUrl } from '../lib/agency';
+import { getCopy } from '../lib/copy';
 
 interface Props {
   clinic: ClinicConfig;
@@ -18,9 +20,17 @@ const cssVars = [
   `--c-accent:${t.accent}`,
   `--c-background:${t.background}`,
   `--c-text:${t.text}`,
+  // Fontes da clínica (definidas no astro.config como --fh-<slug> / --fb-<slug>).
+  `--f-heading:var(--fh-${clinic.slug})`,
+  `--f-body:var(--fb-${clinic.slug})`,
 ].join(';');
+// O componente <Font> só aceita as variáveis declaradas no astro.config; são geradas por slug.
+type CssVar = Parameters<typeof Font>[0]['cssVariable'];
+const headingVar = `--fh-${clinic.slug}` as CssVar;
+const bodyVar = `--fb-${clinic.slug}` as CssVar;
+const copy = getCopy(clinic);
 
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const canonical = clinicUrl(clinic);
 const heroPhoto = await getHeroPhoto(clinic);
 
 const sameAs = [contact.doctoralia, contact.instagram, contact.facebook].filter(Boolean);
@@ -31,7 +41,7 @@ const jsonLd = {
   description: seo.description,
   url: canonical,
   telephone: contact.phone ?? `+${contact.whatsapp}`,
-  medicalSpecialty: 'Psychiatric',
+  medicalSpecialty: copy.schemaSpecialty,
   address: {
     '@type': 'PostalAddress',
     streetAddress: [address.street, address.complement].filter(Boolean).join(', '),
@@ -47,7 +57,7 @@ const jsonLd = {
   employee: {
     '@type': 'Physician',
     name: doctor.name,
-    medicalSpecialty: 'Psychiatric',
+    medicalSpecialty: copy.schemaSpecialty,
     identifier: [doctor.crm, doctor.rqe],
   },
 };
@@ -75,7 +85,7 @@ const jsonLd = {
       clinic.clinic.favicon ? (
         <link rel="icon" href={clinic.clinic.favicon} />
       ) : (
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href={`/${clinic.slug}/favicon.svg`} type="image/svg+xml" />
       )
     }
     {clinic.clinic.appleTouchIcon && <link rel="apple-touch-icon" href={clinic.clinic.appleTouchIcon} />}
@@ -94,8 +104,8 @@ const jsonLd = {
       )
     }
     <!-- Fontes auto-hospedadas; pré-carrega só o que aparece na primeira tela. -->
-    <Font cssVariable="--f-heading" preload={[{ weight: '400', style: 'normal' }]} />
-    <Font cssVariable="--f-body" preload={[{ weight: '400', style: 'normal' }]} />
+    <Font cssVariable={headingVar} preload={[{ weight: '400', style: 'normal' }]} />
+    <Font cssVariable={bodyVar} preload={[{ weight: '400', style: 'normal' }]} />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />

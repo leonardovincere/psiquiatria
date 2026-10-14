@@ -1,27 +1,28 @@
 import type { ClinicConfig } from './types';
 import { assertCompliance } from '../lib/compliance';
 
-const modules = import.meta.glob<{ default: ClinicConfig }>(['./*.ts', '!./index.ts', '!./types.ts'], {
+/**
+ * Todas as clínicas: cada arquivo src/clinics/<slug>.ts (exceto index, types
+ * e arquivos começando com "_", como o _template.ts) vira uma página /<slug>.
+ */
+const modules = import.meta.glob<{ default: ClinicConfig }>(['./*.ts', '!./index.ts', '!./types.ts', '!./_*.ts'], {
   eager: true,
 });
 
-export const clinics: Record<string, ClinicConfig> = Object.fromEntries(
-  Object.entries(modules).map(([path, mod]) => {
-    const slug = path.replace(/^\.\/(.+)\.ts$/, '$1');
-    if (mod.default.slug !== slug) {
-      throw new Error(`[clinics] ${path}: slug "${mod.default.slug}" deve ser igual ao nome do arquivo ("${slug}").`);
-    }
-    return [slug, mod.default];
-  }),
-);
+const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-/** Clínica publicada neste build, escolhida pela variável de ambiente CLINIC. */
-export function getClinic(): ClinicConfig {
-  const slug = import.meta.env.CLINIC || process.env.CLINIC || 'animus';
-  const clinic = clinics[slug];
-  if (!clinic) {
-    throw new Error(`[clinics] Clínica "${slug}" não encontrada. Disponíveis: ${Object.keys(clinics).join(', ')}.`);
+export const clinics: ClinicConfig[] = Object.entries(modules).map(([path, mod]) => {
+  const file = path.replace(/^\.\/(.+)\.ts$/, '$1');
+  const clinic = mod.default;
+  if (!clinic) throw new Error(`[clinics] ${path}: falta "export default".`);
+  if (clinic.slug !== file) {
+    throw new Error(`[clinics] ${path}: slug "${clinic.slug}" deve ser igual ao nome do arquivo ("${file}").`);
+  }
+  if (!SLUG.test(clinic.slug)) {
+    throw new Error(`[clinics] ${path}: slug "${clinic.slug}" deve ter só letras minúsculas, números e hífens.`);
   }
   assertCompliance(clinic);
   return clinic;
-}
+});
+
+export const clinicsBySlug: Record<string, ClinicConfig> = Object.fromEntries(clinics.map((c) => [c.slug, c]));

@@ -1,6 +1,9 @@
 ---
 import Icon from './Icon.astro';
 import type { ClinicConfig } from '../clinics/types';
+import { AGENCY } from '../lib/agency';
+import { getCopy } from '../lib/copy';
+import { assetSize } from '../lib/assetSize';
 
 interface Props {
   clinic: ClinicConfig;
@@ -8,6 +11,8 @@ interface Props {
 const { clinic } = Astro.props;
 const { doctor, contact } = clinic;
 const year = new Date().getFullYear();
+const copy = getCopy(clinic);
+const logoSize = clinic.clinic.logoLight ? await assetSize(clinic.clinic.logoLight) : null;
 const social = [
   { href: `https://wa.me/${contact.whatsapp}`, label: 'WhatsApp', icon: 'whatsapp' },
   contact.instagram && { href: contact.instagram, label: 'Instagram', icon: 'instagram' },
@@ -19,15 +24,14 @@ const social = [
 <footer class="bg-ink-deep pt-14 pb-10 text-[14px] leading-relaxed text-white/75">
   <div class="container-page flex flex-col gap-10">
     <p class="rounded-2xl border border-white/20 px-5 py-4 text-white" role="note">
-      Este canal não atende emergências. Em situação de crise ou risco, procure o pronto-socorro mais próximo, ligue para o
-      SAMU (192) ou para o CVV (188), disponível 24 horas.
+      {copy.emergencyNotice}
     </p>
 
     <div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
       <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-10">
         {
           clinic.clinic.logoLight ? (
-            <img src={clinic.clinic.logoLight} alt={clinic.clinic.fullName} width="471" height="96" class="h-10 w-auto self-start md:self-auto" loading="lazy" />
+            <img src={clinic.clinic.logoLight} alt={clinic.clinic.fullName} width={logoSize!.width} height={logoSize!.height} class="h-10 w-auto self-start md:self-auto" loading="lazy" />
           ) : (
             <p class="font-serif text-xl text-white">{clinic.clinic.fullName}</p>
           )
@@ -63,13 +67,12 @@ const social = [
 
     <div class="flex flex-col gap-3 border-t border-white/15 pt-6 text-[13px] text-white/65 md:flex-row md:items-start md:justify-between md:gap-10">
       <p>
-        © {year} {clinic.clinic.fullName}. Conteúdo informativo, que não substitui a consulta médica. Publicidade médica
-        conforme a Resolução CFM nº 2.336/2023.
+        © {year} {clinic.clinic.fullName}. {copy.legalNotice}
       </p>
       <p class="shrink-0">
         Desenvolvido por{' '}
-        <a href="https://vincereai.tech" target="_blank" rel="noopener" class="font-medium text-white/85 underline-offset-4 hover:text-accent hover:underline">
-          Vincere.AI
+        <a href={AGENCY.url} target="_blank" rel="noopener" class="font-medium text-white/85 underline-offset-4 hover:text-accent hover:underline">
+          {AGENCY.name}
         </a>
       </p>
     </div>
