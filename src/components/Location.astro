@@ -11,7 +11,7 @@ const { clinic } = Astro.props;
 const { address, contact, hours } = clinic;
 ---
 
-<section id="localizacao" class="section-y" aria-labelledby="localizacao-titulo">
+<section id="localizacao" data-tone-at="base" class="section-y" aria-labelledby="localizacao-titulo">
   <div class="container-page grid gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-20">
     <div data-reveal>
       <SectionHeading id="localizacao-titulo" title="Onde estamos" class="!mb-8" />
@@ -64,7 +64,7 @@ const { address, contact, hours } = clinic;
 
     <!-- Fachada: o iframe do Google Maps (~1 MB de JS) só carrega no clique. -->
     <div
-      class="relative aspect-[4/3] overflow-hidden rounded-[28px] border border-line bg-[#EEF2F6] md:aspect-auto md:min-h-[22rem]"
+      class="card-light relative aspect-[4/3] overflow-hidden rounded-[28px] border border-line bg-[#EEF2F6] md:aspect-auto md:min-h-[22rem]"
       data-reveal
       style="--i:1"
       data-map

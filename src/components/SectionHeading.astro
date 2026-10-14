@@ -1,4 +1,6 @@
 ---
+import Words from './Words.astro';
+
 interface Props {
   title: string;
   intro?: string;
@@ -18,9 +20,11 @@ const { title, intro, eyebrow, id, layout = 'stack', class: className = '' } = A
     className,
   ]}
 >
-  <div data-reveal>
-    {eyebrow && <p class="eyebrow mb-3.5">{eyebrow}</p>}
-    <h2 id={id} class="text-4xl leading-[1.08] text-ink md:text-5xl">{title}</h2>
+  <div>
+    {eyebrow && <p class="eyebrow mb-3.5" data-reveal>{eyebrow}</p>}
+    <h2 id={id} class="text-4xl leading-[1.08] text-ink md:text-5xl" data-words>
+      <Words text={title} />
+    </h2>
   </div>
   {
     intro && (

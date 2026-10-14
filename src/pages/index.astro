@@ -27,7 +27,7 @@ const clinic = getClinic();
   >
   {clinic.isPreview && <PreviewBanner text={clinic.previewBanner} />}
   <Header clinic={clinic} />
-  <main id="conteudo">
+  <main id="conteudo" data-tone-root data-tone="base">
     <Hero clinic={clinic} />
     <FactsStrip clinic={clinic} />
     <About clinic={clinic} />

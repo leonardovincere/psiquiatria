@@ -8,7 +8,7 @@ interface Props {
 const { clinic } = Astro.props;
 ---
 
-<section id="condicoes" class="section-y border-y border-line bg-white" aria-labelledby="condicoes-titulo">
+<section id="condicoes" data-tone-at="sand" class="section-y" aria-labelledby="condicoes-titulo">
   <div class="container-page">
     <SectionHeading
       id="condicoes-titulo"
@@ -16,6 +16,28 @@ const { clinic } = Astro.props;
       title="Condições acompanhadas"
       intro="Algumas das situações mais frequentes no consultório. Se você não encontrou o que está sentindo, fale com a gente — conversamos sobre o seu caso."
     />
+  </div>
+  <!-- Faixas decorativas: os mesmos nomes da lista abaixo, deslizando devagar. -->
+  <div class="marquee mb-14 md:mb-20" aria-hidden="true">
+    {
+      [clinic.conditions, [...clinic.conditions].reverse()].map((row, r) => (
+        <div class:list={['marquee-track', r === 1 && 'rev']}>
+          {[...row, ...row].map((c, i) => (
+            <span
+              class:list={[
+                'rounded-full border border-line bg-white px-5 py-3 font-serif text-xl whitespace-nowrap text-[var(--ink-base)]',
+                (i + r) % 2 === 1 && 'text-[var(--primary-base)] italic',
+                i >= row.length && 'dup',
+              ]}
+            >
+              {c.name}
+            </span>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+  <div class="container-page">
     <ol class="grid gap-x-16 md:grid-cols-2">
       {
         clinic.conditions.map((c, i) => (

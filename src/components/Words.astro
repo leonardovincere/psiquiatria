@@ -1,0 +1,26 @@
+---
+/**
+ * Divide um texto em palavras envolvidas em máscara, para a revelação
+ * "de baixo para cima". O índice --k escalona a entrada de cada palavra.
+ */
+interface Props {
+  text: string;
+  /** Índice inicial (para continuar a contagem após outro trecho). */
+  from?: number;
+}
+const { text, from = 0 } = Astro.props;
+const parts = text.split(/(\s+)/).filter(Boolean);
+let k = from;
+---
+
+{
+  parts.map((p) =>
+    /^\s+$/.test(p) ? (
+      ' '
+    ) : (
+      <span class="w">
+        <span style={`--k:${k++}`}>{p}</span>
+      </span>
+    ),
+  )
+}

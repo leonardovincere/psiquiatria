@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import Words from './Words.astro';
 import type { ClinicConfig } from '../clinics/types';
 import { initials } from '../lib/links';
 
@@ -16,6 +17,7 @@ const [before, mark, after] =
   idx >= 0
     ? [tagline.slice(0, idx), taglineHighlight!, tagline.slice(idx + taglineHighlight!.length)]
     : [tagline, '', ''];
+const nBefore = before.trim().split(/\s+/).filter(Boolean).length;
 
 const modalityText =
   modalities.presencial && modalities.teleconsulta
@@ -25,65 +27,70 @@ const modalityText =
       : 'Consultas presenciais.';
 ---
 
-<section id="inicio" class="container-page grid items-center gap-14 pt-10 pb-20 md:pt-16 md:pb-28 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-20">
-  <div class="flex flex-col gap-7">
+<section id="inicio" data-tone-at="base">
+  <div class="container-page flex max-w-[52rem] flex-col gap-6 pt-8 pb-10 md:pt-16 md:pb-14">
     <p class="eyebrow hero-in" style="--d:0">{heroEyebrow ?? `Psiquiatria · ${clinic.audience} · ${city}/${state}`}</p>
-    <h1 class="hero-in text-[2.75rem] leading-[1.04] text-ink sm:text-6xl lg:text-[4.75rem]" style="--d:1">
-      {before}{mark && <em class="mark text-primary">{mark}</em>}{after}
+    <h1 class="hero-words text-[2.75rem] leading-[1.04] text-ink sm:text-6xl lg:text-[4.75rem]">
+      <Words text={before} />{
+        mark && (
+          <em class="mark text-primary">
+            <Words text={mark} from={nBefore} />
+          </em>
+        )
+      }<Words text={after} from={nBefore + 1} />
     </h1>
-    <p class="hero-in max-w-xl text-lg leading-relaxed text-muted md:text-xl" style="--d:2">
+    <p class="hero-in max-w-xl text-lg leading-relaxed text-muted md:text-xl" style="--d:5">
       Com a {doctor.shortName}, {doctor.title.toLowerCase()} em {city}. {modalityText}
     </p>
     <a
       href="#primeira-consulta"
       class="hero-in arrow-nudge inline-flex min-h-12 items-center gap-2 self-start font-medium text-primary"
-      style="--d:3"
+      style="--d:6"
     >
       <span class="underline decoration-accent decoration-2 underline-offset-[7px]">Como funciona a primeira consulta</span>
       <span class="arrow" aria-hidden="true">→</span>
     </a>
   </div>
 
-  <figure class="relative mx-auto mt-16 w-full max-w-[440px] lg:mt-8">
-    {
-      logoMark && (
-        <img
-          src={logoMark}
-          alt=""
-          aria-hidden="true"
-          width="260"
-          height="153"
-          class="hero-lotus pointer-events-none absolute -top-[5.25rem] left-1/2 z-10 w-[200px] md:w-[260px]"
-          style="transform: translateX(-50%)"
-        />
-      )
-    }
-    <div class="hero-photo relative aspect-[4/5] overflow-hidden rounded-t-[240px] rounded-b-[28px] border border-line bg-surface">
+  <!-- Foto que sai do arco e se abre até a largura da tela conforme a rolagem (--p de 0 a 1, via JS). -->
+  <div class="expand mx-auto mt-16 w-full md:mt-20 md:max-w-[680px] md:px-8" data-expand>
+    <figure class="expand-frame relative mx-auto">
       {
-        doctor.photo ? (
-          <Image
-            src={doctor.photo}
-            inferSize
-            alt={`Foto de ${doctor.name}`}
-            widths={[360, 540, 720]}
-            sizes="(min-width: 1024px) 440px, 90vw"
-            class="size-full object-cover"
-            loading="eager"
-            fetchpriority="high"
+        logoMark && (
+          <img
+            src={logoMark}
+            alt=""
+            aria-hidden="true"
+            width="240"
+            height="141"
+            class="hero-lotus pointer-events-none absolute -top-[4.6rem] left-1/2 z-10 w-[190px] md:w-[240px]"
           />
-        ) : (
-          <div class="flex size-full items-center justify-center font-serif text-8xl text-primary" aria-hidden="true">
-            {initials(doctor.name)}
-          </div>
         )
       }
-    </div>
-    <figcaption
-      class="hero-in absolute -bottom-6 left-4 rounded-2xl border border-line bg-white px-5 py-4 shadow-[0_18px_40px_-24px_rgba(28,43,61,0.4)] sm:-left-6 sm:bottom-8"
-      style="--d:5"
-    >
-      <span class="block font-serif text-xl text-ink">{doctor.shortName}</span>
-      <span class="mt-0.5 block text-[13px] text-muted">{doctor.title} · {doctor.crm} · {doctor.rqe}</span>
-    </figcaption>
-  </figure>
+      <div class="expand-photo relative overflow-hidden bg-surface">
+        {
+          doctor.photo ? (
+            <Image
+              src={doctor.photo}
+              inferSize
+              alt={`Foto de ${doctor.name}`}
+              widths={[390, 680]}
+              sizes="(min-width: 768px) 620px, 100vw"
+              class="size-full object-cover"
+              loading="eager"
+              fetchpriority="high"
+            />
+          ) : (
+            <div class="flex size-full items-center justify-center font-serif text-8xl text-primary" aria-hidden="true">
+              {initials(doctor.name)}
+            </div>
+          )
+        }
+      </div>
+      <figcaption class="hero-in absolute bottom-4 left-4 rounded-2xl border border-line bg-white px-5 py-4 shadow-[0_18px_40px_-24px_rgba(28,43,61,0.4)] md:bottom-6 md:left-6" style="--d:7">
+        <span class="block font-serif text-xl text-[var(--ink-base)]">{doctor.shortName}</span>
+        <span class="mt-0.5 block text-[13px] text-[var(--muted-base)]">{doctor.title} · {doctor.crm} · {doctor.rqe}</span>
+      </figcaption>
+    </figure>
+  </div>
 </section>

@@ -48,21 +48,22 @@ Hero com CTA WhatsApp · Sobre a médica · Condições · Atendimentos (serviç
 
 ## Movimento
 
-Camada de animação contida, sem bibliotecas (CSS + ~1 KB de JS), definida em `src/styles/global.css`:
+Camada de animação contida, sem bibliotecas (CSS + ~2 KB de JS), em `src/styles/global.css` e no script de `Layout.astro`:
 
-- **Entrada do hero**: textos sobem em sequência, a foto se revela de baixo para cima dentro do arco,
-  a flor de lótus abre e passa a "respirar" lentamente, e o destaque da tagline é sublinhado.
-- **Ao rolar**: blocos com `data-reveal` aparecem uma única vez (IntersectionObserver), em cascata via `--i`;
-  filetes com `data-rule` se desenham da esquerda para a direita.
-- **Parallax** da flor na teleconsulta via scroll-driven animations (`animation-timeline: view()`),
-  ignorado por navegadores sem suporte.
-- **Microinterações**: botões levantam no hover, setas deslizam, cabeçalho fixo ganha fundo ao rolar,
-  FAQ abre suavemente (`interpolate-size`).
-- Tudo respeita `prefers-reduced-motion`, e sem JS a página aparece inteira.
+- **Entrada do hero**: o título sobe palavra por palavra por trás de uma máscara, a flor de lótus
+  desabrocha (clip-path) e passa a "respirar", e o destaque da tagline é sublinhado.
+- **Foto que se abre**: a foto começa no arco e se abre até a largura da tela conforme a rolagem (`--p` de 0 a 1).
+- **Títulos em máscara**: `data-words` + `Words.astro` revelam cada título palavra por palavra ao entrar na tela.
+- **Texto que acende**: o parágrafo principal do "Sobre" (`data-scrub`) passa de claro a escuro palavra por palavra.
+- **Faixas de condições** deslizando devagar em sentidos opostos (decorativas, `aria-hidden`; a lista com descrições continua abaixo).
+- **Tom por seção**: o fundo da página muda suavemente (creme → areia → azul na teleconsulta) conforme a seção
+  no centro da tela (`data-tone-at`); cartões com `.card-light` mantêm as cores.
+- **Microinterações**: botões levantam, setas deslizam, cabeçalho fixo ganha fundo ao rolar, FAQ abre suavemente.
+- Tudo respeita `prefers-reduced-motion`, e sem JS a página aparece inteira e legível.
 
 ## Performance
 
 Zero JS de framework; CSS inline; Google Fonts (Newsreader + Figtree) carregado sem bloquear a renderização; foto otimizada em WebP; flor de lótus vetorizada (SVG);
 o iframe do Google Maps só carrega ao clicar (fachada). Lighthouse na prévia `animus`:
-mobile 99 / 100 / 100, desktop 99 / 100 / 100 (performance / acessibilidade / boas práticas);
+mobile 100 / 100 / 100, desktop 100 / 100 / 100 (performance / acessibilidade / boas práticas);
 SEO 100 com `isPreview: false` (na prévia o `noindex` derruba o SEO de propósito).

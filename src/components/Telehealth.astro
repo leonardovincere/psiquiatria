@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import Words from './Words.astro';
 import type { ClinicConfig } from '../clinics/types';
 
 interface Props {
@@ -13,44 +14,43 @@ const points = [
 ];
 ---
 
-<section id="teleconsulta" class="px-4 md:px-8" aria-labelledby="teleconsulta-titulo">
-  <div
-    class="relative mx-auto grid max-w-[76rem] items-center gap-12 overflow-hidden rounded-[32px] bg-primary px-6 py-14 text-on-primary md:grid-cols-2 md:gap-20 md:px-14 md:py-20"
-    data-reveal
-  >
-    {
-      clinic.clinic.logoMark && (
-        <img
-          src={clinic.clinic.logoMark}
-          alt=""
-          aria-hidden="true"
-          width="520"
-          height="306"
-          loading="lazy"
-          class="drift pointer-events-none absolute -right-24 -bottom-20 w-[340px] opacity-[0.14] md:w-[520px]"
-        />
-      )
-    }
-    <div class="relative">
-      <h2 id="teleconsulta-titulo" class="text-4xl leading-[1.05] md:text-[3.25rem]">
-        Teleconsulta, <em class="text-accent">de onde você estiver</em>
+<!-- Ao chegar aqui, o fundo da página inteira escurece para o azul (data-tone-at="deep"). -->
+<section id="teleconsulta" data-tone-at="deep" class="section-y relative overflow-hidden" aria-labelledby="teleconsulta-titulo">
+  {
+    clinic.clinic.logoMark && (
+      <img
+        src={clinic.clinic.logoMark}
+        alt=""
+        aria-hidden="true"
+        width="520"
+        height="306"
+        loading="lazy"
+        class="drift pointer-events-none absolute -right-24 bottom-0 w-[340px] opacity-[0.14] md:right-0 md:w-[560px]"
+      />
+    )
+  }
+  <div class="container-page relative grid items-center gap-12 md:grid-cols-2 md:gap-20">
+    <div>
+      <p class="eyebrow mb-3.5" data-reveal>Teleconsulta</p>
+      <h2 id="teleconsulta-titulo" class="text-4xl leading-[1.05] text-ink md:text-[3.25rem]" data-words>
+        <Words text="O mesmo cuidado," /> <em class="text-primary"><Words text="de onde você estiver" from={3} /></em>
       </h2>
-      <p class="mt-6 text-lg leading-relaxed opacity-90 md:text-[19px]">
+      <p class="mt-6 text-lg leading-relaxed text-muted md:text-[19px]" data-reveal>
         Para quem mora longe, tem uma rotina corrida ou se sente mais à vontade em casa, a consulta com a {clinic.doctor.shortName} pode acontecer por vídeo, com o mesmo cuidado do atendimento presencial.
       </p>
     </div>
-    <div class="relative flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
       <ul class="space-y-4">
         {
-          points.map((p) => (
-            <li class="flex gap-3.5 text-lg">
+          points.map((p, i) => (
+            <li class="flex gap-3.5 text-lg text-ink" data-reveal style={`--i:${i}`}>
               <Icon name="check" class="mt-1 size-5 shrink-0 text-accent" />
               {p}
             </li>
           ))
         }
       </ul>
-      <p class="mt-2 text-[13px] leading-relaxed opacity-80">
+      <p class="mt-4 text-[13px] leading-relaxed text-muted" data-reveal style="--i:3">
         Atendimento conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.
       </p>
     </div>

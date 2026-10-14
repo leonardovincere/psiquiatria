@@ -1,4 +1,5 @@
 ---
+import Words from './Words.astro';
 import type { ClinicConfig } from '../clinics/types';
 
 interface Props {
@@ -14,18 +15,24 @@ const links = [
 ].filter((l) => !!l) as { href: string; label: string }[];
 ---
 
-<section id="sobre" class="section-y container-page grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-24" aria-labelledby="sobre-titulo">
-  <div data-reveal>
-    <p class="eyebrow mb-3.5">Sobre</p>
-    <h2 id="sobre-titulo" class="text-4xl leading-[1.08] text-ink md:text-5xl">{doctor.shortName}</h2>
-    <p class="mt-6 text-[15px] leading-relaxed text-muted">
+<section id="sobre" data-tone-at="base" class="section-y container-page grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-24" aria-labelledby="sobre-titulo">
+  <div>
+    <p class="eyebrow mb-3.5" data-reveal>Sobre</p>
+    <h2 id="sobre-titulo" class="text-4xl leading-[1.08] text-ink md:text-5xl" data-words><Words text={doctor.shortName} /></h2>
+    <p class="mt-6 text-[15px] leading-relaxed text-muted" data-reveal style="--i:1">
       {doctor.title}<br />
       <span class="font-medium text-ink">{doctor.crm} · {doctor.rqe}</span>
     </p>
   </div>
 
   <div class="flex flex-col gap-6">
-    {lead && <p class="font-serif text-2xl leading-snug text-ink md:text-[2rem] md:leading-[1.35]" data-reveal>{lead}</p>}
+    {
+      lead && (
+        <p class="font-serif text-2xl leading-snug text-ink md:text-[2rem] md:leading-[1.35]" data-scrub>
+          {lead.split(' ').map((w, i) => (i ? [' ', <span class="sw">{w}</span>] : <span class="sw">{w}</span>))}
+        </p>
+      )
+    }
     {
       rest.map((p, i) => (
         <p class="text-lg leading-relaxed text-muted md:text-[19px]" data-reveal style={`--i:${i + 1}`}>

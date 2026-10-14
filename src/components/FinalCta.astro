@@ -9,7 +9,7 @@ const { clinic } = Astro.props;
 const { phone } = clinic.contact;
 ---
 
-<section id="contato" class="px-5 pb-24 md:pb-32" aria-labelledby="contato-titulo">
+<section id="contato" data-tone-at="base" class="px-5 pb-24 md:pb-32" aria-labelledby="contato-titulo">
   <div class="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
     {
       clinic.clinic.logoMark && (
