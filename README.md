@@ -61,9 +61,16 @@ Camada de animação contida, sem bibliotecas (CSS + ~2 KB de JS), em `src/style
 - **Microinterações**: botões levantam, setas deslizam, cabeçalho fixo ganha fundo ao rolar, FAQ abre suavemente.
 - Tudo respeita `prefers-reduced-motion`, e sem JS a página aparece inteira e legível.
 
+## Fontes
+
+As fontes do `theme` são servidas pelo próprio site (Astro Fonts API), sem requisição ao Google na visita, com
+fallback de métricas ajustadas (o texto não "pula" quando a fonte chega). Se existirem
+`src/assets/fonts/<slug>/heading-normal.woff2`, `heading-italic.woff2` e `body-normal.woff2`, elas são usadas
+(recorte para os pesos e caracteres do português, ~80 KB no total); senão, o build baixa do Google Fonts.
+
 ## Performance
 
-Zero JS de framework; CSS inline; Google Fonts (Newsreader + Figtree) carregado sem bloquear a renderização; foto otimizada em WebP; flor de lótus vetorizada (SVG);
+Zero JS de framework; CSS inline; fontes auto-hospedadas e pré-carregadas; foto do topo pré-carregada; foto otimizada em WebP; flor de lótus vetorizada (SVG);
 o iframe do Google Maps só carrega ao clicar (fachada). Lighthouse na prévia `animus`:
 mobile 100 / 100 / 100, desktop 100 / 100 / 100 (performance / acessibilidade / boas práticas);
 SEO 100 com `isPreview: false` (na prévia o `noindex` derruba o SEO de propósito).

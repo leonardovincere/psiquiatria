@@ -70,11 +70,17 @@
 
 @utility container-page {
   width: 100%;
-  max-width: 76rem;
+  max-width: 92rem;
   margin-inline: auto;
   padding-inline: 1.25rem;
   @media (width >= 48rem) {
     padding-inline: 2rem;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 3.5rem;
+  }
+  @media (width >= 80rem) {
+    padding-inline: 5rem;
   }
 }
 
@@ -148,11 +154,6 @@
     transform: translateY(18px);
   }
 }
-@keyframes word-up {
-  from {
-    transform: translateY(108%);
-  }
-}
 @keyframes bloom {
   from {
     clip-path: circle(0% at 50% 100%);
@@ -175,22 +176,18 @@
   animation: rise 0.9s var(--ease-out) both;
   animation-delay: calc(var(--d, 0) * 90ms);
 }
-.hero-words .w > span {
-  animation: word-up 0.95s var(--ease-out) both;
-  animation-delay: calc(var(--k, 0) * 55ms + 100ms);
-}
 .hero-lotus {
   transform: translateX(-50%);
   animation:
-    bloom 1.6s var(--ease-out) 0.5s both,
-    breathe 9s ease-in-out 2.4s infinite;
+    bloom 1s var(--ease-out) both,
+    breathe 9s ease-in-out 1.2s infinite;
 }
 .mark {
   background-image: linear-gradient(var(--c-accent), var(--c-accent));
   background-repeat: no-repeat;
   background-position: 0 92%;
   background-size: 100% 0.09em;
-  animation: underline 0.9s var(--ease-out) 0.75s both;
+  animation: underline 0.7s var(--ease-out) 0.15s both;
 }
 
 /* 2. Foto que se abre: arco → largura total. --p (0–1) vem do JS. */
@@ -212,6 +209,22 @@
 }
 .expand .hero-lotus {
   opacity: calc(1 - var(--p) * 1.6);
+}
+/* Desktop: foto fixa em arco ao lado do texto; o efeito de abrir é só do celular/tablet. */
+@media (width >= 64rem) {
+  .expand {
+    --p: 0 !important;
+  }
+  .expand .expand-frame {
+    width: 100% !important;
+  }
+  .expand .expand-photo {
+    aspect-ratio: 4 / 5 !important;
+    border-radius: 240px 240px 28px 28px !important;
+  }
+  .expand .expand-photo img {
+    transform: none;
+  }
 }
 @media (width >= 48rem) {
   .expand-frame {

@@ -1,7 +1,9 @@
 ---
+import { Font } from 'astro:assets';
 import '../styles/global.css';
 import type { ClinicConfig } from '../clinics/types';
-import { googleFontsUrl, readableOn } from '../lib/links';
+import { readableOn } from '../lib/links';
+import { getHeroPhoto, heroPhotoSizes } from '../lib/heroPhoto';
 
 interface Props {
   clinic: ClinicConfig;
@@ -16,12 +18,10 @@ const cssVars = [
   `--c-accent:${t.accent}`,
   `--c-background:${t.background}`,
   `--c-text:${t.text}`,
-  `--f-heading:'${t.fontHeading}'`,
-  `--f-body:'${t.fontBody}'`,
 ].join(';');
 
-const fontsUrl = googleFontsUrl(t);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const heroPhoto = await getHeroPhoto(clinic);
 
 const sameAs = [contact.doctoralia, contact.instagram, contact.facebook].filter(Boolean);
 const jsonLd = {
@@ -80,12 +80,22 @@ const jsonLd = {
     }
     {clinic.clinic.appleTouchIcon && <link rel="apple-touch-icon" href={clinic.clinic.appleTouchIcon} />}
 
-    <!-- Google Fonts sem bloquear a renderização (display=swap + carregamento assíncrono). -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href={fontsUrl} />
-    <link rel="stylesheet" href={fontsUrl} media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href={fontsUrl} /></noscript>
+    <!-- Foto do topo primeiro: é o maior elemento da primeira tela no celular. -->
+    {
+      heroPhoto && (
+        <link
+          rel="preload"
+          as="image"
+          href={heroPhoto.src}
+          imagesrcset={heroPhoto.srcSet.attribute}
+          imagesizes={heroPhotoSizes}
+          fetchpriority="high"
+        />
+      )
+    }
+    <!-- Fontes auto-hospedadas; pré-carrega só o que aparece na primeira tela. -->
+    <Font cssVariable="--f-heading" preload={[{ weight: '400', style: 'normal' }]} />
+    <Font cssVariable="--f-body" preload={[{ weight: '400', style: 'normal' }]} />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
@@ -94,7 +104,6 @@ const jsonLd = {
     <meta property="og:description" content={seo.description} />
     <meta property="og:url" content={canonical} />
     {doctor.photo && <meta property="og:image" content={doctor.photo} />}
-    {clinic.clinic.logo && <link rel="preload" as="image" href={clinic.clinic.logo} fetchpriority="high" />}
     <meta name="format-detection" content="telephone=no" />
 
     {!clinic.isPreview && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

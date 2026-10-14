@@ -1,6 +1,5 @@
 ---
-import { Image } from 'astro:assets';
-import Words from './Words.astro';
+import { getHeroPhoto, heroPhotoSizes } from '../lib/heroPhoto';
 import type { ClinicConfig } from '../clinics/types';
 import { initials } from '../lib/links';
 
@@ -9,6 +8,7 @@ interface Props {
 }
 const { clinic } = Astro.props;
 const { doctor, modalities } = clinic;
+const photo = await getHeroPhoto(clinic);
 const { city, state, tagline, taglineHighlight, heroEyebrow, logoMark } = clinic.clinic;
 
 // Divide a tagline em volta do trecho destacado.
@@ -17,7 +17,6 @@ const [before, mark, after] =
   idx >= 0
     ? [tagline.slice(0, idx), taglineHighlight!, tagline.slice(idx + taglineHighlight!.length)]
     : [tagline, '', ''];
-const nBefore = before.trim().split(/\s+/).filter(Boolean).length;
 
 const modalityText =
   modalities.presencial && modalities.teleconsulta
@@ -27,25 +26,23 @@ const modalityText =
       : 'Consultas presenciais.';
 ---
 
-<section id="inicio" data-tone-at="base">
-  <div class="container-page flex max-w-[52rem] flex-col gap-6 pt-8 pb-10 md:pt-16 md:pb-14">
-    <p class="eyebrow hero-in" style="--d:0">{heroEyebrow ?? `Psiquiatria · ${clinic.audience} · ${city}/${state}`}</p>
-    <h1 class="hero-words text-[2.75rem] leading-[1.04] text-ink sm:text-6xl lg:text-[4.75rem]">
-      <Words text={before} />{
-        mark && (
-          <em class="mark text-primary">
-            <Words text={mark} from={nBefore} />
-          </em>
-        )
-      }<Words text={after} from={nBefore + 1} />
+<!--
+  Celular: texto e, abaixo, a foto que sai do arco e se abre até a largura da tela.
+  Desktop: duas colunas (texto | foto em arco). O texto aparece de imediato
+  (é o maior elemento da primeira tela); só os detalhes decorativos animam.
+-->
+<section id="inicio" data-tone-at="base" class="container-page grid items-center gap-x-20 pt-8 md:pt-14 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:pt-16 lg:pb-24 xl:gap-x-28">
+  <div class="flex flex-col gap-6 pb-10 md:pb-14 lg:pb-0">
+    <p class="eyebrow">{heroEyebrow ?? `Psiquiatria · ${clinic.audience} · ${city}/${state}`}</p>
+    <h1 class="text-[2.75rem] leading-[1.04] text-ink sm:text-6xl lg:text-[4.5rem] xl:text-[5.25rem]">
+      {before}{mark && <em class="mark text-primary">{mark}</em>}{after}
     </h1>
-    <p class="hero-in max-w-xl text-lg leading-relaxed text-muted md:text-xl" style="--d:5">
+    <p class="max-w-xl text-lg leading-relaxed text-muted md:text-xl">
       Com a {doctor.shortName}, {doctor.title.toLowerCase()} em {city}. {modalityText}
     </p>
     <a
       href="#primeira-consulta"
-      class="hero-in arrow-nudge inline-flex min-h-12 items-center gap-2 self-start font-medium text-primary"
-      style="--d:6"
+      class="arrow-nudge inline-flex min-h-12 items-center gap-2 self-start font-medium text-primary"
     >
       <span class="underline decoration-accent decoration-2 underline-offset-[7px]">Como funciona a primeira consulta</span>
       <span class="arrow" aria-hidden="true">→</span>
@@ -53,7 +50,7 @@ const modalityText =
   </div>
 
   <!-- Foto que sai do arco e se abre até a largura da tela conforme a rolagem (--p de 0 a 1, via JS). -->
-  <div class="expand mx-auto mt-16 w-full md:mt-20 md:max-w-[680px] md:px-8" data-expand>
+  <div class="expand -mx-5 mt-16 md:mx-auto md:mt-20 md:w-full md:max-w-[620px] lg:mt-12 lg:max-w-[460px] xl:max-w-[520px]" data-expand>
     <figure class="expand-frame relative mx-auto">
       {
         logoMark && (
@@ -69,15 +66,16 @@ const modalityText =
       }
       <div class="expand-photo relative overflow-hidden bg-surface">
         {
-          doctor.photo ? (
-            <Image
-              src={doctor.photo}
-              inferSize
+          photo ? (
+            <img
+              src={photo.src}
+              srcset={photo.srcSet.attribute}
+              sizes={heroPhotoSizes}
+              width={photo.attributes.width}
+              height={photo.attributes.height}
               alt={`Foto de ${doctor.name}`}
-              widths={[390, 680]}
-              sizes="(min-width: 768px) 620px, 100vw"
               class="size-full object-cover"
-              loading="eager"
+              decoding="async"
               fetchpriority="high"
             />
           ) : (
@@ -87,7 +85,7 @@ const modalityText =
           )
         }
       </div>
-      <figcaption class="hero-in absolute bottom-4 left-4 rounded-2xl border border-line bg-white px-5 py-4 shadow-[0_18px_40px_-24px_rgba(28,43,61,0.4)] md:bottom-6 md:left-6" style="--d:7">
+      <figcaption class="hero-in absolute bottom-4 left-4 rounded-2xl border border-line bg-white px-5 py-4 shadow-[0_18px_40px_-24px_rgba(28,43,61,0.4)] md:bottom-6 md:left-6" style="--d:2">
         <span class="block font-serif text-xl text-[var(--ink-base)]">{doctor.shortName}</span>
         <span class="mt-0.5 block text-[13px] text-[var(--muted-base)]">{doctor.title} · {doctor.crm} · {doctor.rqe}</span>
       </figcaption>
