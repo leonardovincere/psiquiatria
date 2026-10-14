@@ -1,0 +1,35 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import type { ClinicConfig } from '../clinics/types';
+
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const t = clinic.texts.firstVisit;
+---
+
+<section id="primeira-consulta" class="section-y bg-surface" aria-labelledby="primeira-consulta-titulo">
+  <div class="container-page">
+    <SectionHeading id="primeira-consulta-titulo" title={t.title} intro={t.intro} />
+    <ol class="grid gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+      {
+        t.steps.map((step, i) => (
+          <li class="relative">
+            <span
+              class="mb-5 flex size-11 items-center justify-center rounded-full bg-primary font-serif text-lg text-on-primary"
+              aria-hidden="true"
+            >
+              {i + 1}
+            </span>
+            <h3 class="text-xl font-medium text-ink">
+              <span class="sr-only">Etapa {i + 1}: </span>
+              {step.title}
+            </h3>
+            <p class="mt-2 leading-relaxed text-muted">{step.description}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

@@ -1,0 +1,59 @@
+---
+import Icon from './Icon.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+import type { ClinicConfig } from '../clinics/types';
+
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const { hero } = clinic.texts;
+const modalityLabel = {
+  presencial: { icon: 'pin', label: `Presencial em ${clinic.address.city}` },
+  teleconsulta: { icon: 'video', label: 'Teleconsulta' },
+} as const;
+---
+
+<section id="inicio" class="relative overflow-hidden">
+  <div
+    class="pointer-events-none absolute -top-40 right-[-10rem] size-[28rem] rounded-full bg-accent/15 blur-3xl md:size-[40rem]"
+    aria-hidden="true"
+  >
+  </div>
+  <div class="container-page relative pt-14 pb-16 md:pt-24 md:pb-28">
+    <div class="max-w-3xl">
+      <p class="mb-5 text-sm font-medium tracking-wide text-primary uppercase">{hero.eyebrow}</p>
+      <h1 class="text-4xl leading-[1.1] font-medium text-ink sm:text-5xl md:text-6xl">{hero.title}</h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">{hero.subtitle}</p>
+
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <WhatsAppButton clinic={clinic} />
+        {
+          hero.secondaryCtaLabel && (
+            <a
+              href="#primeira-consulta"
+              class="inline-flex items-center justify-center rounded-full border border-line px-6 py-3.5 font-medium text-ink transition hover:border-primary hover:text-primary"
+            >
+              {hero.secondaryCtaLabel}
+            </a>
+          )
+        }
+      </div>
+
+      <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted">
+        {
+          clinic.modalities.map((m) => (
+            <li class="flex items-center gap-2">
+              <Icon name={modalityLabel[m].icon} class="size-4 text-accent" />
+              {modalityLabel[m].label}
+            </li>
+          ))
+        }
+        <li class="flex items-center gap-2">
+          <Icon name="shield" class="size-4 text-accent" />
+          {clinic.doctor.crm} · {clinic.doctor.rqe}
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>

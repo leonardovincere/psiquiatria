@@ -1,0 +1,14 @@
+---
+interface Props {
+  title: string;
+  intro?: string;
+  id: string;
+  align?: 'left' | 'center';
+}
+const { title, intro, id, align = 'left' } = Astro.props;
+---
+
+<div class:list={['mb-10 max-w-2xl md:mb-14', align === 'center' && 'mx-auto text-center']}>
+  <h2 id={id} class="text-3xl leading-tight font-medium text-ink md:text-4xl">{title}</h2>
+  {intro && <p class="mt-4 text-lg leading-relaxed text-muted">{intro}</p>}
+</div>

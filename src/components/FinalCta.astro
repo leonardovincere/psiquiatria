@@ -1,0 +1,18 @@
+---
+import WhatsAppButton from './WhatsAppButton.astro';
+import type { ClinicConfig } from '../clinics/types';
+
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const t = clinic.texts.finalCta;
+---
+
+<section class="section-y bg-surface" aria-labelledby="contato-titulo">
+  <div class="container-page max-w-2xl text-center">
+    <h2 id="contato-titulo" class="text-3xl leading-tight font-medium text-ink md:text-4xl">{t.title}</h2>
+    <p class="mt-4 text-lg leading-relaxed text-muted">{t.text}</p>
+    <WhatsAppButton clinic={clinic} class="mt-8" />
+  </div>
+</section>

@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+import type { ClinicConfig } from '../clinics/types';
+import { whatsappUrl } from '../lib/links';
+
+interface Props {
+  clinic: ClinicConfig;
+  label?: string;
+  size?: 'md' | 'lg';
+  class?: string;
+}
+const { clinic, label = clinic.texts.hero.ctaLabel, size = 'lg', class: className = '' } = Astro.props;
+const sizes = { md: 'px-5 py-2.5 text-sm', lg: 'px-6 py-3.5 text-base' };
+---
+
+<a
+  href={whatsappUrl(clinic)}
+  target="_blank"
+  rel="noopener"
+  class:list={[
+    'inline-flex items-center justify-center gap-2.5 rounded-full bg-primary font-medium text-on-primary shadow-sm transition hover:brightness-110 active:brightness-95',
+    sizes[size],
+    className,
+  ]}
+>
+  <Icon name="whatsapp" class={size === 'lg' ? 'size-5' : 'size-4'} />
+  <span>{label}</span>
+  <span class="sr-only">(abre o WhatsApp em nova aba)</span>
+</a>

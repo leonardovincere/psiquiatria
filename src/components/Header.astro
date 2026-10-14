@@ -1,0 +1,41 @@
+---
+import WhatsAppButton from './WhatsAppButton.astro';
+import type { ClinicConfig } from '../clinics/types';
+
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const hasTelehealth = clinic.modalities.includes('teleconsulta');
+const nav = [
+  { href: '#sobre', label: 'Sobre' },
+  { href: '#condicoes', label: 'Condições' },
+  { href: '#primeira-consulta', label: 'Primeira consulta' },
+  ...(hasTelehealth ? [{ href: '#teleconsulta', label: 'Teleconsulta' }] : []),
+  { href: '#duvidas', label: 'Dúvidas' },
+  { href: '#localizacao', label: 'Localização' },
+];
+---
+
+<header class="border-b border-line/70">
+  <div class="container-page flex h-16 items-center justify-between gap-4 md:h-20">
+    <a href="#inicio" class="flex flex-col leading-tight">
+      <span class="font-serif text-lg font-semibold text-ink md:text-xl">{clinic.clinicName}</span>
+      <span class="text-xs text-muted">{clinic.doctor.name} · {clinic.doctor.specialty}</span>
+    </a>
+    <nav aria-label="Seções" class="hidden lg:block">
+      <ul class="flex gap-6 text-sm text-muted">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} class="transition hover:text-primary">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <WhatsAppButton clinic={clinic} label="Agendar" size="md" class="hidden sm:inline-flex" />
+  </div>
+</header>

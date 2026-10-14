@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+import type { ClinicConfig } from '../clinics/types';
+
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const t = clinic.texts.telehealth;
+---
+
+<section id="teleconsulta" class="section-y" aria-labelledby="teleconsulta-titulo">
+  <div class="container-page">
+    <div class="grid gap-10 rounded-3xl bg-primary px-6 py-12 text-on-primary md:grid-cols-2 md:gap-16 md:px-14 md:py-16">
+      <div>
+        <Icon name="video" class="mb-6 size-10 opacity-80" />
+        <h2 id="teleconsulta-titulo" class="text-3xl leading-tight font-medium md:text-4xl">{t.title}</h2>
+        <p class="mt-4 text-lg leading-relaxed opacity-90">{t.intro}</p>
+      </div>
+      <div class="flex flex-col justify-center">
+        <ul class="space-y-4">
+          {
+            t.points.map((point) => (
+              <li class="flex gap-3 text-lg">
+                <Icon name="check" class="mt-1 size-5 shrink-0" />
+                <span>{point}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <WhatsAppButton
+          clinic={clinic}
+          label="Agendar teleconsulta"
+          class="mt-8 self-start !bg-on-primary !text-primary"
+        />
+        {t.note && <p class="mt-6 text-sm opacity-80">{t.note}</p>}
+      </div>
+    </div>
+  </div>
+</section>

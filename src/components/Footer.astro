@@ -1,0 +1,54 @@
+---
+import type { ClinicConfig } from '../clinics/types';
+import { formatAddress, instagramUrl } from '../lib/links';
+
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const { doctor, contact, technicalDirector } = clinic;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line bg-background pt-12 pb-28 text-sm text-muted sm:pb-12">
+  <div class="container-page">
+    <p class="mb-10 rounded-2xl border border-line bg-surface p-5 leading-relaxed text-ink" role="note">
+      {clinic.texts.emergencyNotice}
+    </p>
+
+    <div class="grid gap-8 md:grid-cols-3">
+      <div>
+        <p class="font-serif text-lg text-ink">{clinic.clinicName}</p>
+        <p class="mt-3 leading-relaxed">{formatAddress(clinic.address)}</p>
+      </div>
+
+      <div class="leading-relaxed">
+        <p class="font-medium text-ink">Responsável médica</p>
+        <p class="mt-3">{doctor.name}</p>
+        <p>Médica — {doctor.specialty}</p>
+        <p>{doctor.crm} · {doctor.rqe}</p>
+        {
+          technicalDirector && (
+            <p class="mt-3">
+              Diretora técnica: {technicalDirector.name} · {technicalDirector.crm}
+            </p>
+          )
+        }
+        {clinic.cnpj && <p class="mt-3">CNPJ {clinic.cnpj}</p>}
+      </div>
+
+      <ul class="space-y-2">
+        <li class="font-medium text-ink">Contato</li>
+        <li><a class="hover:text-primary" href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener">WhatsApp</a></li>
+        {contact.email && <li><a class="hover:text-primary" href={`mailto:${contact.email}`}>{contact.email}</a></li>}
+        {contact.doctoralia && <li><a class="hover:text-primary" href={contact.doctoralia} target="_blank" rel="noopener">Doctoralia</a></li>}
+        {contact.instagram && <li><a class="hover:text-primary" href={instagramUrl(contact.instagram)} target="_blank" rel="noopener">Instagram</a></li>}
+      </ul>
+    </div>
+
+    <p class="mt-10 border-t border-line pt-6 text-xs leading-relaxed">
+      © {year} {clinic.clinicName}. As informações deste site têm caráter informativo e não substituem a consulta médica.
+      Publicidade médica em conformidade com a Resolução CFM nº 2.336/2023.
+    </p>
+  </div>
+</footer>

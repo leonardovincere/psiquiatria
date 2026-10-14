@@ -1,0 +1,90 @@
+---
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource-variable/fraunces/wght.css';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import frauncesLatin from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
+import '../styles/global.css';
+import type { ClinicConfig } from '../clinics/types';
+import { instagramUrl } from '../lib/links';
+
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const { palette: p, seo, doctor, address, contact } = clinic;
+
+const cssVars = [
+  `--c-primary:${p.primary}`,
+  `--c-on-primary:${p.onPrimary}`,
+  `--c-accent:${p.accent}`,
+  `--c-background:${p.background}`,
+  `--c-surface:${p.surface}`,
+  `--c-text:${p.text}`,
+  `--c-muted:${p.muted}`,
+  `--c-border:${p.border}`,
+].join(';');
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const sameAs = [contact.doctoralia, contact.instagram && instagramUrl(contact.instagram)].filter(Boolean);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'MedicalClinic',
+  name: clinic.clinicName,
+  description: seo.description,
+  url: canonical,
+  telephone: `+${contact.whatsapp}`,
+  medicalSpecialty: 'Psychiatric',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: [address.street, address.complement].filter(Boolean).join(', '),
+    addressLocality: address.city,
+    addressRegion: address.state,
+    postalCode: address.zip,
+    addressCountry: 'BR',
+  },
+  ...(sameAs.length ? { sameAs } : {}),
+  employee: {
+    '@type': 'Physician',
+    name: doctor.name,
+    medicalSpecialty: 'Psychiatric',
+    identifier: [doctor.crm, doctor.rqe],
+  },
+};
+---
+
+<!doctype html>
+<html lang="pt-BR" style={cssVars}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    {
+      clinic.isPreview ? (
+        <meta name="robots" content="noindex, nofollow, noarchive" />
+      ) : (
+        <meta name="robots" content="index, follow" />
+      )
+    }
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content={p.primary} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={frauncesLatin} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={clinic.clinicName} />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="format-detection" content="telephone=no" />
+
+    {!clinic.isPreview && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body class="min-h-dvh antialiased">
+    <slot />
+  </body>
+</html>
