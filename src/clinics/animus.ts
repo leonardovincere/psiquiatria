@@ -14,7 +14,8 @@ export const animus: ClinicConfig = {
   clinic: {
     name: "Animus",
     fullName: "Animus — Psiquiatria Avançada",
-    tagline: "Psiquiatria com escuta, tempo e cuidado individual",
+    tagline: "Atendimento com escuta, tempo e cuidado individual",
+    heroEyebrow: "Saúde mental em Campo Grande", // linha acima do título do hero
     taglineHighlight: "tempo", // palavra destacada em itálico no título do hero
     city: "Campo Grande",
     state: "MS",

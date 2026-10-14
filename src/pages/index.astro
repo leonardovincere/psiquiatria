@@ -13,7 +13,7 @@ import Faq from '../components/Faq.astro';
 import Location from '../components/Location.astro';
 import FinalCta from '../components/FinalCta.astro';
 import Footer from '../components/Footer.astro';
-import MobileCta from '../components/MobileCta.astro';
+import StickyCta from '../components/StickyCta.astro';
 import { getClinic } from '../clinics';
 
 const clinic = getClinic();
@@ -40,5 +40,5 @@ const clinic = getClinic();
     <FinalCta clinic={clinic} />
   </main>
   <Footer clinic={clinic} />
-  <MobileCta clinic={clinic} />
+  <StickyCta clinic={clinic} />
 </Layout>

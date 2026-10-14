@@ -1,5 +1,4 @@
 ---
-import WhatsAppButton from './WhatsAppButton.astro';
 import type { ClinicConfig } from '../clinics/types';
 
 interface Props {
@@ -17,7 +16,7 @@ const nav = [
 ---
 
 <header class="site-header sticky top-0 z-40">
-  <div class="container-page flex h-[72px] items-center justify-between gap-4 md:h-20">
+  <div class="container-page flex h-[72px] items-center justify-center gap-4 md:h-20 lg:justify-between">
     {
       clinic.clinic.logo ? (
         <a href="#inicio" class="flex shrink-0 items-center">
@@ -26,7 +25,7 @@ const nav = [
             alt={clinic.clinic.fullName}
             width="471"
             height="96"
-            class="h-10 w-auto md:h-[46px]"
+            class="h-11 w-auto md:h-12"
             fetchpriority="high"
           />
         </a>
@@ -49,6 +48,5 @@ const nav = [
         }
       </ul>
     </nav>
-    <WhatsAppButton clinic={clinic} label="Agendar" size="md" class="hidden sm:inline-flex" />
   </div>
 </header>

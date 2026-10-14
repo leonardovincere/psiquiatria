@@ -44,7 +44,7 @@ Com `isPreview: true`:
 ## Seções
 
 Hero com CTA WhatsApp · Sobre a médica · Condições · Atendimentos (serviços, convênio, pagamento) · Primeira consulta
-· Teleconsulta · FAQ · Mapa · CTA final · Rodapé com CRM/RQE · barra fixa de WhatsApp no mobile.
+· Teleconsulta · FAQ · Mapa · CTA final · Rodapé com CRM/RQE · botão fixo de WhatsApp (barra no celular, pílula flutuante no desktop), único CTA de agendamento além do final da página; some quando o CTA final ou o rodapé aparecem.
 
 ## Movimento
 

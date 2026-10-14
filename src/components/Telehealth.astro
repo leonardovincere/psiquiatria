@@ -1,6 +1,5 @@
 ---
 import Icon from './Icon.astro';
-import WhatsAppButton from './WhatsAppButton.astro';
 import type { ClinicConfig } from '../clinics/types';
 
 interface Props {
@@ -51,7 +50,6 @@ const points = [
           ))
         }
       </ul>
-      <WhatsAppButton clinic={clinic} label="Agendar teleconsulta" variant="accent" class="mt-4 self-start" />
       <p class="mt-2 text-[13px] leading-relaxed opacity-80">
         Atendimento conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.
       </p>

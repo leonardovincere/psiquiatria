@@ -1,0 +1,72 @@
+---
+import Icon from './Icon.astro';
+import type { ClinicConfig } from '../clinics/types';
+import { whatsappUrl } from '../lib/links';
+
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+---
+
+<!--
+  Único botão de agendamento fixo da página: barra inteira no celular,
+  pílula flutuante no canto no desktop. Some quando o CTA final ou o rodapé
+  entram na tela, para não duplicar o botão.
+-->
+<div
+  data-sticky-cta
+  class="sticky-cta fixed inset-x-0 bottom-0 z-40 border-t border-line bg-background/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur sm:inset-x-auto sm:right-6 sm:bottom-6 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none"
+>
+  <a
+    href={whatsappUrl(clinic)}
+    target="_blank"
+    rel="noopener"
+    class="btn-lift flex min-h-14 w-full items-center justify-center gap-2.5 rounded-full bg-primary px-7 font-semibold text-on-primary sm:w-auto sm:shadow-[0_18px_40px_-14px_rgba(28,43,61,0.55)]"
+  >
+    <Icon name="whatsapp" class="size-5" />
+    <span>Agendar pelo WhatsApp</span>
+    <span class="sr-only">(abre o WhatsApp em nova aba)</span>
+  </a>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-sticky-cta]');
+  const ends = document.querySelectorAll('#contato, footer');
+  if (bar && ends.length && 'IntersectionObserver' in window) {
+    const visible = new Set<Element>();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) visible.add(e.target);
+        else visible.delete(e.target);
+      }
+      bar.classList.toggle('is-hidden', visible.size > 0);
+    });
+    ends.forEach((el) => io.observe(el));
+  }
+</script>
+
+<style>
+  .sticky-cta {
+    animation: cta-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.9s backwards;
+    transition:
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s;
+  }
+  .sticky-cta:global(.is-hidden) {
+    transform: translateY(130%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  @keyframes cta-in {
+    from {
+      transform: translateY(130%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sticky-cta {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>

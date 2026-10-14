@@ -11,6 +11,8 @@ export interface ClinicIdentity {
   fullName: string;
   /** Frase principal do hero. */
   tagline: string;
+  /** Linha curta acima do título do hero. Padrão: "Psiquiatria · <audience> · <cidade>/<UF>". */
+  heroEyebrow?: string | null;
   /** Trecho da tagline destacado em itálico (com sublinhado na cor de destaque). */
   taglineHighlight?: string | null;
   city: string;
