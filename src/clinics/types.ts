@@ -1,160 +1,166 @@
-import type { ImageMetadata } from 'astro';
+/**
+ * Estrutura do config de cada clínica (src/clinics/<slug>.ts).
+ * Os textos das seções que não vêm do config estão nos componentes,
+ * montados a partir destes dados.
+ */
 
-/** Modalidades de atendimento oferecidas. */
-export type Modality = 'presencial' | 'teleconsulta';
-
-/** Cores em hexadecimal (#rrggbb). Viram variáveis CSS e tokens do Tailwind. */
-export interface Palette {
-  /** Cor principal: botões, links, destaques. */
-  primary: string;
-  /** Texto sobre a cor principal (contraste mínimo 4.5:1). */
-  onPrimary: string;
-  /** Cor de apoio: ícones, detalhes, fundos suaves. */
-  accent: string;
-  /** Fundo geral da página. */
-  background: string;
-  /** Fundo de cartões e seções alternadas. */
-  surface: string;
-  /** Texto principal. */
-  text: string;
-  /** Texto secundário (contraste mínimo 4.5:1 sobre background e surface). */
-  muted: string;
-  /** Bordas e divisores. */
-  border: string;
+export interface ClinicIdentity {
+  /** Nome curto, usado no cabeçalho. */
+  name: string;
+  /** Nome completo, usado no rodapé e no SEO. */
+  fullName: string;
+  /** Frase principal do hero. */
+  tagline: string;
+  city: string;
+  state: string;
 }
 
 export interface Doctor {
-  /** Nome como deve aparecer, com tratamento. Ex.: "Dra. Ana Souza". */
+  /** Nome completo com tratamento. Ex.: "Dra. Ana Souza Lima". */
   name: string;
+  /** Nome curto para textos corridos. Ex.: "Dra. Ana Souza". */
+  shortName: string;
+  /** Ex.: "Médica Psiquiatra". */
+  title: string;
   /** Ex.: "CRM-SP 123456". Obrigatório na publicidade médica (CFM 2.336/2023). */
   crm: string;
-  /** Ex.: "RQE 98765". Obrigatório ao anunciar especialidade. */
+  /** Ex.: "RQE 9876". Obrigatório ao anunciar especialidade. */
   rqe: string;
-  /** Especialidade registrada no CRM. */
-  specialty: string;
-  /** Foto opcional (importe de src/assets). Sem foto, exibe monograma. */
-  photo?: ImageMetadata;
-  photoAlt?: string;
-  /** Parágrafos da seção "Sobre a médica". */
-  bio: string[];
+  /** URL da foto (remota ou em /public). Sem foto, exibe monograma. */
+  photo?: string | null;
   /** Formação e títulos — apenas fatos verificáveis. */
-  credentials: string[];
+  education: string[];
+  /** Parágrafos da seção "Sobre". */
+  bio: string[];
 }
 
-export interface Address {
-  street: string;
-  /** Complemento: sala, andar, bairro. */
-  complement?: string;
-  city: string;
-  state: string;
-  zip: string;
-  /** Consulta usada no Google Maps. Padrão: endereço completo. */
-  mapsQuery?: string;
-  /** Observações de acesso: estacionamento, acessibilidade etc. */
-  notes?: string[];
+export interface Modalities {
+  presencial: boolean;
+  /** Controla a seção de teleconsulta. */
+  teleconsulta: boolean;
+}
+
+export interface Insurance {
+  acceptsInsurance: boolean;
+  note: string;
 }
 
 export interface Condition {
-  title: string;
+  name: string;
   description: string;
+}
+
+export interface Service {
+  name: string;
+  description: string;
+  /** Exibido somente quando showPrices = true. Ex.: "R$ 500". */
+  price?: string | null;
 }
 
 export interface Step {
   title: string;
-  description: string;
+  text: string;
+}
+
+export interface SocialProof {
+  enabled: boolean;
+  /** Ex.: "148 avaliações de pacientes no Doctoralia". */
+  label: string;
+  rating: number;
+  /** Link para a fonte das avaliações. */
+  sourceUrl: string;
+  /** Não exibido: o site mostra só o número agregado, sem depoimentos. */
+  highlights?: string[];
+}
+
+export interface Contact {
+  /** Somente dígitos, com DDI e DDD. Ex.: "5511999999999". */
+  whatsapp: string;
+  /** Mensagem pré-preenchida ao abrir o WhatsApp. */
+  whatsappMessage: string;
+  phone: string | null;
+  email: string | null;
+  /** URLs completas. */
+  instagram: string | null;
+  facebook: string | null;
+  doctoralia: string | null;
+}
+
+export interface Address {
+  street: string;
+  complement: string | null;
+  neighborhood: string | null;
+  city: string;
+  state: string;
+  zip: string;
+  coords: { lat: number; lng: number } | null;
+  /** Link "Abrir no Google Maps". Padrão: busca pelo endereço. */
+  mapsUrl: string | null;
 }
 
 export interface FaqItem {
-  question: string;
-  answer: string;
+  q: string;
+  a: string;
+}
+
+export interface Theme {
+  /** Cor principal: botões, links, destaques. */
+  primary: string;
+  /** Cor de apoio: fundos suaves e detalhes. */
+  secondary: string;
+  /** Detalhes e CTAs secundários. */
+  accent: string;
+  background: string;
+  text: string;
+  /** Nome da família no Google Fonts. Ex.: "Fraunces". */
+  fontHeading: string;
+  fontBody: string;
+}
+
+export interface Seo {
+  title: string;
+  description: string;
+  keywords: string[];
+}
+
+export interface Compliance {
+  /** Exibe CRM/RQE também no hero (rodapé e "Sobre" sempre exibem). */
+  showCrmRqeEverywhere: boolean;
+  /** Ativa a verificação automática de termos vedados no build. */
+  noOutcomePromises: boolean;
+  /** Diretor(a) técnico(a) — exigido para pessoa jurídica. Texto livre com nome e CRM. */
+  technicalDirector: string | null;
 }
 
 export interface ClinicConfig {
   /** Identificador; deve ser igual ao nome do arquivo. */
   slug: string;
-  /** Liga noindex/nofollow, robots.txt bloqueado e a faixa de prévia. */
+  /** Ativa noindex/nofollow, robots.txt bloqueado e a faixa previewBanner. */
   isPreview: boolean;
+  previewBanner: string;
 
-  clinicName: string;
-  /** Diretor(a) técnico(a) da clínica — exigido para pessoa jurídica. */
-  technicalDirector?: { name: string; crm: string };
-  /** CNPJ opcional, exibido no rodapé. */
-  cnpj?: string;
-
+  clinic: ClinicIdentity;
   doctor: Doctor;
-  address: Address;
 
-  contact: {
-    /** Somente dígitos, com DDI e DDD. Ex.: "5511999999999". */
-    whatsapp: string;
-    /** Mensagem pré-preenchida ao abrir o WhatsApp. */
-    whatsappMessage: string;
-    /** Telefone fixo opcional, formato livre para exibição. */
-    phone?: string;
-    email?: string;
-    doctoralia?: string;
-    /** Usuário sem @. */
-    instagram?: string;
-    /** Horários de atendimento, uma linha por item. */
-    hours?: string[];
-  };
+  /** Público atendido. Ex.: "Adultos". */
+  audience: string;
+  modalities: Modalities;
+  insurance: Insurance;
+  payment: string[];
 
-  modalities: Modality[];
   conditions: Condition[];
-  palette: Palette;
+  services: Service[];
+  showPrices: boolean;
+  firstVisitSteps: Step[];
 
-  seo: {
-    title: string;
-    description: string;
-  };
+  socialProof: SocialProof;
+  contact: Contact;
+  address: Address;
+  /** Horários, uma linha por item. null = não exibe. */
+  hours: string[] | null;
+  faq: FaqItem[];
 
-  /** Todos os textos das seções. */
-  texts: {
-    hero: {
-      eyebrow: string;
-      title: string;
-      subtitle: string;
-      ctaLabel: string;
-      secondaryCtaLabel?: string;
-    };
-    about: {
-      title: string;
-    };
-    conditions: {
-      title: string;
-      intro: string;
-      /** Nota exibida abaixo da lista. */
-      note?: string;
-    };
-    firstVisit: {
-      title: string;
-      intro: string;
-      steps: Step[];
-    };
-    telehealth: {
-      title: string;
-      intro: string;
-      points: string[];
-      note?: string;
-    };
-    faq: {
-      title: string;
-      items: FaqItem[];
-    };
-    location: {
-      title: string;
-      intro?: string;
-    };
-    finalCta: {
-      title: string;
-      text: string;
-    };
-    /** Aviso exibido no rodapé (ex.: orientação sobre emergências). */
-    emergencyNotice: string;
-  };
-}
-
-/** Helper com inferência de tipos para os arquivos de clínica. */
-export function defineClinic(config: ClinicConfig): ClinicConfig {
-  return config;
+  theme: Theme;
+  seo: Seo;
+  compliance: Compliance;
 }

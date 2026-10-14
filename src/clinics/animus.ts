@@ -1,204 +1,152 @@
-import { defineClinic } from './types';
+// src/clinics/animus.ts
+// Config da prévia — Animus Psiquiatria Avançada (Campo Grande/MS)
+// Fontes públicas consultadas em 14/10/2026: Doctoralia e Linktree da Dra. Luciane Cano.
+// Itens marcados com TODO precisam ser confirmados com a clínica antes de ir ao ar.
 
-/**
- * Animus — configuração da landing page.
- *
- * TODO antes de publicar (isPreview: false): substituir os campos marcados
- * com "TODO" pelos dados reais e conferir CRM/RQE no portal do CFM.
- */
-export default defineClinic({
-  slug: 'animus',
-  isPreview: true,
+import type { ClinicConfig } from "./types";
 
-  clinicName: 'Animus Psiquiatria',
-  technicalDirector: {
-    name: 'Dra. Nome da Médica', // TODO
-    crm: 'CRM-UF 000000', // TODO
+export const animus: ClinicConfig = {
+  slug: "animus",
+  isPreview: true, // ativa noindex + faixa "Prévia criada pela Vincere.AI"
+  previewBanner: "Prévia criada pela Vincere.AI para a Animus Psiquiatria Avançada",
+
+  // ─── Identidade ─────────────────────────────────────────────
+  clinic: {
+    name: "Animus",
+    fullName: "Animus — Psiquiatria Avançada",
+    tagline: "Psiquiatria com escuta, tempo e cuidado individual",
+    city: "Campo Grande",
+    state: "MS",
   },
 
   doctor: {
-    name: 'Dra. Nome da Médica', // TODO
-    crm: 'CRM-UF 000000', // TODO
-    rqe: 'RQE 00000', // TODO
-    specialty: 'Psiquiatria',
-    // photo: importe de src/assets/animus/medica.jpg quando disponível
-    photoAlt: 'Retrato da médica psiquiatra',
+    name: "Dra. Luciane Cano Martins Silveira",
+    shortName: "Dra. Luciane Cano",
+    title: "Médica Psiquiatra",
+    crm: "CRM-MS 5844",
+    rqe: "RQE 4155",
+    // Foto pública do Doctoralia — usar só no preview privado. Pedir foto oficial no fechamento.
+    photo:
+      "https://s3-sa-east-1.amazonaws.com/doctoralia.com.br/doctor/9f90b0/9f90b023fc8f2cc4c6cd9a361d6afde7_large.jpg",
+    education: [
+      "Residência e título de especialista em Psiquiatria — Santa Casa de Campo Grande/MS (2012)",
+    ],
+    // Texto escrito para o preview (não copiado de nenhuma fonte). Validar com a médica.
     bio: [
-      'Sou médica psiquiatra e acredito que cada pessoa chega ao consultório com uma história própria. Meu trabalho começa por escutar essa história com calma, sem pressa e sem julgamentos.',
-      'Na consulta, buscamos juntos compreender o que você está vivendo e construir um plano de cuidado possível para a sua rotina — que pode incluir orientação, acompanhamento, medicação quando indicada e articulação com psicoterapia e outros profissionais.',
-      'O acompanhamento é contínuo e ajustado ao longo do tempo, respeitando o seu ritmo e as suas escolhas.',
+      "Psiquiatra em Campo Grande desde 2012, a Dra. Luciane Cano atende adultos com foco em uma avaliação cuidadosa e em um plano de tratamento construído junto com o paciente.",
+      "As consultas têm tempo para ouvir a história de cada pessoa, explicar o diagnóstico com clareza e acompanhar a evolução de perto.",
     ],
-    credentials: [
-      'Graduação em Medicina — Instituição (TODO)',
-      'Residência Médica em Psiquiatria — Instituição (TODO)',
-      'Título de Especialista em Psiquiatria — RQE (TODO)',
-    ],
+  },
+
+  // ─── Atendimento ────────────────────────────────────────────
+  audience: "Adultos",
+  modalities: {
+    presencial: true,
+    teleconsulta: true, // TODO: Doctoralia lista telemedicina, mas o FAQ de lá diz que não. Confirmar.
+  },
+  insurance: {
+    acceptsInsurance: false,
+    note: "Atendimento particular. Emitimos documentação para solicitação de reembolso junto ao seu plano.", // TODO: confirmar se emite recibo para reembolso
+  },
+  payment: ["Cartão de crédito", "Transferência bancária"], // TODO: confirmar Pix
+
+  conditions: [
+    { name: "Ansiedade", description: "Preocupação excessiva, tensão constante e dificuldade de relaxar." },
+    { name: "Depressão", description: "Tristeza persistente, perda de interesse e cansaço que não passa." },
+    { name: "Síndrome do pânico", description: "Crises súbitas de medo intenso com sintomas físicos." },
+    { name: "Insônia", description: "Dificuldade para iniciar ou manter o sono e acordar descansado." },
+    { name: "Alterações do humor", description: "Oscilações de humor que afetam a rotina e os relacionamentos." },
+    { name: "Estresse", description: "Esgotamento físico e emocional ligado ao trabalho e à rotina." },
+    { name: "Demência", description: "Avaliação e acompanhamento de alterações de memória e cognição." },
+  ],
+
+  services: [
+    { name: "Primeira consulta", description: "Avaliação completa, com tempo para entender sua história e definir o plano de cuidado." },
+    { name: "Consultas de acompanhamento", description: "Retornos para ajustar o tratamento e acompanhar sua evolução." },
+    { name: "Teleconsulta", description: "Atendimento por vídeo, com prescrição digital válida." },
+    { name: "Laudos psiquiátricos", description: "Laudo pericial e laudo de sanidade mental para concursos." },
+  ],
+  // Preços existem no Doctoralia (1ª consulta a partir de R$ 2.800; consulta R$ 1.200; laudos R$ 1.000).
+  // Mantidos fora do site por padrão — decisão da clínica.
+  showPrices: false,
+
+  firstVisitSteps: [
+    { title: "Agende pelo WhatsApp", text: "Nossa equipe confirma o melhor horário para você." },
+    { title: "Primeira consulta", text: "Uma conversa sem pressa para entender seus sintomas e sua história." },
+    { title: "Plano de cuidado", text: "Você sai com o diagnóstico explicado e os próximos passos claros." },
+    { title: "Acompanhamento", text: "Retornos para ajustar o tratamento conforme sua evolução." },
+  ],
+
+  // ─── Prova social ───────────────────────────────────────────
+  // Não reproduzir depoimentos de pacientes no preview. Mostrar só o número agregado com link para a fonte.
+  socialProof: {
+    enabled: true,
+    label: "148 avaliações de pacientes no Doctoralia",
+    rating: 5,
+    sourceUrl:
+      "https://www.doctoralia.com.br/luciane-cano-martins-silveira/psiquiatra/campo-grande#&tab=profile-reviews",
+    highlights: ["Atenção durante a consulta", "Explicações detalhadas", "Consultório acolhedor"],
+  },
+
+  // ─── Contato e localização ──────────────────────────────────
+  contact: {
+    whatsapp: "5567999158100",
+    whatsappMessage: "Olá! Gostaria de agendar uma consulta com a Dra. Luciane Cano.",
+    phone: "(67) 3029-5656",
+    email: null, // TODO
+    instagram: "https://www.instagram.com/animuspsiquiatria/",
+    facebook: "https://www.facebook.com/psiquiatraluciane/",
+    doctoralia: "https://www.doctoralia.com.br/luciane-cano-martins-silveira/psiquiatra/campo-grande",
   },
 
   address: {
-    street: 'Rua Exemplo, 123', // TODO
-    complement: 'Sala 45 — Bairro', // TODO
-    city: 'Cidade', // TODO
-    state: 'UF', // TODO
-    zip: '00000-000', // TODO
-    notes: ['Prédio com acessibilidade', 'Estacionamento nas proximidades'],
+    street: "Rua Alagoas, 396",
+    complement: "Edifício Atrium — esquina com a Rua Euclides da Cunha",
+    neighborhood: "Jardim dos Estados", // TODO: confirmar bairro
+    city: "Campo Grande",
+    state: "MS",
+    zip: "79020-120",
+    coords: { lat: -20.4697113, lng: -54.620121 },
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=-20.4697113,-54.620121",
   },
 
-  contact: {
-    whatsapp: '5500000000000', // TODO
-    whatsappMessage: 'Olá! Gostaria de informações sobre consultas com a Animus Psiquiatria.',
-    doctoralia: 'https://www.doctoralia.com.br/', // TODO: link do perfil
-    instagram: 'animuspsiquiatria', // TODO
-    hours: ['Segunda a sexta, das 8h às 19h', 'Atendimento mediante agendamento'],
-  },
+  hours: null, // TODO: pedir horário de atendimento
 
-  modalities: ['presencial', 'teleconsulta'],
-
-  conditions: [
-    {
-      title: 'Ansiedade',
-      description: 'Preocupação excessiva, tensão constante, crises de pânico e sintomas físicos ligados à ansiedade.',
-    },
-    {
-      title: 'Depressão',
-      description: 'Tristeza persistente, desânimo, perda de interesse e alterações de sono e apetite.',
-    },
-    {
-      title: 'Transtorno bipolar',
-      description: 'Oscilações de humor que interferem na rotina, nos relacionamentos e no trabalho.',
-    },
-    {
-      title: 'TDAH em adultos',
-      description: 'Dificuldades de atenção, organização e impulsividade que acompanham a vida adulta.',
-    },
-    {
-      title: 'Insônia e sono',
-      description: 'Dificuldade para iniciar ou manter o sono e cansaço que afeta o dia a dia.',
-    },
-    {
-      title: 'TOC',
-      description: 'Pensamentos intrusivos e comportamentos repetitivos que geram sofrimento.',
-    },
-    {
-      title: 'Estresse e esgotamento',
-      description: 'Exaustão relacionada ao trabalho ou a períodos de sobrecarga prolongada.',
-    },
-    {
-      title: 'Luto e momentos de crise',
-      description: 'Acolhimento em perdas, mudanças importantes e fases difíceis da vida.',
-    },
+  // ─── FAQ ────────────────────────────────────────────────────
+  faq: [
+    { q: "Vocês atendem por convênio?", a: "O atendimento é particular. Fale com a gente pelo WhatsApp sobre documentação para reembolso." },
+    { q: "Atendem crianças e adolescentes?", a: "A Dra. Luciane atende adultos." },
+    { q: "Como funciona a teleconsulta?", a: "Você recebe o link da videochamada antes do horário e pode participar pelo celular ou computador. A receita é enviada digitalmente." },
+    { q: "Preciso levar algo na primeira consulta?", a: "Se tiver, traga exames, receitas e relatórios de tratamentos anteriores." },
+    { q: "Como agendar?", a: "Pelo WhatsApp ou pelo telefone (67) 3029-5656." },
   ],
 
-  palette: {
-    primary: '#3f5b4f',
-    onPrimary: '#ffffff',
-    accent: '#b9895f',
-    background: '#faf7f2',
-    surface: '#f1ebe1',
-    text: '#26302b',
-    muted: '#5a645e',
-    border: '#e0d7c8',
+  // ─── Visual ─────────────────────────────────────────────────
+  // Paleta proposta (sem identidade visual oficial encontrada). Ajustar ao logo da Animus.
+  theme: {
+    primary: "#2F4A44",    // verde-petróleo profundo: calma, seriedade
+    secondary: "#8FA89B",  // sálvia
+    accent: "#C9A27A",     // areia/dourado suave para CTAs secundários
+    background: "#F7F4EF", // off-white quente
+    text: "#1F2A27",
+    fontHeading: "Fraunces",
+    fontBody: "Inter",
   },
 
+  // ─── SEO (vale quando sair do modo preview) ─────────────────
   seo: {
-    title: 'Animus Psiquiatria — Consultas presenciais e teleconsulta',
+    title: "Psiquiatra em Campo Grande — Dra. Luciane Cano | Animus",
     description:
-      'Atendimento psiquiátrico acolhedor e individualizado para adultos, presencial ou por teleconsulta. Agende pelo WhatsApp.',
+      "Psiquiatria para adultos em Campo Grande/MS com a Dra. Luciane Cano (CRM-MS 5844, RQE 4155). Consultas presenciais e por vídeo. Agende pelo WhatsApp.",
+    keywords: ["psiquiatra campo grande", "psiquiatra campo grande ms", "tratamento ansiedade campo grande", "teleconsulta psiquiatra"],
   },
 
-  texts: {
-    hero: {
-      eyebrow: 'Psiquiatria para adultos',
-      title: 'Um espaço de escuta e cuidado para a sua saúde mental',
-      subtitle:
-        'Consultas com tempo para conversar, compreender o que você está vivendo e construir, junto com você, um plano de acompanhamento.',
-      ctaLabel: 'Agendar pelo WhatsApp',
-      secondaryCtaLabel: 'Como funciona a primeira consulta',
-    },
-    about: {
-      title: 'Sobre a médica',
-    },
-    conditions: {
-      title: 'Condições acompanhadas',
-      intro:
-        'Algumas das situações mais frequentes no consultório. Se você não encontrou o que está sentindo, entre em contato — conversamos sobre o seu caso.',
-      note: 'Cada pessoa é única: a avaliação e o plano de cuidado são sempre individualizados.',
-    },
-    firstVisit: {
-      title: 'Como funciona a primeira consulta',
-      intro: 'Uma conversa sem pressa, para conhecer você e entender o momento que está vivendo.',
-      steps: [
-        {
-          title: 'Agendamento',
-          description: 'Você entra em contato pelo WhatsApp e escolhemos juntos o melhor horário e a modalidade — presencial ou teleconsulta.',
-        },
-        {
-          title: 'Escuta e avaliação',
-          description: 'Conversamos sobre sua história, seus sintomas, sua rotina e o que motivou a busca por ajuda. Se tiver exames ou receitas anteriores, traga.',
-        },
-        {
-          title: 'Plano de cuidado',
-          description: 'Ao final, compartilho minhas impressões e definimos juntos os próximos passos, que podem incluir orientações, exames, medicação quando indicada e psicoterapia.',
-        },
-        {
-          title: 'Acompanhamento',
-          description: 'Os retornos permitem avaliar como você está e ajustar o cuidado ao longo do tempo.',
-        },
-      ],
-    },
-    telehealth: {
-      title: 'Teleconsulta',
-      intro:
-        'Para quem mora longe, tem uma rotina corrida ou se sente mais à vontade em casa, a consulta pode acontecer por vídeo, com o mesmo cuidado do atendimento presencial.',
-      points: [
-        'Plataforma segura, com sigilo e privacidade',
-        'Receitas e documentos com assinatura digital válida',
-        'Basta um celular ou computador com internet e um lugar reservado',
-      ],
-      note: 'Atendimento realizado conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.',
-    },
-    faq: {
-      title: 'Perguntas frequentes',
-      items: [
-        {
-          question: 'Preciso de encaminhamento para marcar uma consulta?',
-          answer: 'Não. Você pode agendar diretamente pelo WhatsApp.',
-        },
-        {
-          question: 'Quanto tempo dura a primeira consulta?',
-          answer: 'A primeira consulta costuma ser mais longa que os retornos, para que haja tempo de conhecer sua história com calma. Informamos a duração prevista no agendamento.',
-        },
-        {
-          question: 'A consulta é atendida por convênio?',
-          answer: 'O atendimento é particular. Emitimos recibo e nota fiscal, que podem ser usados para solicitar reembolso ao seu plano, conforme as regras do seu contrato.',
-        },
-        {
-          question: 'Toda consulta com psiquiatra resulta em medicação?',
-          answer: 'Não. A indicação de medicação depende da avaliação de cada caso e é sempre discutida com você. Em muitos casos, o cuidado envolve também psicoterapia, mudanças na rotina e outras abordagens.',
-        },
-        {
-          question: 'A teleconsulta tem a mesma validade da consulta presencial?',
-          answer: 'Sim. A telemedicina é regulamentada pelo CFM, e receitas e atestados emitidos com assinatura digital têm validade em todo o território nacional, inclusive para medicamentos controlados, conforme a legislação vigente.',
-        },
-        {
-          question: 'O que eu digo na consulta fica em sigilo?',
-          answer: 'Sim. O sigilo médico é um dever ético e legal, e seus dados são tratados de acordo com a LGPD.',
-        },
-        {
-          question: 'Posso levar um familiar ou acompanhante?',
-          answer: 'Pode, se for importante para você. Parte da conversa também pode acontecer apenas entre você e a médica.',
-        },
-      ],
-    },
-    location: {
-      title: 'Onde estamos',
-      intro: 'Consultório em local de fácil acesso, pensado para que você se sinta à vontade.',
-    },
-    finalCta: {
-      title: 'Quando você quiser, estamos aqui',
-      text: 'Tire suas dúvidas ou agende sua consulta pelo WhatsApp. Respondemos em horário comercial.',
-    },
-    emergencyNotice:
-      'Este canal não atende emergências. Em situação de crise ou risco, procure o pronto-socorro mais próximo, ligue para o SAMU (192) ou para o CVV (188), disponível 24 horas.',
+  // ─── Compliance (CFM 2.336/2023) ────────────────────────────
+  compliance: {
+    showCrmRqeEverywhere: true, // rodapé + seção sobre
+    noOutcomePromises: true,
+    technicalDirector: "Dra. Luciane Cano Martins Silveira — CRM-MS 5844 / RQE 4155", // TODO: confirmar diretor técnico da clínica
   },
-});
+};
+
+export default animus;

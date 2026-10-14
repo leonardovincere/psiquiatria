@@ -1,39 +1,36 @@
 ---
-import '@fontsource-variable/inter/wght.css';
-import '@fontsource-variable/fraunces/wght.css';
-import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
-import frauncesLatin from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
 import '../styles/global.css';
 import type { ClinicConfig } from '../clinics/types';
-import { instagramUrl } from '../lib/links';
+import { googleFontsUrl, readableOn } from '../lib/links';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const { palette: p, seo, doctor, address, contact } = clinic;
+const { theme: t, seo, doctor, address, contact } = clinic;
 
 const cssVars = [
-  `--c-primary:${p.primary}`,
-  `--c-on-primary:${p.onPrimary}`,
-  `--c-accent:${p.accent}`,
-  `--c-background:${p.background}`,
-  `--c-surface:${p.surface}`,
-  `--c-text:${p.text}`,
-  `--c-muted:${p.muted}`,
-  `--c-border:${p.border}`,
+  `--c-primary:${t.primary}`,
+  `--c-on-primary:${readableOn(t.primary)}`,
+  `--c-secondary:${t.secondary}`,
+  `--c-accent:${t.accent}`,
+  `--c-background:${t.background}`,
+  `--c-text:${t.text}`,
+  `--f-heading:'${t.fontHeading}'`,
+  `--f-body:'${t.fontBody}'`,
 ].join(';');
 
+const fontsUrl = googleFontsUrl(t);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
-const sameAs = [contact.doctoralia, contact.instagram && instagramUrl(contact.instagram)].filter(Boolean);
+const sameAs = [contact.doctoralia, contact.instagram, contact.facebook].filter(Boolean);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'MedicalClinic',
-  name: clinic.clinicName,
+  name: clinic.clinic.fullName,
   description: seo.description,
   url: canonical,
-  telephone: `+${contact.whatsapp}`,
+  telephone: contact.phone ?? `+${contact.whatsapp}`,
   medicalSpecialty: 'Psychiatric',
   address: {
     '@type': 'PostalAddress',
@@ -43,6 +40,9 @@ const jsonLd = {
     postalCode: address.zip,
     addressCountry: 'BR',
   },
+  ...(address.coords
+    ? { geo: { '@type': 'GeoCoordinates', latitude: address.coords.lat, longitude: address.coords.lng } }
+    : {}),
   ...(sameAs.length ? { sameAs } : {}),
   employee: {
     '@type': 'Physician',
@@ -60,6 +60,7 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{seo.title}</title>
     <meta name="description" content={seo.description} />
+    {seo.keywords.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
     {
       clinic.isPreview ? (
         <meta name="robots" content="noindex, nofollow, noarchive" />
@@ -68,18 +69,23 @@ const jsonLd = {
       )
     }
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content={p.primary} />
+    <meta name="theme-color" content={t.primary} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={frauncesLatin} as="font" type="font/woff2" crossorigin />
+    <!-- Google Fonts sem bloquear a renderização (display=swap + carregamento assíncrono). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href={fontsUrl} />
+    <link rel="stylesheet" href={fontsUrl} media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href={fontsUrl} /></noscript>
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
-    <meta property="og:site_name" content={clinic.clinicName} />
+    <meta property="og:site_name" content={clinic.clinic.fullName} />
     <meta property="og:title" content={seo.title} />
     <meta property="og:description" content={seo.description} />
     <meta property="og:url" content={canonical} />
+    {doctor.photo && <meta property="og:image" content={doctor.photo} />}
     <meta name="format-detection" content="telephone=no" />
 
     {!clinic.isPreview && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

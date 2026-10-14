@@ -3,13 +3,18 @@ import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import SectionHeading from './SectionHeading.astro';
 import type { ClinicConfig } from '../clinics/types';
-import { initials, instagramUrl } from '../lib/links';
+import { initials } from '../lib/links';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
 const { doctor, contact } = clinic;
+const links = [
+  contact.doctoralia && { href: contact.doctoralia, icon: 'calendar', label: 'Perfil na Doctoralia' },
+  contact.instagram && { href: contact.instagram, icon: 'instagram', label: 'Instagram' },
+  contact.facebook && { href: contact.facebook, icon: 'facebook', label: 'Facebook' },
+].filter((l) => !!l) as { href: string; icon: 'calendar' | 'instagram' | 'facebook'; label: string }[];
 ---
 
 <section id="sobre" class="section-y bg-surface" aria-labelledby="sobre-titulo">
@@ -19,7 +24,8 @@ const { doctor, contact } = clinic;
         doctor.photo ? (
           <Image
             src={doctor.photo}
-            alt={doctor.photoAlt ?? doctor.name}
+            inferSize
+            alt={`Foto de ${doctor.name}`}
             widths={[320, 480, 640]}
             sizes="(min-width: 768px) 384px, 90vw"
             class="aspect-[4/5] w-full rounded-3xl object-cover"
@@ -29,7 +35,7 @@ const { doctor, contact } = clinic;
           <div
             class="flex aspect-[4/5] w-full items-center justify-center rounded-3xl bg-primary/10 font-serif text-7xl text-primary"
             role="img"
-            aria-label={doctor.photoAlt ?? doctor.name}
+            aria-label={doctor.name}
           >
             {initials(doctor.name)}
           </div>
@@ -37,25 +43,24 @@ const { doctor, contact } = clinic;
       }
       <div class="mt-5">
         <p class="font-serif text-xl text-ink">{doctor.name}</p>
-        <p class="text-sm text-muted">
-          Médica — {doctor.specialty} · {doctor.crm} · {doctor.rqe}
-        </p>
+        <p class="text-sm text-muted">{doctor.title}</p>
+        <p class="text-sm font-medium text-ink">{doctor.crm} · {doctor.rqe}</p>
       </div>
     </div>
 
     <div>
-      <SectionHeading id="sobre-titulo" title={clinic.texts.about.title} />
+      <SectionHeading id="sobre-titulo" title={`Sobre a ${doctor.shortName}`} />
       <div class="space-y-5 text-lg leading-relaxed text-ink/90">
         {doctor.bio.map((paragraph) => <p>{paragraph}</p>)}
       </div>
 
       {
-        doctor.credentials.length > 0 && (
+        doctor.education.length > 0 && (
           <ul class="mt-8 space-y-3 border-t border-line pt-8">
-            {doctor.credentials.map((c) => (
+            {doctor.education.map((item) => (
               <li class="flex gap-3 text-muted">
                 <Icon name="check" class="mt-0.5 size-5 shrink-0 text-primary" />
-                <span>{c}</span>
+                <span>{item}</span>
               </li>
             ))}
           </ul>
@@ -63,29 +68,19 @@ const { doctor, contact } = clinic;
       }
 
       {
-        (contact.doctoralia || contact.instagram) && (
+        links.length > 0 && (
           <div class="mt-8 flex flex-wrap gap-3">
-            {contact.doctoralia && (
+            {links.map((l) => (
               <a
-                href={contact.doctoralia}
+                href={l.href}
                 target="_blank"
                 rel="noopener"
                 class="inline-flex items-center gap-2 rounded-full border border-line bg-background px-4 py-2 text-sm text-ink transition hover:border-primary hover:text-primary"
               >
-                <Icon name="calendar" class="size-4" />
-                Perfil na Doctoralia
+                <Icon name={l.icon} class="size-4" />
+                {l.label}
               </a>
-            )}
-            {contact.instagram && (
-              <a
-                href={instagramUrl(contact.instagram)}
-                target="_blank"
-                rel="noopener"
-                class="inline-flex items-center gap-2 rounded-full border border-line bg-background px-4 py-2 text-sm text-ink transition hover:border-primary hover:text-primary"
-              >
-                <Icon name="instagram" class="size-4" />@{contact.instagram}
-              </a>
-            )}
+            ))}
           </div>
         )
       }

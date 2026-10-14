@@ -6,7 +6,10 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const t = clinic.texts.finalCta;
+const t = {
+  title: 'Quando você quiser, estamos aqui',
+  text: `Tire suas dúvidas ou agende sua consulta com a ${clinic.doctor.shortName} pelo WhatsApp.`,
+};
 ---
 
 <section class="section-y bg-surface" aria-labelledby="contato-titulo">
@@ -14,5 +17,12 @@ const t = clinic.texts.finalCta;
     <h2 id="contato-titulo" class="text-3xl leading-tight font-medium text-ink md:text-4xl">{t.title}</h2>
     <p class="mt-4 text-lg leading-relaxed text-muted">{t.text}</p>
     <WhatsAppButton clinic={clinic} class="mt-8" />
+    {
+      clinic.contact.phone && (
+        <p class="mt-4 text-sm text-muted">
+          ou ligue: <a class="font-medium text-ink hover:text-primary" href={`tel:${clinic.contact.phone.replace(/\D/g, '')}`}>{clinic.contact.phone}</a>
+        </p>
+      )
+    }
   </div>
 </section>

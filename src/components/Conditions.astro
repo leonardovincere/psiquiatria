@@ -6,23 +6,26 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const t = clinic.texts.conditions;
 ---
 
 <section id="condicoes" class="section-y" aria-labelledby="condicoes-titulo">
   <div class="container-page">
-    <SectionHeading id="condicoes-titulo" title={t.title} intro={t.intro} />
+    <SectionHeading
+      id="condicoes-titulo"
+      title="Condições acompanhadas"
+      intro="Algumas das situações mais frequentes no consultório. Se você não encontrou o que está sentindo, entre em contato — conversamos sobre o seu caso."
+    />
     <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {
         clinic.conditions.map((c) => (
           <li class="rounded-2xl border border-line bg-background p-6">
             <span class="mb-4 block h-1 w-8 rounded-full bg-accent" aria-hidden="true" />
-            <h3 class="text-xl font-medium text-ink">{c.title}</h3>
+            <h3 class="text-xl font-medium text-ink">{c.name}</h3>
             <p class="mt-2 leading-relaxed text-muted">{c.description}</p>
           </li>
         ))
       }
     </ul>
-    {t.note && <p class="mt-8 text-sm text-muted">{t.note}</p>}
+    <p class="mt-8 text-sm text-muted">Cada pessoa é única: a avaliação e o plano de cuidado são sempre individualizados.</p>
   </div>
 </section>

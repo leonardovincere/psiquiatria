@@ -8,36 +8,29 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const { address, contact } = clinic;
-const t = clinic.texts.location;
+const { address, contact, hours } = clinic;
 ---
 
 <section id="localizacao" class="section-y" aria-labelledby="localizacao-titulo">
   <div class="container-page grid gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-16">
     <div>
-      <SectionHeading id="localizacao-titulo" title={t.title} intro={t.intro} />
+      <SectionHeading id="localizacao-titulo" title="Onde estamos" />
       <address class="space-y-6 not-italic">
         <div class="flex gap-3">
           <Icon name="pin" class="mt-0.5 size-5 shrink-0 text-primary" />
           <div class="text-ink">
             <p>{address.street}</p>
             {address.complement && <p>{address.complement}</p>}
+            {address.neighborhood && <p>{address.neighborhood}</p>}
             <p>{address.city} — {address.state} · CEP {address.zip}</p>
-            {
-              address.notes && (
-                <ul class="mt-2 space-y-1 text-sm text-muted">
-                  {address.notes.map((n) => <li>{n}</li>)}
-                </ul>
-              )
-            }
           </div>
         </div>
         {
-          contact.hours && (
+          hours && hours.length > 0 && (
             <div class="flex gap-3">
               <Icon name="clock" class="mt-0.5 size-5 shrink-0 text-primary" />
               <ul class="text-ink">
-                {contact.hours.map((h) => <li>{h}</li>)}
+                {hours.map((h) => <li>{h}</li>)}
               </ul>
             </div>
           )
@@ -46,7 +39,15 @@ const t = clinic.texts.location;
           contact.phone && (
             <div class="flex gap-3">
               <Icon name="phone" class="mt-0.5 size-5 shrink-0 text-primary" />
-              <p class="text-ink">{contact.phone}</p>
+              <a class="text-ink hover:text-primary" href={`tel:${contact.phone.replace(/\D/g, '')}`}>{contact.phone}</a>
+            </div>
+          )
+        }
+        {
+          contact.email && (
+            <div class="flex gap-3">
+              <Icon name="external" class="mt-0.5 size-5 shrink-0 text-primary" />
+              <a class="text-ink hover:text-primary" href={`mailto:${contact.email}`}>{contact.email}</a>
             </div>
           )
         }

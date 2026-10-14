@@ -13,6 +13,10 @@ export default defineConfig({
     // CSS inline no <head>: página única, elimina requisição bloqueante de renderização.
     inlineStylesheets: 'always',
   },
+  image: {
+    // Fotos remotas (ex.: doctor.photo) são baixadas e otimizadas no build.
+    remotePatterns: [{ protocol: 'https' }],
+  },
   vite: {
     plugins: [tailwindcss()],
   },

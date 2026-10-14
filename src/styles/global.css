@@ -1,12 +1,21 @@
 @import 'tailwindcss';
 
 /*
- * As cores vêm do config da clínica, injetadas como variáveis --c-* no <html>
- * (ver Layout.astro). Aqui viram tokens do Tailwind: bg-primary, text-muted etc.
+ * As cores e fontes vêm do `theme` do config da clínica, injetadas como
+ * variáveis no <html> (ver Layout.astro). Os tons derivados (surface, muted,
+ * line) são calculados aqui com color-mix, então o config só precisa das
+ * cores-base.
  */
+:root {
+  --c-surface: color-mix(in srgb, var(--c-secondary) 16%, var(--c-background));
+  --c-muted: color-mix(in srgb, var(--c-text) 78%, var(--c-background));
+  --c-border: color-mix(in srgb, var(--c-secondary) 38%, var(--c-background));
+}
+
 @theme inline {
   --color-primary: var(--c-primary);
   --color-on-primary: var(--c-on-primary);
+  --color-secondary: var(--c-secondary);
   --color-accent: var(--c-accent);
   --color-background: var(--c-background);
   --color-surface: var(--c-surface);
@@ -14,8 +23,8 @@
   --color-muted: var(--c-muted);
   --color-line: var(--c-border);
 
-  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Fraunces Variable', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans: var(--f-body), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: var(--f-heading), ui-serif, Georgia, 'Times New Roman', serif;
 }
 
 @layer base {

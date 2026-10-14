@@ -7,7 +7,16 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const t = clinic.texts.telehealth;
+const t = {
+  title: 'Teleconsulta',
+  intro: `Para quem mora longe, tem uma rotina corrida ou se sente mais à vontade em casa, a consulta com a ${clinic.doctor.shortName} pode acontecer por vídeo, com o mesmo cuidado do atendimento presencial.`,
+  points: [
+    'Plataforma segura, com sigilo e privacidade',
+    'Receitas e documentos com assinatura digital válida',
+    'Basta um celular ou computador com internet e um lugar reservado',
+  ],
+  note: 'Atendimento realizado conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.',
+};
 ---
 
 <section id="teleconsulta" class="section-y" aria-labelledby="teleconsulta-titulo">

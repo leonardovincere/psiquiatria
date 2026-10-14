@@ -6,22 +6,21 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const hasTelehealth = clinic.modalities.includes('teleconsulta');
 const nav = [
   { href: '#sobre', label: 'Sobre' },
   { href: '#condicoes', label: 'Condições' },
   { href: '#primeira-consulta', label: 'Primeira consulta' },
-  ...(hasTelehealth ? [{ href: '#teleconsulta', label: 'Teleconsulta' }] : []),
+  ...(clinic.modalities.teleconsulta ? [{ href: '#teleconsulta', label: 'Teleconsulta' }] : []),
   { href: '#duvidas', label: 'Dúvidas' },
-  { href: '#localizacao', label: 'Localização' },
+  ...(clinic.modalities.presencial ? [{ href: '#localizacao', label: 'Localização' }] : []),
 ];
 ---
 
 <header class="border-b border-line/70">
   <div class="container-page flex h-16 items-center justify-between gap-4 md:h-20">
     <a href="#inicio" class="flex flex-col leading-tight">
-      <span class="font-serif text-lg font-semibold text-ink md:text-xl">{clinic.clinicName}</span>
-      <span class="text-xs text-muted">{clinic.doctor.name} · {clinic.doctor.specialty}</span>
+      <span class="font-serif text-lg font-semibold text-ink md:text-xl">{clinic.clinic.name}</span>
+      <span class="text-xs text-muted">{clinic.doctor.shortName} · {clinic.doctor.title}</span>
     </a>
     <nav aria-label="Seções" class="hidden lg:block">
       <ul class="flex gap-6 text-sm text-muted">

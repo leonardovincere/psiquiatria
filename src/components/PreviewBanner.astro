@@ -1,8 +1,12 @@
 ---
 /** Faixa exibida apenas quando isPreview = true. */
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
 ---
 
-<div class="bg-ink text-background text-center text-xs sm:text-sm py-2 px-4" role="note">
-  <span class="font-medium">Prévia criada pela Vincere.AI</span>
+<div class="bg-ink px-4 py-2 text-center text-xs text-background sm:text-sm" role="note">
+  <span class="font-medium">{text}</span>
   <span class="opacity-75"> · versão de demonstração, não indexada</span>
 </div>

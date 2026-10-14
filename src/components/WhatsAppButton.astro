@@ -9,7 +9,7 @@ interface Props {
   size?: 'md' | 'lg';
   class?: string;
 }
-const { clinic, label = clinic.texts.hero.ctaLabel, size = 'lg', class: className = '' } = Astro.props;
+const { clinic, label = 'Agendar pelo WhatsApp', size = 'lg', class: className = '' } = Astro.props;
 const sizes = { md: 'px-5 py-2.5 text-sm', lg: 'px-6 py-3.5 text-base' };
 ---
 

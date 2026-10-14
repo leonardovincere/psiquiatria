@@ -7,21 +7,20 @@ interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const t = clinic.texts.faq;
 ---
 
 <section id="duvidas" class="section-y bg-surface" aria-labelledby="duvidas-titulo">
   <div class="container-page max-w-3xl">
-    <SectionHeading id="duvidas-titulo" title={t.title} />
+    <SectionHeading id="duvidas-titulo" title="Perguntas frequentes" />
     <div class="divide-y divide-line border-y border-line">
       {
-        t.items.map((item) => (
+        clinic.faq.map((item) => (
           <details class="group">
             <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left text-lg font-medium text-ink [&::-webkit-details-marker]:hidden">
-              {item.question}
+              {item.q}
               <Icon name="chevron" class="size-5 shrink-0 text-primary transition-transform group-open:rotate-180" />
             </summary>
-            <p class="pb-6 leading-relaxed text-muted">{item.answer}</p>
+            <p class="pb-6 leading-relaxed text-muted">{item.a}</p>
           </details>
         ))
       }

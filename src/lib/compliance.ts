@@ -24,13 +24,15 @@ const FORBIDDEN: { pattern: RegExp; reason: string }[] = [
   { pattern: /\bantes\s+e\s+depois\b/i, reason: 'antes e depois' },
 ];
 
+// Campos técnicos ou não exibidos, que não são texto publicitário.
+const SKIP_KEYS = new Set(['theme', 'photo', 'slug', 'contact', 'sourceUrl', 'mapsUrl', 'highlights', 'keywords']);
+
 function collectStrings(value: unknown, path: string, out: { path: string; text: string }[]) {
   if (typeof value === 'string') out.push({ path, text: value });
   else if (Array.isArray(value)) value.forEach((v, i) => collectStrings(v, `${path}[${i}]`, out));
   else if (value && typeof value === 'object') {
     for (const [k, v] of Object.entries(value)) {
-      // Campos técnicos que não são texto publicitário.
-      if (['palette', 'photo', 'slug', 'contact'].includes(k)) continue;
+      if (SKIP_KEYS.has(k)) continue;
       collectStrings(v, path ? `${path}.${k}` : k, out);
     }
   }
@@ -49,7 +51,7 @@ export function assertCompliance(clinic: ClinicConfig) {
   }
 
   const strings: { path: string; text: string }[] = [];
-  collectStrings(clinic, '', strings);
+  if (clinic.compliance.noOutcomePromises) collectStrings(clinic, '', strings);
   for (const { path, text } of strings) {
     for (const { pattern, reason } of FORBIDDEN) {
       const match = text.match(pattern);
