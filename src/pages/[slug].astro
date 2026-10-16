@@ -38,7 +38,10 @@ const copy = getCopy(clinic);
   {clinic.isPreview && <PreviewBanner text={clinic.previewBanner} suffix={copy.previewSuffix} />}
   <Header clinic={clinic} />
   <main id="conteudo" data-tone-root data-tone="base">
-    {clinic.style?.hero === 'circle' ? <HeroCircle clinic={clinic} /> : <Hero clinic={clinic} />}
+    <div class:list={['hero-wrap relative', clinic.style?.finish === 'editorial' && 'overflow-hidden']}>
+      {clinic.style?.finish === 'editorial' && <div class="aurora" aria-hidden="true" />}
+      {clinic.style?.hero === 'circle' ? <HeroCircle clinic={clinic} /> : <Hero clinic={clinic} />}
+    </div>
     <FactsStrip clinic={clinic} />
     <About clinic={clinic} />
     <LotusDivider src={clinic.clinic.logoMark} />

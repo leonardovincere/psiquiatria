@@ -69,6 +69,14 @@ export interface LayoutStyle {
   hero?: 'arch' | 'circle';
   /** Condições: "marquee" = faixas deslizando (padrão); "chips" = grade fixa de etiquetas. */
   conditions?: 'marquee' | 'chips';
+  /**
+   * Acabamento: "soft" (padrão: cantos arredondados, botões em pílula) ou "editorial"
+   * (botões retos, seções numeradas, filetes no lugar de cartões, textura de papel e
+   * fundo animado no topo).
+   */
+  finish?: 'soft' | 'editorial';
+  /** Abertura: cortina com o monograma/logo que sobe revelando o site (só na 1ª visita). Padrão: ligada no "editorial". */
+  intro?: boolean;
 }
 
 export interface Modalities {

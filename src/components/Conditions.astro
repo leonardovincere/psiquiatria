@@ -26,11 +26,11 @@ const rows = [clinic.conditions, [...clinic.conditions].reverse()];
       <ul class="container-page flex flex-wrap gap-3 md:gap-4" aria-label={copy.title}>
         {clinic.conditions.map((c, i) => (
           <li
-            class="flex items-center gap-3 rounded-full border border-line bg-white px-6 py-3.5 font-serif text-xl text-[var(--ink-base)] md:px-7 md:py-4 md:text-2xl"
+            class="chip flex items-center gap-3 rounded-full border border-line bg-white px-6 py-3.5 font-serif text-xl text-[var(--ink-base)] md:px-7 md:py-4 md:text-2xl"
             data-reveal
             style={`--i:${i}`}
           >
-            <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+            <span class="dot size-1.5 rounded-full bg-accent" aria-hidden="true" />
             {c.name}
           </li>
         ))}
@@ -48,12 +48,12 @@ const rows = [clinic.conditions, [...clinic.conditions].reverse()];
             <li
               aria-hidden={i >= row.length ? 'true' : undefined}
               class:list={[
-                'flex items-center gap-3 rounded-full border border-line bg-white px-6 py-3.5 font-serif text-xl whitespace-nowrap text-[var(--ink-base)] md:text-2xl',
+                'chip flex items-center gap-3 rounded-full border border-line bg-white px-6 py-3.5 font-serif text-xl whitespace-nowrap text-[var(--ink-base)] md:text-2xl',
                 (i + r) % 2 === 1 && 'text-[var(--primary-base)] italic',
                 i >= row.length && 'dup',
               ]}
             >
-              <span class="size-1.5 rounded-full bg-accent" aria-hidden="true"></span>
+              <span class="dot size-1.5 rounded-full bg-accent" aria-hidden="true"></span>
               {c.name}
             </li>
           ))}

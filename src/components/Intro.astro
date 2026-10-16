@@ -1,0 +1,26 @@
+---
+import type { ClinicConfig } from '../clinics/types';
+import { initials } from '../lib/links';
+
+/**
+ * Abertura: cortina na cor principal com o símbolo (ou monograma) e o nome,
+ * que sobe revelando o site. Só CSS (não atrasa o carregamento: a página já
+ * renderiza por baixo). Aparece só na primeira visita da sessão e nunca com
+ * "reduzir movimento".
+ */
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const { logoMark } = clinic.clinic;
+const mono = initials(clinic.clinic.name.startsWith('Dr') ? clinic.doctor.name : clinic.clinic.name);
+---
+
+<div class="intro" aria-hidden="true">
+  <div class="intro-inner">
+    {logoMark ? <img src={logoMark} alt="" class="intro-mark w-24" /> : <span class="intro-mark font-serif italic">{mono}</span>}
+    <span class="intro-line"></span>
+    <span class="intro-name font-serif">{clinic.clinic.name}</span>
+    <span class="intro-sub">{clinic.doctor.title}</span>
+  </div>
+</div>

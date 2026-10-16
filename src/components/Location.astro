@@ -68,7 +68,7 @@ const copy = getCopy(clinic).location;
 
     <!-- Fachada: o iframe do Google Maps (~1 MB de JS) só carrega no clique. -->
     <div
-      class="card-light relative aspect-[4/3] overflow-hidden rounded-[28px] border border-line bg-[color-mix(in_srgb,var(--primary-base)_7%,white)] md:aspect-auto md:min-h-[22rem]"
+      class="map-box card-light relative aspect-[4/3] overflow-hidden rounded-[28px] border border-line bg-[color-mix(in_srgb,var(--primary-base)_7%,white)] md:aspect-auto md:min-h-[22rem]"
       data-reveal
       style="--i:1"
       data-map
@@ -85,7 +85,7 @@ const copy = getCopy(clinic).location;
         type="button"
         class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-ink transition hover:text-primary"
       >
-        <span class="inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 text-[15px] font-medium shadow-[0_10px_30px_-18px_color-mix(in_srgb,var(--ink-base)_50%,transparent)] transition-transform duration-300 hover:-translate-y-0.5">
+        <span class="map-pill inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 text-[15px] font-medium shadow-[0_10px_30px_-18px_color-mix(in_srgb,var(--ink-base)_50%,transparent)] transition-transform duration-300 hover:-translate-y-0.5">
           <span class="relative flex size-3">
             <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden"></span>
             <span class="relative inline-flex size-3 rounded-full bg-primary"></span>

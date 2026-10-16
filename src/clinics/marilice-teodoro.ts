@@ -107,6 +107,8 @@ export const marilice: ClinicConfig = {
   style: {
     hero: "circle",
     conditions: "chips",
+    finish: "editorial", // botões retos, seções numeradas, textura e fundo animado
+    intro: true, // abertura com cortina e monograma (1ª visita)
   },
 
   // ─── Prova social ───────────────────────────────────────────

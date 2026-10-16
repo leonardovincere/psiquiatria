@@ -167,6 +167,8 @@ const clinica: ClinicConfig = {
   // style: {
   //   hero: 'circle',      // 'arch' (foto em arco que se abre) | 'circle' (foto/monograma em círculo com anel de texto)
   //   conditions: 'chips', // 'marquee' (faixas deslizando) | 'chips' (etiquetas fixas)
+  //   finish: 'editorial', // 'soft' (arredondado) | 'editorial' (botões retos, seções numeradas, textura, fundo animado)
+  //   intro: true,         // abertura com cortina e monograma/logo (padrão: ligada no 'editorial')
   // },
   // approach: [{ title: 'Escuta atenta', text: '…' }], // vira a seção "Abordagem"
   // (doctor.experience preenchido liga a seção "Trajetória": formação + experiência)

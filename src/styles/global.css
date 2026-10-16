@@ -387,3 +387,309 @@
     display: none;
   }
 }
+
+/* ═══ Acabamento "editorial" (style.finish) ═════════════════════════════════
+ * Fora de @layer de propósito: regras sem camada vencem os utilitários do
+ * Tailwind, então dá para restilizar os componentes pelos ganchos de classe
+ * (.btn-cta, .chip, .icon-bubble, .id-card…) sem duplicar markup.
+ */
+
+/* Abertura (Intro.astro). --intro-delay atrasa a entrada do topo até a cortina subir. */
+html.has-intro {
+  --intro-delay: 1.2s;
+}
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+  pointer-events: none;
+  animation: intro-lift 0.9s cubic-bezier(0.76, 0, 0.24, 1) 1.05s forwards;
+}
+.intro-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.intro-mark {
+  font-size: 4.5rem;
+  line-height: 1;
+  animation: intro-in 0.7s var(--ease-out) 0.05s both;
+}
+.intro-line {
+  width: 64px;
+  height: 1px;
+  background: var(--c-accent-deep, var(--c-accent));
+  transform-origin: 50% 50%;
+  animation: intro-line 0.7s var(--ease-out) 0.25s both;
+}
+.intro-name {
+  font-size: 1.6rem;
+  animation: intro-in 0.7s var(--ease-out) 0.35s both;
+}
+.intro-sub {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  animation: intro-in 0.7s var(--ease-out) 0.45s both;
+}
+@keyframes intro-lift {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 100% 0);
+    visibility: hidden;
+  }
+}
+@keyframes intro-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes intro-line {
+  from {
+    transform: scaleX(0);
+  }
+}
+html.intro-seen .intro {
+  display: none;
+}
+/* O topo "assenta" quando a cortina sobe (só transform: o texto já está pintado, não atrasa o LCP). */
+html.has-intro #inicio h1,
+html.has-intro #inicio .eyebrow,
+html.has-intro #inicio h1 ~ * {
+  animation: settle 1.1s var(--ease-out) var(--intro-delay) both;
+}
+@keyframes settle {
+  from {
+    transform: translateY(26px);
+  }
+}
+
+/* Textura de papel em toda a página (estática, sem custo de animação). */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Manchas de cor que se movem devagar atrás do topo (gradientes, sem blur: leve no celular). */
+.aurora {
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 140%;
+  pointer-events: none;
+  z-index: 0;
+}
+.aurora::before,
+.aurora::after {
+  content: '';
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  will-change: transform;
+}
+.aurora::before {
+  top: -25vmax;
+  right: -20vmax;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-secondary) 55%, transparent), transparent);
+  animation: drift-a 22s ease-in-out infinite alternate;
+}
+.aurora::after {
+  top: 10vmax;
+  left: -30vmax;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-accent) 18%, transparent), transparent);
+  animation: drift-b 26s ease-in-out infinite alternate;
+}
+@keyframes drift-a {
+  to {
+    transform: translate(-8vmax, 6vmax) scale(1.08);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate(10vmax, -4vmax) scale(0.94);
+  }
+}
+.hero-wrap > :not(.aurora) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Barra fina de progresso de leitura (scroll-driven; sem suporte, não aparece). */
+.read-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .read-progress {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 60;
+    background: var(--c-accent);
+    transform-origin: 0 50%;
+    animation: read-progress linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes read-progress {
+    from {
+      transform: scaleX(0);
+    }
+  }
+}
+
+[data-finish='editorial'] {
+  /* Botões retos, com preenchimento que desliza ao passar o mouse. */
+  .btn-cta {
+    border-radius: 2px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding-inline: 1.9rem;
+    box-shadow: none;
+    background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--c-text) 85%, var(--c-primary)) 50%,
+      transparent 50%
+    );
+    background-size: 201% 100%;
+    background-position: 100% 0;
+    transition: background-position 0.5s var(--ease-out);
+  }
+  .btn-cta svg {
+    width: 15px;
+    height: 15px;
+  }
+  .btn-cta:hover {
+    background-position: 0 0;
+  }
+  .btn-lift:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  /* Barra fixa: faixa reta colada no rodapé da tela (celular) / botão reto no canto (desktop). */
+  [data-sticky-cta] {
+    padding: 0;
+    border: 0;
+    background: none;
+    backdrop-filter: none;
+  }
+  .btn-sticky {
+    border-radius: 0;
+    min-height: calc(56px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (width >= 40rem) {
+    .btn-sticky {
+      border-radius: 2px;
+      min-height: 52px;
+      padding-bottom: 0;
+      box-shadow: none;
+    }
+  }
+
+  /* Seções numeradas no lugar de "etiquetas". */
+  main {
+    counter-reset: sec;
+  }
+  main > section:not(#inicio):has(.eyebrow) {
+    counter-increment: sec;
+  }
+  main > section:not(#inicio) .eyebrow:not(.no-num)::before {
+    content: counter(sec, decimal-leading-zero) '\2002\2014\2002';
+    color: var(--c-accent);
+  }
+
+  /* Condições: lista corrida em serifa, separada por barras, sem pílulas. */
+  .chip {
+    border: 0;
+    background: none;
+    padding: 0;
+    gap: 0;
+    font-size: clamp(1.7rem, 4.6vw, 2.8rem);
+    line-height: 1.25;
+  }
+  .chip .dot {
+    display: none;
+  }
+  ul > .chip + .chip::before {
+    content: '/';
+    margin: 0 0.5em 0 0.1em;
+    color: var(--c-accent);
+    font-style: normal;
+  }
+  /* Marcadores: traço fino em vez de pontinho. */
+  .dot {
+    width: 14px;
+    height: 1px;
+    border-radius: 0;
+  }
+  /* Ícones soltos, sem bolinha. */
+  .icon-bubble {
+    border-color: transparent;
+  }
+  /* Cartões viram blocos retos com filete. */
+  .id-card {
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--c-background);
+    border-color: var(--c-border);
+    border-top: 1px solid var(--c-accent);
+  }
+  .map-box,
+  .note-box {
+    border-radius: 2px;
+  }
+  .map-pill {
+    border-radius: 2px;
+    box-shadow: none;
+    border: 1px solid var(--c-border);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+  }
+  .facts {
+    background: transparent;
+  }
+  /* Menu: caixa-alta pequena com sublinhado que cresce. */
+  .site-header nav a {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+    padding-bottom: 3px;
+    transition:
+      background-size 0.35s var(--ease-out),
+      color 0.2s;
+  }
+  .site-header nav a:hover {
+    background-size: 100% 1px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro,
+  .read-progress {
+    display: none !important;
+  }
+  .aurora::before,
+  .aurora::after {
+    animation: none !important;
+  }
+}

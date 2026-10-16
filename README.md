@@ -22,6 +22,8 @@ npm run preview
 4. `npm run build` → `/<slug>`. Arquivos que começam com `_` são ignorados.
 
 Para cada prévia ter cara própria: `style.hero` (`arch` | `circle`), `style.conditions` (`marquee` | `chips`),
+`style.finish` (`soft` | `editorial`: botões retos, seções numeradas, textura de papel, fundo animado, barra de leitura),
+`style.intro` (abertura com cortina, só na 1ª visita),
 `theme.headingWeight`, `approach` (seção "Abordagem") e `doctor.experience` (seção "Trajetória").
 CRM/RQE vazios só são aceitos em prévia (a página mostra "em confirmação"); para publicar, o build exige.
 

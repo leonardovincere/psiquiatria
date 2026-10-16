@@ -1,5 +1,6 @@
 ---
 import { Font } from 'astro:assets';
+import Intro from '../components/Intro.astro';
 import '../styles/global.css';
 import type { ClinicConfig } from '../clinics/types';
 import { legibleOn, readableOn } from '../lib/links';
@@ -31,6 +32,8 @@ type CssVar = Parameters<typeof Font>[0]['cssVariable'];
 const headingVar = `--fh-${clinic.slug}` as CssVar;
 const bodyVar = `--fb-${clinic.slug}` as CssVar;
 const copy = getCopy(clinic);
+const finish = clinic.style?.finish ?? 'soft';
+const intro = clinic.style?.intro ?? finish === 'editorial';
 
 const canonical = clinicUrl(clinic);
 const heroPhoto = await getHeroPhoto(clinic);
@@ -66,11 +69,25 @@ const jsonLd = {
 ---
 
 <!doctype html>
-<html lang="pt-BR" style={cssVars}>
+<html lang="pt-BR" style={cssVars} data-finish={finish}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline>document.documentElement.classList.add('js');</script>
+    {
+      intro && (
+        <script is:inline define:vars={{ key: `intro-${clinic.slug}` }}>
+          // Abertura só na primeira visita da sessão.
+          try {
+            const seen = sessionStorage.getItem(key);
+            document.documentElement.classList.add(seen ? 'intro-seen' : 'has-intro');
+            if (!seen) sessionStorage.setItem(key, '1');
+          } catch (e) {
+            document.documentElement.classList.add('has-intro');
+          }
+        </script>
+      )
+    }
     <title>{seo.title}</title>
     <meta name="description" content={seo.description} />
     {seo.keywords.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
@@ -121,6 +138,9 @@ const jsonLd = {
     {!clinic.isPreview && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body class="min-h-dvh antialiased">
+    {intro && <Intro clinic={clinic} />}
+    {finish === 'editorial' && <div class="grain" aria-hidden="true" />}
+    {finish === 'editorial' && <div class="read-progress" aria-hidden="true" />}
     <slot />
     <script>
       // Revelação ao rolar: marca [data-reveal] e [data-rule] como visíveis uma única vez.
