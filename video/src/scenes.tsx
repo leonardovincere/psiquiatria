@@ -250,7 +250,7 @@ export const Desktop: React.FC = () => {
       {seqs.map((s) => (
         <Sequence key={`bg-${s.name}`} from={s.from} durationInFrames={s.dur}>
           <AbsoluteFill style={{ filter: 'blur(40px) brightness(.45) saturate(1.3)', transform: 'scale(2.4)' }}>
-            <OffthreadVideo src={staticFile(`captures/${s.name}.mp4`)} trimBefore={sec(s.trim)} muted />
+            <OffthreadVideo src={staticFile(`captures/${s.name}.mp4`)} trimBefore={sec(s.trim)} muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </AbsoluteFill>
         </Sequence>
       ))}
@@ -271,11 +271,11 @@ export const Desktop: React.FC = () => {
           <BrowserFrame width={width} url={clinic.url}>
             {seqs.map((s) => {
               const local = f - s.from;
-              const zoom = interpolate(local, [0, s.dur], [1, 1.07]);
+              const zoom = interpolate(local, [0, s.dur], [1.03, 1.17]);
               return (
                 <Sequence key={s.name} from={s.from} durationInFrames={s.dur} layout="none">
                   <AbsoluteFill style={{ transform: `scale(${zoom})`, transformOrigin: `${s.focus[0] * 100}% ${s.focus[1] * 100}%` }}>
-                    <OffthreadVideo src={staticFile(`captures/${s.name}.mp4`)} trimBefore={sec(s.trim)} muted />
+                    <OffthreadVideo src={staticFile(`captures/${s.name}.mp4`)} trimBefore={sec(s.trim)} muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </AbsoluteFill>
                   {/* corte com um flash curto de luz */}
                   <AbsoluteFill style={{ background: '#fff', opacity: interpolate(local, [0, 4], [s.from === 0 ? 0 : 0.18, 0], clamp) }} />
@@ -312,13 +312,13 @@ export const Mobile: React.FC = () => {
     <AbsoluteFill style={{ background: C.bg }}>
       <NightSky glow={1.3} />
       <AbsoluteFill style={{ filter: 'blur(50px) brightness(.4)', transform: 'scale(1.6)', opacity: 0.8 }}>
-        <OffthreadVideo src={staticFile(`captures/${mc.name}.mp4`)} trimBefore={sec(mc.from)} muted />
+        <OffthreadVideo src={staticFile(`captures/${mc.name}.mp4`)} trimBefore={sec(mc.from)} muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </AbsoluteFill>
       <Caption text="Perfeito no celular, onde seus *pacientes estão.*" at={10} y={150} size={80} width={960} />
       <div style={{ position: 'absolute', top: 470, left: (W - width) / 2, perspective: 2200 }}>
         <div style={{ transform: `translateY(${ty}px) rotateX(${rx}deg) rotateY(${ry}deg)`, transformStyle: 'preserve-3d' }}>
           <PhoneFrame width={width}>
-            <OffthreadVideo src={staticFile(`captures/${mc.name}.mp4`)} trimBefore={sec(mc.from)} muted style={{ width: '100%', height: '100%' }} />
+            <OffthreadVideo src={staticFile(`captures/${mc.name}.mp4`)} trimBefore={sec(mc.from)} muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             {f >= tapF - 4 && f < tapF + 24 && (
               <div
                 style={{
@@ -361,14 +361,14 @@ export const Proof: React.FC = () => {
       <div style={{ position: 'absolute', top: 560, left: 40, perspective: 2400 }}>
         <div style={{ transform: `translateX(${(1 - inP) * -200}px) rotateY(${14 - f * 0.05}deg) rotateX(4deg)`, transformOrigin: '0% 50%' }}>
           <BrowserFrame width={820} url={clinic.url}>
-            <OffthreadVideo src={staticFile('captures/d-hero.mp4')} trimBefore={sec(1.2)} playbackRate={0.3} muted />
+            <OffthreadVideo src={staticFile('captures/d-hero.mp4')} trimBefore={sec(2.0)} playbackRate={0.1} muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </BrowserFrame>
         </div>
       </div>
       <div style={{ position: 'absolute', top: 760, left: 650, perspective: 2000 }}>
         <div style={{ transform: `translateY(${(1 - inP) * 300}px) rotateY(${-16 + f * 0.05}deg) rotateZ(3deg)` }}>
           <PhoneFrame width={340}>
-            <OffthreadVideo src={staticFile('captures/m-tour.mp4')} trimBefore={sec(1.0)} playbackRate={0.25} muted style={{ width: '100%', height: '100%' }} />
+            <OffthreadVideo src={staticFile('captures/m-tour.mp4')} trimBefore={sec(1.0)} playbackRate={0.25} muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </PhoneFrame>
         </div>
       </div>
