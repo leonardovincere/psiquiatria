@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 
 // URL base (só usada como fallback; cada clínica define a sua em siteUrl ou usa
 // o subdomínio <slug>.preview.vincereai.tech).
@@ -12,6 +12,15 @@ const site = process.env.SITE_URL || 'https://preview.vincereai.tech';
 const clinicFiles = readdirSync(new URL('./src/clinics/', import.meta.url)).filter(
   (f) => f.endsWith('.ts') && !f.startsWith('_') && !['index.ts', 'types.ts'].includes(f),
 );
+// O vercel.json precisa de uma regra por clínica (subdomínio → página). Se faltar alguma, o build para.
+{
+  const { clinicSlugs, buildRewrites } = await import('./scripts/vercel-routes.mjs');
+  const current = JSON.stringify(JSON.parse(readFileSync(new URL('./vercel.json', import.meta.url), 'utf8')).rewrites);
+  if (current !== JSON.stringify(buildRewrites(clinicSlugs()))) {
+    throw new Error('[vercel.json] regras de subdomínio desatualizadas: rode `npm run routes` e faça commit do vercel.json.');
+  }
+}
+
 const clinics = await Promise.all(
   clinicFiles.map(async (f) => (await import(`./src/clinics/${f}`)).default),
 );

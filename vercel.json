@@ -5,7 +5,12 @@
   "redirects": [
     {
       "source": "/",
-      "missing": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech" }],
+      "missing": [
+        {
+          "type": "host",
+          "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech"
+        }
+      ],
       "destination": "https://vincereai.tech",
       "permanent": false
     }
@@ -13,20 +18,80 @@
   "rewrites": [
     {
       "source": "/",
-      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech" }],
-      "destination": "/:slug.html"
+      "has": [
+        {
+          "type": "host",
+          "value": "animus.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/animus"
     },
     {
       "source": "/robots.txt",
-      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech" }],
-      "destination": "/:slug/robots.txt"
+      "has": [
+        {
+          "type": "host",
+          "value": "animus.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/animus/robots.txt"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "leonardo-fabricio.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/leonardo-fabricio"
+    },
+    {
+      "source": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "leonardo-fabricio.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/leonardo-fabricio/robots.txt"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "marilice-teodoro.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/marilice-teodoro"
+    },
+    {
+      "source": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "marilice-teodoro.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/marilice-teodoro/robots.txt"
     }
   ],
   "headers": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech" }],
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "has": [
+        {
+          "type": "host",
+          "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ]
 }

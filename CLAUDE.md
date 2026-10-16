@@ -23,7 +23,7 @@ npm run build   # astro check + build; precisa terminar com "0 errors"
 - `src/lib/agency.ts`: dados da Vincere.AI e o domínio das prévias (`preview.vincereai.tech`).
 - `src/lib/compliance.ts`: checagem da Resolução CFM 2.336/2023, roda em todo build.
 - `astro.config.mjs`: carrega as fontes de todas as clínicas (variáveis `--fh-<slug>` e `--fb-<slug>`).
-- `vercel.json`: `<slug>.preview.vincereai.tech` serve `/<slug>`; a raiz redireciona para vincereai.tech.
+- `vercel.json`: uma regra por clínica (`<slug>.preview.vincereai.tech` → `/<slug>`), gerada por `npm run routes` (`scripts/vercel-routes.mjs`); a raiz de outros domínios redireciona para vincereai.tech.
 
 **Regra de ouro:** nada de uma clínica fica fixo no código dos componentes. Dados, cores, fontes, imagens e textos vêm da config.
 Se um componente precisar de um dado novo, adicione um campo **opcional** em `types.ts`.
@@ -50,11 +50,12 @@ Se um componente precisar de um dado novo, adicione um campo **opcional** em `ty
    - Seções opcionais: `approach` liga "Abordagem"; `doctor.experience` liga "Trajetória"; `highlights` (ou `credentials`) são os números em destaque;
      `research` liga "Pesquisa" (trabalho acadêmico como capa de publicação); `articles` liga o conteúdo educativo.
    Se nada disso der uma cara diferente o bastante, crie uma variação nova e reutilizável (opção em `style`), nunca um componente exclusivo de uma clínica.
-5. Rode `npm run build` e verifique:
+5. Rode `npm run routes`: ele gera no `vercel.json` a regra do subdomínio da clínica nova. Faça commit do `vercel.json`; sem isso, o build para com um aviso.
+6. Rode `npm run build` e verifique:
    - celular (390 px) e desktop (1440 px), com screenshots via puppeteer-core usando `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`;
    - sem rolagem lateral (`document.documentElement.scrollWidth` igual à largura da tela);
    - Lighthouse com acessibilidade 100 e desempenho ≥ 95. O SEO fica baixo de propósito por causa do `noindex` da prévia.
-6. Publique (veja Deploy) e diga ao usuário qual domínio adicionar na Vercel.
+7. Publique (veja Deploy) e diga ao usuário qual domínio adicionar na Vercel.
 
 ## Regras de conteúdo (CFM 2.336/2023), o build barra
 
