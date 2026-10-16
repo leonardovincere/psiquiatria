@@ -21,10 +21,12 @@ npm run preview
    `body-normal.woff2`). Sem elas, o build baixa do Google Fonts.
 4. `npm run build` → `/<slug>`. Arquivos que começam com `_` são ignorados.
 
-Para cada prévia ter cara própria: `style.hero` (`arch` | `circle` | `cinema`), `style.conditions` (`marquee` | `chips`),
+Para cada prévia ter cara própria: `style.hero` (`arch` | `circle` | `cinema` | `neural`: rede neural viva e letterbox), `style.conditions` (`marquee` | `chips`),
 `style.finish` (`soft` | `editorial`: botões retos, seções numeradas, textura de papel, fundo animado, barra de leitura |
-`cinema`: cenas escuras, títulos que entram em foco, granulação de filme, abertura em letterbox),
-`research` (seção "Pesquisa"), `articles` (conteúdo educativo),
+`cinema`: cenas escuras, títulos que entram em foco, granulação de filme, abertura em letterbox |
+`noir`: o cinema inteiro à noite, com `theme` escuro),
+`research` (seção "Pesquisa"), `articles` (conteúdo educativo), `myths` (mitos riscados pela rolagem),
+`audiences` (cartazes por fase da vida),
 `style.intro` (abertura com cortina, só na 1ª visita),
 `theme.headingWeight`, `approach` (seção "Abordagem") e `doctor.experience` (seção "Trajetória").
 CRM/RQE vazios só são aceitos em prévia (a página mostra "em confirmação"); para publicar, o build exige.

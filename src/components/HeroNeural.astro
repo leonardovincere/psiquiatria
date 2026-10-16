@@ -1,0 +1,145 @@
+---
+import WhatsAppButton from './WhatsAppButton.astro';
+import NeuralField from './NeuralField.astro';
+import Monogram from './Monogram.astro';
+import type { ClinicConfig } from '../clinics/types';
+import { credentials, factsFor } from '../lib/links';
+import { getCopy } from '../lib/copy';
+import { getHeroPhoto, heroPhotoSizes } from '../lib/heroPhoto';
+
+/**
+ * Topo alternativo (style.hero = "neural"): a abertura de um filme sobre a
+ * mente. Tela escura em letterbox 2.39:1, rede neural que acende sinapse a
+ * sinapse, monograma desenhado em traço e o título centralizado como cartela,
+ * entrando em foco palavra por palavra. Ao rolar, as faixas do letterbox se
+ * abrem e a câmera atravessa a rede (--p, de 0 a 1). Com foto, ela fica ao
+ * fundo, escurecida. O título é pintado no 1º quadro (só desfoque): não
+ * atrasa o LCP.
+ */
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const { doctor } = clinic;
+const { tagline, taglineHighlight, heroEyebrow } = clinic.clinic;
+const copy = getCopy(clinic);
+const photo = await getHeroPhoto(clinic);
+const facts = factsFor(clinic).slice(0, 3);
+const second = clinic.modalities.teleconsulta ? '#teleconsulta' : '#primeira-consulta';
+
+// Palavras do título; as que pertencem ao trecho destacado ficam em itálico.
+const idx = taglineHighlight ? tagline.indexOf(taglineHighlight) : -1;
+const segments =
+  idx >= 0
+    ? [
+        { text: tagline.slice(0, idx), em: false },
+        { text: taglineHighlight!, em: true },
+        { text: tagline.slice(idx + taglineHighlight!.length), em: false },
+      ]
+    : [{ text: tagline, em: false }];
+let k = 0;
+const words = segments.flatMap((s) =>
+  s.text
+    .split(/(\s+)/)
+    .filter(Boolean)
+    .map((w) => (/^\s+$/.test(w) ? { space: true as const } : { w, em: s.em, k: k++ })),
+);
+---
+
+<section
+  id="inicio"
+  data-tone-at="base"
+  data-hide-sticky
+  data-neural-hero
+  class="hero-neural scene-dark relative isolate -mt-[72px] flex min-h-[100svh] flex-col overflow-hidden md:-mt-20"
+>
+  {
+    photo && (
+      <img
+        src={photo.src}
+        srcset={photo.srcSet.attribute}
+        sizes={heroPhotoSizes}
+        width={photo.attributes.width}
+        height={photo.attributes.height}
+        alt=""
+        class="cine-photo absolute inset-0 -z-20 size-full object-cover"
+        decoding="async"
+        fetchpriority="high"
+      />
+    )
+  }
+  <div class="neural-sky absolute inset-0 -z-20" aria-hidden="true"></div>
+  <div class="neural-camera absolute inset-0 -z-10" aria-hidden="true">
+    <NeuralField class="absolute inset-0 size-full" />
+  </div>
+  <span class="lb lb-top" aria-hidden="true"></span>
+  <span class="lb lb-bottom" aria-hidden="true"></span>
+
+  <div class="neural-scene container-page flex flex-1 flex-col items-center justify-center gap-5 pt-32 pb-24 text-center md:gap-6 md:pt-36 md:pb-28">
+    <Monogram clinic={clinic} class="neural-mono cine-fade w-16 md:w-[4.5rem]" />
+    <p class="eyebrow cine-fade" style="--d:0">{heroEyebrow ?? copy.hero.eyebrowFallback}</p>
+    <h1 class="cine-title max-w-[15ch] text-[2.9rem] leading-[1] sm:text-7xl lg:max-w-[22ch] lg:text-[5.4rem] xl:text-[6rem]">
+      {
+        words.map((p) =>
+          'space' in p ? (
+            ' '
+          ) : (
+            <span class:list={['cw', p.em && 'cw-em']} style={`--k:${p.k}`}>
+              {p.em ? <em>{p.w}</em> : p.w}
+            </span>
+          ),
+        )
+      }
+    </h1>
+    <p class="cine-fade max-w-xl text-lg leading-relaxed text-muted md:text-xl" style="--d:3">{copy.hero.subtitle}</p>
+    <div class="cine-fade mt-2 flex flex-col items-center gap-4 sm:flex-row sm:gap-8" style="--d:4">
+      <WhatsAppButton clinic={clinic} class="cine-btn" />
+      <a href={second} class="arrow-nudge inline-flex min-h-12 items-center gap-2 font-medium text-ink">
+        <span class="underline decoration-primary decoration-1 underline-offset-[7px]">{copy.hero.link}</span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+    <!-- Créditos de abertura: quem, o quê, registro. -->
+    <p class="billing cine-fade mt-3 justify-center" style="--d:5">
+      <span class="text-ink">{doctor.name}</span>
+      <span>{doctor.title}</span>
+      <span>{credentials(doctor)}</span>
+    </p>
+    {
+      facts.length > 0 && (
+        <ul class="neural-facts mt-2 grid w-full max-w-4xl grid-cols-3 gap-4 border-t border-line pt-5 md:gap-10" aria-label="Em destaque">
+          {facts.map((f, i) => (
+            <li class="cine-fade" style={`--d:${5 + i}`}>
+              {f.value && <span class="block font-serif text-[1.45rem] leading-none text-ink sm:text-3xl lg:text-4xl">{f.value}</span>}
+              <span class="mt-2 block text-[12.5px] leading-snug text-muted sm:text-[14px]">{f.label}</span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  // Rolagem do topo (0 a 1): o letterbox se abre e a câmera atravessa a rede.
+  const hero = document.querySelector<HTMLElement>('[data-neural-hero]');
+  if (hero && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let ticking = false;
+    const update = () => {
+      const p = Math.min(1, Math.max(0, scrollY / hero.offsetHeight));
+      hero.style.setProperty('--p', p.toFixed(3));
+      ticking = false;
+    };
+    addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
+  }
+</script>

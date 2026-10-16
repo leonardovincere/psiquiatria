@@ -33,6 +33,8 @@ const headingVar = `--fh-${clinic.slug}` as CssVar;
 const bodyVar = `--fb-${clinic.slug}` as CssVar;
 const copy = getCopy(clinic);
 const finish = clinic.style?.finish ?? 'soft';
+// "noir" é o "cinema" numa cena noturna: herda tudo do cinema (data-finish) e ganha data-noir.
+const noir = finish === 'noir';
 const intro = clinic.style?.intro ?? finish !== 'soft';
 const textured = finish !== 'soft';
 
@@ -70,7 +72,7 @@ const jsonLd = {
 ---
 
 <!doctype html>
-<html lang="pt-BR" style={cssVars} data-finish={finish} data-hero={clinic.style?.hero ?? 'arch'}>
+<html lang="pt-BR" style={cssVars} data-finish={noir ? 'cinema' : finish} data-noir={noir || undefined} data-hero={clinic.style?.hero ?? 'arch'}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

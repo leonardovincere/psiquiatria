@@ -1,5 +1,7 @@
 ---
 import WhatsAppButton from './WhatsAppButton.astro';
+import NeuralField from './NeuralField.astro';
+import Monogram from './Monogram.astro';
 import type { ClinicConfig } from '../clinics/types';
 import { getCopy } from '../lib/copy';
 import { heightFor } from '../lib/assetSize';
@@ -11,12 +13,22 @@ const { clinic } = Astro.props;
 const { phone } = clinic.contact;
 const copy = getCopy(clinic);
 const markH = clinic.clinic.logoMark ? await heightFor(clinic.clinic.logoMark, 96) : 0;
+// Topo "neural": o fechamento espelha a abertura (a rede volta e o monograma reaparece, como créditos finais).
+const neural = clinic.style?.hero === 'neural';
 ---
 
-<section id="contato" data-tone-at="base" class="px-5 pb-24 md:pb-32" aria-labelledby="contato-titulo">
+<section id="contato" data-tone-at="base" class:list={['px-5 pb-24 md:pb-32', neural && 'final-neural relative isolate overflow-hidden']} aria-labelledby="contato-titulo">
+  {
+    neural && (
+      <div class="absolute inset-0 -z-10" aria-hidden="true">
+        <NeuralField class="absolute inset-0 size-full" density={0.8} />
+      </div>
+    )
+  }
   <div class="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
+    {neural && <Monogram clinic={clinic} class="neural-mono w-16 md:w-20" />}
     {
-      clinic.clinic.logoMark && (
+      !neural && clinic.clinic.logoMark && (
         <img src={clinic.clinic.logoMark} alt="" aria-hidden="true" width="96" height={markH} loading="lazy" class="w-24" data-reveal />
       )
     }

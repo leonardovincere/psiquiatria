@@ -41,14 +41,18 @@ Se um componente precisar de um dado novo, adicione um campo **opcional** em `ty
    - `style.hero`: `arch` (foto em arco que se abre ao rolar), `circle` (foto ou monograma num círculo com anel de texto)
      ou `cinema` (tela cheia escura com luz de projetor, título que entra em foco, créditos de cartaz; foto opcional ao fundo).
      Com `cinema`, os destaques ficam no próprio topo (a faixa de destaques some).
+     Ou `neural` (rede neural viva em canvas, monograma desenhado em traço, título centralizado e letterbox 2.39:1 que se abre ao rolar;
+     o convite final repete a rede). Também traz os destaques no topo.
    - `style.conditions`: `marquee` (faixas deslizando) ou `chips` (lista fixa).
    - `style.finish`: `soft` (arredondado), `editorial` (botões retos, seções numeradas, textura, fundo animado, barra de leitura)
      ou `cinema` (cenas escuras intercaladas, títulos em foco, granulação de filme, condições como letreiro, primeira consulta
-     com título preso na rolagem, abertura em letterbox).
+     com título preso na rolagem, abertura em letterbox)
+     ou `noir` (o `cinema` inteiro à noite: pede `theme` escuro, com `background` escuro, `text` claro e `primary` como a luz).
    - `style.intro`: abertura com cortina, só na 1ª visita.
    - `theme`: cores, fontes e `headingWeight`.
    - Seções opcionais: `approach` liga "Abordagem"; `doctor.experience` liga "Trajetória"; `highlights` (ou `credentials`) são os números em destaque;
-     `research` liga "Pesquisa" (trabalho acadêmico como capa de publicação); `articles` liga o conteúdo educativo.
+     `research` liga "Pesquisa" (trabalho acadêmico como capa de publicação); `articles` liga o conteúdo educativo;
+     `myths` liga "Mitos" (mito riscado → verdade, guiado pela rolagem); `audiences` liga "Fases da vida" (cartazes de filme).
    Se nada disso der uma cara diferente o bastante, crie uma variação nova e reutilizável (opção em `style`), nunca um componente exclusivo de uma clínica.
 5. Rode `npm run routes`: ele gera no `vercel.json` a regra do subdomínio da clínica nova. Faça commit do `vercel.json`; sem isso, o build para com um aviso.
 6. Rode `npm run build` e verifique:

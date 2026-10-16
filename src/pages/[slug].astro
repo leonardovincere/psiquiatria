@@ -5,6 +5,9 @@ import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import HeroCircle from '../components/HeroCircle.astro';
 import HeroCinema from '../components/HeroCinema.astro';
+import HeroNeural from '../components/HeroNeural.astro';
+import Myths from '../components/Myths.astro';
+import Audiences from '../components/Audiences.astro';
 import Research from '../components/Research.astro';
 import Articles from '../components/Articles.astro';
 import Approach from '../components/Approach.astro';
@@ -44,11 +47,23 @@ const hero = clinic.style?.hero ?? 'arch';
   <main id="conteudo" data-tone-root data-tone="base">
     <div class:list={['hero-wrap relative', clinic.style?.finish === 'editorial' && 'overflow-hidden']}>
       {clinic.style?.finish === 'editorial' && <div class="aurora" aria-hidden="true" />}
-      {hero === 'circle' ? <HeroCircle clinic={clinic} /> : hero === 'cinema' ? <HeroCinema clinic={clinic} /> : <Hero clinic={clinic} />}
+      {
+        hero === 'circle' ? (
+          <HeroCircle clinic={clinic} />
+        ) : hero === 'cinema' ? (
+          <HeroCinema clinic={clinic} />
+        ) : hero === 'neural' ? (
+          <HeroNeural clinic={clinic} />
+        ) : (
+          <Hero clinic={clinic} />
+        )
+      }
     </div>
-    {hero !== 'cinema' && <FactsStrip clinic={clinic} />}
+    {hero !== 'cinema' && hero !== 'neural' && <FactsStrip clinic={clinic} />}
     <About clinic={clinic} />
     <Research clinic={clinic} />
+    <Myths clinic={clinic} />
+    <Audiences clinic={clinic} />
     <LotusDivider src={clinic.clinic.logoMark} />
     <Approach clinic={clinic} />
     <Journey clinic={clinic} />

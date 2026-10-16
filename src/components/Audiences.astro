@@ -1,0 +1,47 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import type { ClinicConfig } from '../clinics/types';
+import { getCopy } from '../lib/copy';
+
+/**
+ * Públicos por fase da vida (config `audiences`), como cartazes de filme:
+ * capítulo em versalete, título grande, sinopse e os temas em bloco de
+ * créditos. No desktop, o cartaz apontado se alarga e os outros recuam.
+ */
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const items = clinic.audiences ?? [];
+const copy = getCopy(clinic).audiences;
+const roman = ['I', 'II', 'III', 'IV', 'V'];
+---
+
+{
+  items.length > 0 && (
+    <section id="fases" data-tone-at="base" class="section-y" aria-labelledby="fases-titulo">
+      <div class="container-page">
+        <SectionHeading id="fases-titulo" eyebrow={copy.eyebrow} title={copy.title} />
+        <ul class="posters">
+          {items.map((a, i) => (
+            <li class="poster" style={`--i:${i}`} data-reveal>
+              <span class="poster-numeral font-serif" aria-hidden="true">
+                {roman[i] ?? i + 1}
+              </span>
+              <p class="poster-chapter">Capítulo {roman[i] ?? i + 1}</p>
+              <div class="poster-body">
+                <h3 class="poster-title">{a.label}</h3>
+                <p class="poster-text">{a.text}</p>
+                <ul class="poster-billing" aria-label={`Temas comuns: ${a.label}`}>
+                  {a.highlights.map((h) => (
+                    <li>{h}</li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

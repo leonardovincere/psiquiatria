@@ -67,9 +67,11 @@ export interface ApproachItem {
 export interface LayoutStyle {
   /**
    * Topo: "arch" = foto em arco que se abre ao rolar (padrão); "circle" = foto/monograma em círculo com anel de texto girando;
-   * "cinema" = tela cheia escura com luz de projetor, título que entra em foco e créditos de cartaz (foto opcional, ao fundo).
+   * "cinema" = tela cheia escura com luz de projetor, título que entra em foco e créditos de cartaz (foto opcional, ao fundo);
+   * "neural" = rede neural viva (sinapses que acendem e pulsos na cor principal), monograma desenhado em traço,
+   * título centralizado como cartela de abertura e letterbox 2.39:1 que se abre ao rolar, com a câmera atravessando a rede.
    */
-  hero?: 'arch' | 'circle' | 'cinema';
+  hero?: 'arch' | 'circle' | 'cinema' | 'neural';
   /** Condições: "marquee" = faixas deslizando (padrão); "chips" = grade fixa de etiquetas. */
   conditions?: 'marquee' | 'chips';
   /**
@@ -78,8 +80,10 @@ export interface LayoutStyle {
    * fundo animado no topo).
    * "cinema": botões retos com brilho, títulos que entram em foco, granulação de filme, faixas de condições
    * como letreiro e primeira consulta com o título preso na rolagem. A abertura vira um letterbox que se abre.
+   * "noir": o "cinema" inteiro numa cena noturna. Pede um `theme` escuro (background escuro, texto claro, primary como luz):
+   * vinheta fixa, títulos com brilho metálico na cor principal, primeira consulta ligada por um fio que se desenha ao rolar.
    */
-  finish?: 'soft' | 'editorial' | 'cinema';
+  finish?: 'soft' | 'editorial' | 'cinema' | 'noir';
   /** Abertura: cortina com o monograma/logo que sobe revelando o site (só na 1ª visita). Padrão: ligada no "editorial" e no "cinema". */
   intro?: boolean;
 }
@@ -125,6 +129,21 @@ export interface Highlight {
 
 /** Credencial em destaque (mesmo formato de Highlight). Usada quando não há `highlights`. */
 export type Credential = Highlight;
+
+/** Mito comum sobre psiquiatria e a resposta correta (seção "Mitos"). */
+export interface Myth {
+  myth: string;
+  truth: string;
+}
+
+/** Público por fase da vida (seção "Fases da vida", em cartazes). */
+export interface Audience {
+  /** Ex.: "Crianças". */
+  label: string;
+  text: string;
+  /** Temas mais comuns nessa fase (3–4 itens curtos). */
+  highlights: string[];
+}
 
 /** Trabalho acadêmico em destaque (seção "Pesquisa", em estilo de capa de publicação). */
 export interface Research {
@@ -254,6 +273,8 @@ export interface SiteCopy {
   firstVisit: { eyebrow: string; title: string; extraPrefix: string; paymentPrefix: string };
   telehealth: { eyebrow: string; title: string; titleEm: string; subtitle: string; points: [string, string, string]; note: string };
   research: { eyebrow: string; link: string };
+  myths: { eyebrow: string; title: string; subtitle: string; mythLabel: string; truthLabel: string };
+  audiences: { eyebrow: string; title: string };
   articles: { eyebrow: string };
   faq: { title: string };
   location: { title: string; mapButton: string; mapsLink: string };
@@ -301,6 +322,10 @@ export interface ClinicConfig {
   highlights?: Highlight[];
   /** Credenciais em destaque (alternativa a `highlights`, com `note` opcional). */
   credentials?: Credential[];
+  /** Mitos e verdades: liga a seção "Mitos" (o mito é riscado e dá lugar à verdade, guiado pela rolagem). */
+  myths?: Myth[];
+  /** Públicos por fase da vida: liga a seção "Fases da vida" (um cartaz por fase). */
+  audiences?: Audience[];
   /** Trabalho acadêmico em destaque: liga a seção "Pesquisa". */
   research?: Research;
   /** Conteúdo educativo: liga a seção de perguntas comuns. */
