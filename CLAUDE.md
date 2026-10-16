@@ -37,7 +37,7 @@ Se um componente precisar de um dado novo, adicione um campo **opcional** em `ty
    Baixe com `@fontsource-variable/<fonte>` do npm numa pasta de rascunho e recorte com fonttools (`varLib.instancer` para os pesos e `pyftsubset` para os caracteres do português).
    Sem esses arquivos, o build tenta baixar do Google Fonts. Neste ambiente de nuvem esse download costuma falhar e o site cai na fonte reserva, por isso prefira os arquivos locais.
 4. Deixe cada prévia com cara própria. Combine as opções de `style` de um jeito diferente das clínicas existentes
-   (`grep -n "style" src/clinics/*.ts` mostra o que cada uma usa):
+   (`grep -n "style" src/clinics/*.ts` mostra o que cada uma usa; sem `style`, valem os padrões `arch` + `marquee` + `soft`, como na Animus):
    - `style.hero`: `arch` (foto em arco que se abre ao rolar) ou `circle` (foto ou monograma num círculo com anel de texto).
    - `style.conditions`: `marquee` (faixas deslizando) ou `chips` (lista fixa).
    - `style.finish`: `soft` (arredondado) ou `editorial` (botões retos, seções numeradas, textura, fundo animado, barra de leitura).
