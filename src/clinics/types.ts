@@ -65,28 +65,34 @@ export interface ApproachItem {
 
 /** Escolhas de layout por clínica, para as prévias não ficarem iguais. */
 export interface LayoutStyle {
-  /** Topo: "arch" = foto em arco que se abre ao rolar (padrão); "circle" = foto/monograma em círculo com anel de texto girando. */
-  hero?: 'arch' | 'circle';
+  /**
+   * Topo: "arch" = foto em arco que se abre ao rolar (padrão); "circle" = foto/monograma em círculo com anel de texto girando;
+   * "cinema" = tela cheia escura com luz de projetor, título que entra em foco e créditos de cartaz (foto opcional, ao fundo).
+   */
+  hero?: 'arch' | 'circle' | 'cinema';
   /** Condições: "marquee" = faixas deslizando (padrão); "chips" = grade fixa de etiquetas. */
   conditions?: 'marquee' | 'chips';
   /**
    * Acabamento: "soft" (padrão: cantos arredondados, botões em pílula) ou "editorial"
    * (botões retos, seções numeradas, filetes no lugar de cartões, textura de papel e
    * fundo animado no topo).
+   * "cinema": botões retos com brilho, títulos que entram em foco, granulação de filme, faixas de condições
+   * como letreiro e primeira consulta com o título preso na rolagem. A abertura vira um letterbox que se abre.
    */
-  finish?: 'soft' | 'editorial';
-  /** Abertura: cortina com o monograma/logo que sobe revelando o site (só na 1ª visita). Padrão: ligada no "editorial". */
+  finish?: 'soft' | 'editorial' | 'cinema';
+  /** Abertura: cortina com o monograma/logo que sobe revelando o site (só na 1ª visita). Padrão: ligada no "editorial" e no "cinema". */
   intro?: boolean;
 }
 
 export interface Modalities {
   presencial: boolean;
-  /** Controla a seção de teleconsulta. */
-  teleconsulta: boolean;
+  /** Controla a seção de teleconsulta. null = a confirmar (a seção não aparece). */
+  teleconsulta: boolean | null;
 }
 
 export interface Insurance {
-  acceptsInsurance: boolean;
+  /** null = a confirmar. */
+  acceptsInsurance: boolean | null;
   note: string | null;
 }
 
@@ -113,6 +119,45 @@ export interface Highlight {
   label: string;
   /** Link opcional (ex.: fonte das avaliações). */
   href?: string;
+  /** Detalhe discreto abaixo do rótulo. Ex.: "UFMS, 2024". */
+  note?: string | null;
+}
+
+/** Credencial em destaque (mesmo formato de Highlight). Usada quando não há `highlights`. */
+export type Credential = Highlight;
+
+/** Trabalho acadêmico em destaque (seção "Pesquisa", em estilo de capa de publicação). */
+export interface Research {
+  enabled: boolean;
+  /** Título da seção. Ex.: "Pesquisa que vem do consultório". */
+  heading: string;
+  /** Título do trabalho. */
+  title: string;
+  /** Ex.: "Tese de doutorado". */
+  kind: string;
+  institution: string;
+  year: number | null;
+  /** Por que o trabalho importa para o paciente (1–2 frases). */
+  summary: string | null;
+  /** Link para o trabalho publicado. */
+  link: string | null;
+}
+
+/** Conteúdo educativo (seção de perguntas comuns com respostas curtas). */
+export interface Articles {
+  enabled: boolean;
+  heading: string;
+  intro: string | null;
+  items: { slug: string; title: string; excerpt: string; href?: string | null }[];
+}
+
+/** Direção de arte (não exibida): referência para quem monta a prévia. */
+export interface DesignNotes {
+  concept?: string;
+  hero?: string;
+  signatureSection?: string;
+  motion?: string;
+  avoid?: string[];
 }
 
 export interface SocialProof {
@@ -147,7 +192,8 @@ export interface Address {
   neighborhood: string | null;
   city: string;
   state: string;
-  zip: string;
+  /** null = a confirmar (o CEP não aparece). */
+  zip: string | null;
   coords: { lat: number; lng: number } | null;
   /** Link "Abrir no Google Maps". Padrão: busca pelo endereço. */
   mapsUrl: string | null;
@@ -187,6 +233,8 @@ export interface Compliance {
   noOutcomePromises: boolean;
   /** Barra no build termos de áreas sem RQE (ortomolecular, medicina integrativa/funcional…) nos textos exibidos. */
   hideNonRecognizedSpecialties?: boolean;
+  /** Lembrete de que depoimentos de pacientes não são exibidos (a página nunca os mostra). */
+  noPatientTestimonials?: boolean;
   /** Diretor(a) técnico(a) — exigido para pessoa jurídica. Texto livre com nome e CRM. */
   technicalDirector: string | null;
 }
@@ -205,6 +253,8 @@ export interface SiteCopy {
   conditions: { title: string; intro: string; note: string };
   firstVisit: { eyebrow: string; title: string; extraPrefix: string; paymentPrefix: string };
   telehealth: { eyebrow: string; title: string; titleEm: string; subtitle: string; points: [string, string, string]; note: string };
+  research: { eyebrow: string; link: string };
+  articles: { eyebrow: string };
   faq: { title: string };
   location: { title: string; mapButton: string; mapsLink: string };
   finalCta: { title: string; titleEm: string; text: string; callPrefix: string };
@@ -247,8 +297,16 @@ export interface ClinicConfig {
   /** Escolhas de layout (opcional). */
   style?: LayoutStyle;
 
-  /** Até 3 números/fatos em destaque abaixo do topo. Sem eles, mostra formação e modalidades. */
+  /** Até 3 números/fatos em destaque abaixo do topo. Sem eles, usa `credentials` ou mostra formação e modalidades. */
   highlights?: Highlight[];
+  /** Credenciais em destaque (alternativa a `highlights`, com `note` opcional). */
+  credentials?: Credential[];
+  /** Trabalho acadêmico em destaque: liga a seção "Pesquisa". */
+  research?: Research;
+  /** Conteúdo educativo: liga a seção de perguntas comuns. */
+  articles?: Articles;
+  /** Direção de arte (não exibida na página). */
+  designNotes?: DesignNotes;
   socialProof: SocialProof;
   contact: Contact;
   address: Address;

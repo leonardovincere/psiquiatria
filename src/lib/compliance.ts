@@ -34,10 +34,10 @@ const NON_RECOGNIZED: { pattern: RegExp; reason: string }[] = [
 // Campos técnicos ou não exibidos, que não são texto publicitário.
 const SKIP_KEYS = new Set([
   'theme', 'photo', 'slug', 'siteUrl', 'contact', 'sourceUrl', 'mapsUrl', 'href', 'keywords',
-  'logo', 'logoLight', 'logoMark', 'favicon', 'appleTouchIcon',
+  'logo', 'logoLight', 'logoMark', 'favicon', 'appleTouchIcon', 'designNotes',
 ]);
 // Caminhos específicos não exibidos na página.
-const SKIP_PATHS = new Set(['socialProof.highlights', 'doctor.complementaryCourses', 'seo.keywords']);
+const SKIP_PATHS = new Set(['research.link', 'socialProof.highlights', 'doctor.complementaryCourses', 'seo.keywords']);
 
 function collectStrings(value: unknown, path: string, out: { path: string; text: string }[]) {
   if (typeof value === 'string') out.push({ path, text: value });

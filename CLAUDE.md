@@ -38,12 +38,17 @@ Se um componente precisar de um dado novo, adicione um campo **opcional** em `ty
    Sem esses arquivos, o build tenta baixar do Google Fonts. Neste ambiente de nuvem esse download costuma falhar e o site cai na fonte reserva, por isso prefira os arquivos locais.
 4. Deixe cada prévia com cara própria. Combine as opções de `style` de um jeito diferente das clínicas existentes
    (`grep -n "style" src/clinics/*.ts` mostra o que cada uma usa; sem `style`, valem os padrões `arch` + `marquee` + `soft`, como na Animus):
-   - `style.hero`: `arch` (foto em arco que se abre ao rolar) ou `circle` (foto ou monograma num círculo com anel de texto).
+   - `style.hero`: `arch` (foto em arco que se abre ao rolar), `circle` (foto ou monograma num círculo com anel de texto)
+     ou `cinema` (tela cheia escura com luz de projetor, título que entra em foco, créditos de cartaz; foto opcional ao fundo).
+     Com `cinema`, os destaques ficam no próprio topo (a faixa de destaques some).
    - `style.conditions`: `marquee` (faixas deslizando) ou `chips` (lista fixa).
-   - `style.finish`: `soft` (arredondado) ou `editorial` (botões retos, seções numeradas, textura, fundo animado, barra de leitura).
+   - `style.finish`: `soft` (arredondado), `editorial` (botões retos, seções numeradas, textura, fundo animado, barra de leitura)
+     ou `cinema` (cenas escuras intercaladas, títulos em foco, granulação de filme, condições como letreiro, primeira consulta
+     com título preso na rolagem, abertura em letterbox).
    - `style.intro`: abertura com cortina, só na 1ª visita.
    - `theme`: cores, fontes e `headingWeight`.
-   - Seções opcionais: `approach` liga "Abordagem"; `doctor.experience` liga "Trajetória"; `highlights` são os números em destaque.
+   - Seções opcionais: `approach` liga "Abordagem"; `doctor.experience` liga "Trajetória"; `highlights` (ou `credentials`) são os números em destaque;
+     `research` liga "Pesquisa" (trabalho acadêmico como capa de publicação); `articles` liga o conteúdo educativo.
    Se nada disso der uma cara diferente o bastante, crie uma variação nova e reutilizável (opção em `style`), nunca um componente exclusivo de uma clínica.
 5. Rode `npm run build` e verifique:
    - celular (390 px) e desktop (1440 px), com screenshots via puppeteer-core usando `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`;

@@ -17,6 +17,8 @@ const mono = initials(clinic.clinic.name.startsWith('Dr') ? clinic.doctor.name :
 ---
 
 <div class="intro" aria-hidden="true">
+  <span class="intro-bar intro-bar-top"></span>
+  <span class="intro-bar intro-bar-bottom"></span>
   <div class="intro-inner">
     {logoMark ? <img src={logoMark} alt="" class="intro-mark w-24" /> : <span class="intro-mark font-serif italic">{mono}</span>}
     <span class="intro-line"></span>

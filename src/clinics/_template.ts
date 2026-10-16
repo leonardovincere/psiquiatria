@@ -165,12 +165,14 @@ const clinica: ClinicConfig = {
   // ─── Layout (opcional) ──────────────────────────────────────
   // Para as prévias não ficarem iguais.
   // style: {
-  //   hero: 'circle',      // 'arch' (foto em arco que se abre) | 'circle' (foto/monograma em círculo com anel de texto)
+  //   hero: 'circle',      // 'arch' (foto em arco que se abre) | 'circle' (foto/monograma em círculo com anel de texto) | 'cinema' (tela cheia escura)
   //   conditions: 'chips', // 'marquee' (faixas deslizando) | 'chips' (etiquetas fixas)
-  //   finish: 'editorial', // 'soft' (arredondado) | 'editorial' (botões retos, seções numeradas, textura, fundo animado)
+  //   finish: 'editorial', // 'soft' (arredondado) | 'editorial' (botões retos, seções numeradas, textura, fundo animado) | 'cinema' (cenas escuras, títulos em foco)
   //   intro: true,         // abertura com cortina e monograma/logo (padrão: ligada no 'editorial')
   // },
   // approach: [{ title: 'Escuta atenta', text: '…' }], // vira a seção "Abordagem"
+  // research: { enabled: true, heading: '…', title: '…', kind: 'Tese de doutorado', institution: '…', year: 2024, summary: '…', link: null }, // seção "Pesquisa"
+  // articles: { enabled: true, heading: '…', intro: '…', items: [{ slug: '…', title: '…', excerpt: '…' }] }, // conteúdo educativo
   // (doctor.experience preenchido liga a seção "Trajetória": formação + experiência)
 
   // ─── Textos das seções (opcional) ───────────────────────────

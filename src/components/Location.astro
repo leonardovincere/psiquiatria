@@ -26,7 +26,7 @@ const copy = getCopy(clinic).location;
             <p>{address.street}</p>
             {address.complement && <p>{address.complement}</p>}
             {address.neighborhood && <p>{address.neighborhood}</p>}
-            <p>{address.city} — {address.state} · CEP {address.zip}</p>
+            <p>{address.city} — {address.state}{address.zip && ` · CEP ${address.zip}`}</p>
           </div>
         </div>
         {

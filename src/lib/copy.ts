@@ -31,6 +31,8 @@ const DEFAULT_COPY: SiteCopy = {
     points: ['Link enviado antes do horário', 'Sigilo e privacidade', 'Receita digital válida'],
     note: 'Conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.',
   },
+  research: { eyebrow: 'Pesquisa', link: 'Ler o trabalho completo' },
+  articles: { eyebrow: 'Conteúdo' },
   faq: { title: 'Perguntas frequentes' },
   location: { title: 'Onde estamos', mapButton: 'Ver mapa interativo', mapsLink: 'Abrir no Google Maps' },
   finalCta: {

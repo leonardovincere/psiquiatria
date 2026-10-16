@@ -1,23 +1,12 @@
 ---
-import type { ClinicConfig, Highlight } from '../clinics/types';
+import type { ClinicConfig } from '../clinics/types';
+import { factsFor } from '../lib/links';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const { modalities, socialProof } = clinic;
-
-// Sem highlights no config: formação + modalidades + avaliações, em texto.
-const items: Highlight[] = clinic.highlights?.length
-  ? clinic.highlights
-  : [
-      ...clinic.doctor.education.map((e) => ({ value: '', label: e })),
-      {
-        value: '',
-        label: modalities.presencial && modalities.teleconsulta ? 'Presencial e teleconsulta' : modalities.teleconsulta ? 'Teleconsulta' : 'Atendimento presencial',
-      },
-      ...(socialProof.enabled && socialProof.label ? [{ value: '', label: socialProof.label, href: socialProof.sourceUrl ?? undefined }] : []),
-    ];
+const items = factsFor(clinic);
 ---
 
 <section aria-label="Em destaque" data-tone-at="base" class="facts card-light border-y border-line bg-surface">
@@ -31,6 +20,7 @@ const items: Highlight[] = clinic.highlights?.length
               {it.label}
               {it.href && <span class="arrow ml-1 text-primary" aria-hidden="true">↗</span>}
             </span>
+            {it.note && <span class="mt-1 block text-[13px] text-muted">{it.note}</span>}
           </>
         );
         return (

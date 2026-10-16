@@ -1,10 +1,10 @@
-import type { Address, ClinicConfig, Doctor } from '../clinics/types';
+import type { Address, ClinicConfig, Doctor, Highlight } from '../clinics/types';
 
 export const whatsappUrl = (c: ClinicConfig) =>
   `https://wa.me/${c.contact.whatsapp}?text=${encodeURIComponent(c.contact.whatsappMessage)}`;
 
 export const formatAddress = (a: Address) =>
-  [a.street, a.complement, a.neighborhood, `${a.city} — ${a.state}`, `CEP ${a.zip}`].filter(Boolean).join(', ');
+  [a.street, a.complement, a.neighborhood, `${a.city} — ${a.state}`, a.zip && `CEP ${a.zip}`].filter(Boolean).join(', ');
 
 const mapsQuery = (a: Address) => (a.coords ? `${a.coords.lat},${a.coords.lng}` : formatAddress(a));
 
@@ -42,6 +42,28 @@ export const credentials = (d: Doctor) => {
   if (parts.length === 1) return `${parts[0]} · ${d.crm ? 'RQE' : 'CRM'} em confirmação`;
   return 'CRM e RQE em confirmação';
 };
+
+/** Fatos da faixa de destaques: `highlights`, senão `credentials`, senão formação + modalidades + avaliações. */
+export const factsFor = (c: ClinicConfig): Highlight[] =>
+  c.highlights?.length
+    ? c.highlights
+    : c.credentials?.length
+      ? c.credentials
+      : [
+          ...c.doctor.education.map((e) => ({ value: '', label: e })),
+          {
+            value: '',
+            label:
+              c.modalities.presencial && c.modalities.teleconsulta
+                ? 'Presencial e teleconsulta'
+                : c.modalities.teleconsulta
+                  ? 'Teleconsulta'
+                  : 'Atendimento presencial',
+          },
+          ...(c.socialProof.enabled && c.socialProof.label
+            ? [{ value: '', label: c.socialProof.label, href: c.socialProof.sourceUrl ?? undefined }]
+            : []),
+        ];
 
 /** Horários sempre como lista. */
 export const hoursList = (h: string | string[] | null) => (h == null ? [] : Array.isArray(h) ? h : [h]);

@@ -34,7 +34,7 @@ const copy = getCopy(clinic);
 
 <script>
   const bar = document.querySelector<HTMLElement>('[data-sticky-cta]');
-  const ends = document.querySelectorAll('#contato, footer');
+  const ends = document.querySelectorAll('#contato, footer, [data-hide-sticky]');
   if (bar && ends.length && 'IntersectionObserver' in window) {
     const visible = new Set<Element>();
     const io = new IntersectionObserver((entries) => {

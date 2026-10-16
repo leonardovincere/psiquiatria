@@ -1,0 +1,135 @@
+---
+import WhatsAppButton from './WhatsAppButton.astro';
+import type { ClinicConfig } from '../clinics/types';
+import { credentials, factsFor } from '../lib/links';
+import { getCopy } from '../lib/copy';
+import { getHeroPhoto, heroPhotoSizes } from '../lib/heroPhoto';
+
+/**
+ * Topo alternativo (style.hero = "cinema"): tela cheia escura, como a abertura
+ * de um filme. Luz de projetor que segue o ponteiro, título que entra em foco
+ * palavra por palavra, créditos de cartaz (nome, título, CRM/RQE) e os fatos
+ * em destaque à direita. Com foto, ela fica ao fundo, escurecida. O título já
+ * é pintado no 1º quadro (só desfoque, sem opacidade 0): não atrasa o LCP.
+ */
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const { doctor } = clinic;
+const { tagline, taglineHighlight, heroEyebrow, city, state } = clinic.clinic;
+const copy = getCopy(clinic);
+const photo = await getHeroPhoto(clinic);
+const facts = factsFor(clinic).slice(0, 3);
+
+// Palavras do título; as que pertencem ao trecho destacado ficam em itálico.
+const idx = taglineHighlight ? tagline.indexOf(taglineHighlight) : -1;
+const segments =
+  idx >= 0
+    ? [
+        { text: tagline.slice(0, idx), em: false },
+        { text: taglineHighlight!, em: true },
+        { text: tagline.slice(idx + taglineHighlight!.length), em: false },
+      ]
+    : [{ text: tagline, em: false }];
+let k = 0;
+const words = segments.flatMap((s) =>
+  s.text
+    .split(/(\s+)/)
+    .filter(Boolean)
+    .map((w) => (/^\s+$/.test(w) ? { space: true as const } : { w, em: s.em, k: k++ })),
+);
+---
+
+<section
+  id="inicio"
+  data-tone-at="base"
+  data-hide-sticky
+  data-cine
+  class="hero-cinema scene-dark relative isolate -mt-[72px] flex min-h-[100svh] flex-col overflow-hidden md:-mt-20"
+>
+  {
+    photo && (
+      <img
+        src={photo.src}
+        srcset={photo.srcSet.attribute}
+        sizes={heroPhotoSizes}
+        width={photo.attributes.width}
+        height={photo.attributes.height}
+        alt=""
+        class="cine-photo absolute inset-0 -z-10 size-full object-cover"
+        decoding="async"
+        fetchpriority="high"
+      />
+    )
+  }
+  <div class="cine-light absolute inset-0 -z-10 overflow-hidden" aria-hidden="true"><div class="cine-spot"></div></div>
+
+  <div class="cine-scene container-page flex flex-1 flex-col justify-end gap-12 pt-36 pb-24 md:pt-44 md:pb-28 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] lg:items-end lg:gap-24 xl:grid-cols-[minmax(0,1fr)_minmax(0,19rem)]">
+    <div class="flex flex-col gap-7">
+      <p class="eyebrow cine-fade" style="--d:0">{heroEyebrow ?? copy.hero.eyebrowFallback}</p>
+      <h1 class="cine-title max-w-[13ch] text-[3.1rem] leading-[0.98] sm:text-7xl lg:text-[6.4rem] xl:text-[7.4rem]">
+        {
+          words.map((p) =>
+            'space' in p ? (
+              ' '
+            ) : (
+              <span class:list={['cw', p.em && 'cw-em']} style={`--k:${p.k}`}>
+                {p.em ? <em>{p.w}</em> : p.w}
+              </span>
+            ),
+          )
+        }
+      </h1>
+      <p class="cine-fade max-w-xl text-lg leading-relaxed text-muted md:text-xl" style="--d:3">{copy.hero.subtitle}</p>
+      <div class="cine-fade flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8" style="--d:4">
+        <WhatsAppButton clinic={clinic} class="cine-btn" />
+        <a href="#primeira-consulta" class="arrow-nudge inline-flex min-h-12 items-center gap-2 self-start font-medium text-ink sm:self-auto">
+          <span class="underline decoration-accent-deep decoration-1 underline-offset-[7px]">{copy.hero.link}</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+      <!-- Créditos de cartaz de cinema: quem, o quê, registro. -->
+      <p class="billing cine-fade mt-4 border-t border-line pt-5" style="--d:5">
+        <span class="text-ink">{doctor.name}</span>
+        <span>{doctor.title}</span>
+        <span>{credentials(doctor)}</span>
+      </p>
+    </div>
+
+    {
+      facts.length > 0 && (
+        <ul class="cine-facts grid grid-cols-3 gap-4 lg:grid-cols-1 lg:gap-0" aria-label="Em destaque">
+          {facts.map((f, i) => (
+            <li class="cine-fade border-t border-line pt-4 lg:pt-5 lg:pb-7" style={`--d:${4 + i}`}>
+              {f.value && <span class="block font-serif text-[1.65rem] leading-none text-ink sm:text-4xl lg:text-5xl">{f.value}</span>}
+              <span class="mt-2 block text-[13px] leading-snug text-muted sm:text-[15px]">{f.label}</span>
+              {f.note && <span class="mt-1 hidden text-[13px] text-muted sm:block">{f.note}</span>}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+
+  <p class="absolute right-5 bottom-6 hidden items-center gap-4 text-[11px] tracking-[0.3em] text-muted uppercase md:right-8 md:flex lg:right-14 xl:right-20" aria-hidden="true">
+    <span class="cine-cue-line"></span>
+    {city} — {state}
+  </p>
+</section>
+
+<script>
+  // Luz que segue o ponteiro (só mouse/caneta; no toque ela passeia sozinha pelo CSS).
+  const hero = document.querySelector<HTMLElement>('[data-cine]');
+  const spot = hero?.querySelector<HTMLElement>('.cine-spot');
+  if (hero && spot && matchMedia('(pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let raf = 0;
+    hero.addEventListener('pointermove', (e) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = hero.getBoundingClientRect();
+        spot.style.transform = `translate(${e.clientX - r.left}px, ${e.clientY - r.top}px)`;
+      });
+    });
+  }
+</script>

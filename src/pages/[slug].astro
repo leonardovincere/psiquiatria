@@ -4,6 +4,9 @@ import PreviewBanner from '../components/PreviewBanner.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import HeroCircle from '../components/HeroCircle.astro';
+import HeroCinema from '../components/HeroCinema.astro';
+import Research from '../components/Research.astro';
+import Articles from '../components/Articles.astro';
 import Approach from '../components/Approach.astro';
 import Journey from '../components/Journey.astro';
 import FactsStrip from '../components/FactsStrip.astro';
@@ -27,6 +30,7 @@ export const getStaticPaths = (() => clinics.map((clinic) => ({ params: { slug: 
 
 const { clinic } = Astro.props as { clinic: ClinicConfig };
 const copy = getCopy(clinic);
+const hero = clinic.style?.hero ?? 'arch';
 ---
 
 <Layout clinic={clinic}>
@@ -40,16 +44,18 @@ const copy = getCopy(clinic);
   <main id="conteudo" data-tone-root data-tone="base">
     <div class:list={['hero-wrap relative', clinic.style?.finish === 'editorial' && 'overflow-hidden']}>
       {clinic.style?.finish === 'editorial' && <div class="aurora" aria-hidden="true" />}
-      {clinic.style?.hero === 'circle' ? <HeroCircle clinic={clinic} /> : <Hero clinic={clinic} />}
+      {hero === 'circle' ? <HeroCircle clinic={clinic} /> : hero === 'cinema' ? <HeroCinema clinic={clinic} /> : <Hero clinic={clinic} />}
     </div>
-    <FactsStrip clinic={clinic} />
+    {hero !== 'cinema' && <FactsStrip clinic={clinic} />}
     <About clinic={clinic} />
+    <Research clinic={clinic} />
     <LotusDivider src={clinic.clinic.logoMark} />
     <Approach clinic={clinic} />
     <Journey clinic={clinic} />
     <Conditions clinic={clinic} />
     <FirstVisit clinic={clinic} />
     {clinic.modalities.teleconsulta && <Telehealth clinic={clinic} />}
+    <Articles clinic={clinic} />
     <Faq clinic={clinic} />
     <LotusDivider src={clinic.clinic.logoMark} />
     {clinic.modalities.presencial && <Location clinic={clinic} />}
