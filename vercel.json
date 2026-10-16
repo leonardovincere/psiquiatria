@@ -14,7 +14,7 @@
     {
       "source": "/",
       "has": [{ "type": "host", "value": "(?<slug>[a-z0-9-]+)\\.preview\\.vincereai\\.tech" }],
-      "destination": "/:slug"
+      "destination": "/:slug.html"
     },
     {
       "source": "/robots.txt",
