@@ -2,7 +2,7 @@
 import { Font } from 'astro:assets';
 import '../styles/global.css';
 import type { ClinicConfig } from '../clinics/types';
-import { readableOn } from '../lib/links';
+import { legibleOn, readableOn } from '../lib/links';
 import { getHeroPhoto, heroPhotoSizes } from '../lib/heroPhoto';
 import { clinicUrl } from '../lib/agency';
 import { getCopy } from '../lib/copy';
@@ -20,6 +20,8 @@ const cssVars = [
   `--c-accent:${t.accent}`,
   `--c-background:${t.background}`,
   `--c-text:${t.text}`,
+  `--c-accent-deep:${legibleOn(t.accent, t.primary)}`,
+  `--heading-weight:${t.headingWeight ?? 400}`,
   // Fontes da clínica (definidas no astro.config como --fh-<slug> / --fb-<slug>).
   `--f-heading:var(--fh-${clinic.slug})`,
   `--f-body:var(--fb-${clinic.slug})`,
@@ -58,7 +60,7 @@ const jsonLd = {
     '@type': 'Physician',
     name: doctor.name,
     medicalSpecialty: copy.schemaSpecialty,
-    identifier: [doctor.crm, doctor.rqe],
+    identifier: [doctor.crm, doctor.rqe].filter(Boolean),
   },
 };
 ---

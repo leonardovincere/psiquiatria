@@ -1,0 +1,118 @@
+---
+import type { ClinicConfig } from '../clinics/types';
+import { credentials, initials } from '../lib/links';
+import { getCopy } from '../lib/copy';
+import { getHeroPhoto, heroPhotoSizes } from '../lib/heroPhoto';
+
+/**
+ * Topo alternativo (style.hero = "circle"): texto + foto (ou monograma) num
+ * círculo, envolto por um anel de texto que gira devagar. Sem foto, o
+ * monograma com as iniciais segura a composição.
+ */
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const { doctor } = clinic;
+const { tagline, taglineHighlight, heroEyebrow } = clinic.clinic;
+const copy = getCopy(clinic);
+const photo = await getHeroPhoto(clinic);
+
+const idx = taglineHighlight ? tagline.indexOf(taglineHighlight) : -1;
+const [before, mark, after] =
+  idx >= 0
+    ? [tagline.slice(0, idx), taglineHighlight!, tagline.slice(idx + taglineHighlight!.length)]
+    : [tagline, '', ''];
+
+// Anel: o texto se repete até fechar a volta.
+const ring = copy.hero.ringText.repeat(3).toUpperCase();
+const ringId = `ring-${clinic.slug}`;
+---
+
+<section
+  id="inicio"
+  data-tone-at="base"
+  class="hero-circle container-page grid items-center gap-x-20 gap-y-14 pt-10 pb-20 md:pt-16 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:pt-20 lg:pb-28"
+>
+  <div class="flex flex-col gap-6">
+    <p class="eyebrow">{heroEyebrow ?? copy.hero.eyebrowFallback}</p>
+    <h1 class="text-[2.9rem] leading-[1.02] text-ink sm:text-6xl lg:text-[4.6rem] xl:text-[5.2rem]">
+      {before}{mark && <em class="mark text-primary">{mark}</em>}{after}
+    </h1>
+    <p class="max-w-xl text-lg leading-relaxed text-muted md:text-xl">{copy.hero.subtitle}</p>
+    <a href="#primeira-consulta" class="arrow-nudge inline-flex min-h-12 items-center gap-2 self-start font-medium text-primary">
+      <span class="underline decoration-accent decoration-2 underline-offset-[7px]">{copy.hero.link}</span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+
+  <figure class="relative m-0 mx-auto w-full max-w-[min(82vw,440px)]">
+    <!-- overflow-hidden + rounded-full: a caixa do SVG girando não "vaza" da tela (o texto fica dentro do círculo). -->
+    <div class="relative aspect-square overflow-hidden rounded-full">
+      <!-- Anel de texto girando (decorativo). -->
+      <svg class="ring-spin absolute inset-0 size-full text-primary" viewBox="0 0 400 400" aria-hidden="true">
+        <defs>
+          <path id={ringId} d="M200,200 m-182,0 a182,182 0 1,1 364,0 a182,182 0 1,1 -364,0" />
+        </defs>
+        <text class="fill-current" style="font-family: var(--font-sans); font-size: 13px; letter-spacing: 0.32em; font-weight: 500">
+          <textPath href={`#${ringId}`} textLength="1130" lengthAdjust="spacing">{ring}</textPath>
+        </text>
+      </svg>
+      <!-- Círculo interno: foto ou monograma. -->
+      <div class="circle-in absolute inset-[12%] overflow-hidden rounded-full border border-line bg-[color-mix(in_srgb,var(--c-secondary)_38%,var(--c-background))]">
+        {
+          photo ? (
+            <img
+              src={photo.src}
+              srcset={photo.srcSet.attribute}
+              sizes={heroPhotoSizes}
+              width={photo.attributes.width}
+              height={photo.attributes.height}
+              alt={`Foto de ${doctor.name}`}
+              class="size-full object-cover"
+              decoding="async"
+              fetchpriority="high"
+            />
+          ) : (
+            <div class="flex size-full flex-col items-center justify-center gap-2 text-primary" aria-hidden="true">
+              <span class="font-serif text-[clamp(4.5rem,18vw,8rem)] leading-none italic">{initials(doctor.name)}</span>
+              <span class="h-px w-12 bg-accent" />
+            </div>
+          )
+        }
+      </div>
+      <span class="absolute inset-[9%] rounded-full border border-accent/70" aria-hidden="true"></span>
+    </div>
+    <figcaption class="hero-in -mt-6 rounded-2xl border border-line bg-white px-5 py-4 text-center shadow-[0_18px_40px_-24px_color-mix(in_srgb,var(--ink-base)_40%,transparent)] sm:mx-auto sm:w-fit" style="--d:2">
+      <span class="block font-serif text-xl text-[var(--ink-base)]">{doctor.name}</span>
+      <span class="mt-0.5 block text-[13px] text-[var(--muted-base)]">{doctor.title} · {credentials(doctor)}</span>
+    </figcaption>
+  </figure>
+</section>
+
+<style>
+  .ring-spin {
+    animation: ring-spin 60s linear infinite;
+    transform-origin: 50% 50%;
+  }
+  .circle-in {
+    animation: circle-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes ring-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes circle-in {
+    from {
+      transform: scale(0.94);
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ring-spin,
+    .circle-in {
+      animation: none;
+    }
+  }
+</style>

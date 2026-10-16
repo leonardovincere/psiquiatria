@@ -38,16 +38,37 @@ export interface Doctor {
   title: string;
   /** Artigo usado nos textos ("com a Dra. …" / "com o Dr. …"). Padrão: deduzido de "Dra."/"Dr.". */
   article?: 'a' | 'o';
-  /** Ex.: "CRM-SP 123456". Obrigatório na publicidade médica (CFM 2.336/2023). */
-  crm: string;
-  /** Ex.: "RQE 9876". Obrigatório ao anunciar especialidade. */
-  rqe: string;
+  /**
+   * Ex.: "CRM-SP 123456". Obrigatório na publicidade médica (CFM 2.336/2023).
+   * null só é aceito em prévia (isPreview): a página mostra "em confirmação"; publicar sem ele falha no build.
+   */
+  crm: string | null;
+  /** Ex.: "RQE 9876". Obrigatório ao anunciar especialidade. Mesma regra do CRM. */
+  rqe: string | null;
   /** URL da foto (remota ou em /public). Sem foto, exibe monograma. */
   photo?: string | null;
   /** Formação e títulos — apenas fatos verificáveis. */
   education: string[];
+  /** Experiência profissional. Com ela, a página ganha a seção "Trajetória" (formação + experiência). */
+  experience?: string[];
+  /** Cursos complementares. Não são exibidos (áreas sem RQE não podem ser anunciadas). */
+  complementaryCourses?: string[];
   /** Parágrafos da seção "Sobre". */
   bio: string[];
+}
+
+/** Princípio da forma de atender (seção "Abordagem"). */
+export interface ApproachItem {
+  title: string;
+  text: string;
+}
+
+/** Escolhas de layout por clínica, para as prévias não ficarem iguais. */
+export interface LayoutStyle {
+  /** Topo: "arch" = foto em arco que se abre ao rolar (padrão); "circle" = foto/monograma em círculo com anel de texto girando. */
+  hero?: 'arch' | 'circle';
+  /** Condições: "marquee" = faixas deslizando (padrão); "chips" = grade fixa de etiquetas. */
+  conditions?: 'marquee' | 'chips';
 }
 
 export interface Modalities {
@@ -58,7 +79,7 @@ export interface Modalities {
 
 export interface Insurance {
   acceptsInsurance: boolean;
-  note: string;
+  note: string | null;
 }
 
 export interface Condition {
@@ -89,10 +110,10 @@ export interface Highlight {
 export interface SocialProof {
   enabled: boolean;
   /** Ex.: "148 avaliações de pacientes no Doctoralia". */
-  label: string;
-  rating: number;
+  label: string | null;
+  rating: number | null;
   /** Link para a fonte das avaliações. */
-  sourceUrl: string;
+  sourceUrl: string | null;
   /** Não exibido: o site mostra só o número agregado, sem depoimentos. */
   highlights?: string[];
 }
@@ -111,6 +132,8 @@ export interface Contact {
 }
 
 export interface Address {
+  /** Nome do local, quando ela atende dentro de outra clínica. Ex.: "Clínica Bella Età". */
+  clinicName?: string | null;
   street: string;
   complement: string | null;
   neighborhood: string | null;
@@ -138,6 +161,8 @@ export interface Theme {
   text: string;
   /** Nome da família no Google Fonts. Ex.: "Newsreader". Precisa ter itálico. */
   fontHeading: string;
+  /** Peso dos títulos (400 ou 500). Fontes finas, como Cormorant, ficam melhores com 500. */
+  headingWeight?: 400 | 500;
   fontBody: string;
 }
 
@@ -152,6 +177,8 @@ export interface Compliance {
   showCrmRqeEverywhere: boolean;
   /** Ativa a verificação automática de termos vedados no build. */
   noOutcomePromises: boolean;
+  /** Barra no build termos de áreas sem RQE (ortomolecular, medicina integrativa/funcional…) nos textos exibidos. */
+  hideNonRecognizedSpecialties?: boolean;
   /** Diretor(a) técnico(a) — exigido para pessoa jurídica. Texto livre com nome e CRM. */
   technicalDirector: string | null;
 }
@@ -163,7 +190,9 @@ export interface Compliance {
  */
 export interface SiteCopy {
   scheduleCta: string;
-  hero: { eyebrowFallback: string; subtitle: string; link: string };
+  hero: { eyebrowFallback: string; subtitle: string; link: string; ringText: string };
+  approach: { eyebrow: string; title: string };
+  journey: { eyebrow: string; title: string; education: string; experience: string };
   about: { eyebrow: string };
   conditions: { title: string; intro: string; note: string };
   firstVisit: { eyebrow: string; title: string; extraPrefix: string; paymentPrefix: string };
@@ -199,20 +228,24 @@ export interface ClinicConfig {
   audience: string;
   modalities: Modalities;
   insurance: Insurance;
-  payment: string[];
+  payment: string[] | null;
 
   conditions: Condition[];
   services: Service[];
   showPrices: boolean;
   firstVisitSteps: Step[];
+  /** Princípios da forma de atender (opcional): vira a seção "Abordagem". */
+  approach?: ApproachItem[];
+  /** Escolhas de layout (opcional). */
+  style?: LayoutStyle;
 
   /** Até 3 números/fatos em destaque abaixo do topo. Sem eles, mostra formação e modalidades. */
   highlights?: Highlight[];
   socialProof: SocialProof;
   contact: Contact;
   address: Address;
-  /** Horários, uma linha por item. null = não exibe. */
-  hours: string[] | null;
+  /** Horários: um texto ou uma linha por item. null = não exibe. */
+  hours: string | string[] | null;
   faq: FaqItem[];
 
   theme: Theme;

@@ -7,7 +7,10 @@ const DEFAULT_COPY: SiteCopy = {
     eyebrowFallback: 'Psiquiatria · {publico} · {cidade}/{uf}',
     subtitle: 'Com {medico}, {titulo} em {cidade}.',
     link: 'Como funciona a primeira consulta',
+    ringText: '{titulo} · {cidade}/{uf} · ',
   },
+  approach: { eyebrow: 'Abordagem', title: 'O que guia cada consulta' },
+  journey: { eyebrow: 'Trajetória', title: 'Formação e experiência', education: 'Formação', experience: 'Experiência' },
   about: { eyebrow: 'Sobre' },
   conditions: {
     title: 'Condições acompanhadas',

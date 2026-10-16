@@ -21,6 +21,10 @@ npm run preview
    `body-normal.woff2`). Sem elas, o build baixa do Google Fonts.
 4. `npm run build` → `/<slug>`. Arquivos que começam com `_` são ignorados.
 
+Para cada prévia ter cara própria: `style.hero` (`arch` | `circle`), `style.conditions` (`marquee` | `chips`),
+`theme.headingWeight`, `approach` (seção "Abordagem") e `doctor.experience` (seção "Trajetória").
+CRM/RQE vazios só são aceitos em prévia (a página mostra "em confirmação"); para publicar, o build exige.
+
 Nada da clínica fica no código dos componentes: dados, cores, fontes, imagens e textos vêm da config.
 Textos de seção têm padrão em `src/lib/copy.ts` e podem ser sobrescritos por clínica em `copy`
 (variáveis: `{medico}`, `{titulo}`, `{cidade}`, `{uf}`, `{publico}`). Dados da agência ficam em `src/lib/agency.ts`.

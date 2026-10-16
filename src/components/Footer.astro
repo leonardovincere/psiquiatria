@@ -2,6 +2,7 @@
 import Icon from './Icon.astro';
 import type { ClinicConfig } from '../clinics/types';
 import { AGENCY } from '../lib/agency';
+import { credentials } from '../lib/links';
 import { getCopy } from '../lib/copy';
 import { assetSize } from '../lib/assetSize';
 
@@ -37,7 +38,7 @@ const social = [
           )
         }
         <p>
-          <span class="text-white">{doctor.name}</span> · {doctor.title} · {doctor.crm} · {doctor.rqe}
+          <span class="text-white">{doctor.name}</span> · {doctor.title} · {credentials(doctor)}
           {clinic.compliance.technicalDirector && (
             <>
               <br />

@@ -2,14 +2,15 @@
 import Icon from './Icon.astro';
 import SectionHeading from './SectionHeading.astro';
 import type { ClinicConfig } from '../clinics/types';
-import { formatAddress, mapsEmbedUrl, mapsSearchUrl } from '../lib/links';
+import { formatAddress, hoursList, mapsEmbedUrl, mapsSearchUrl } from '../lib/links';
 import { getCopy } from '../lib/copy';
 
 interface Props {
   clinic: ClinicConfig;
 }
 const { clinic } = Astro.props;
-const { address, contact, hours } = clinic;
+const { address, contact } = clinic;
+const hours = hoursList(clinic.hours);
 const copy = getCopy(clinic).location;
 ---
 
@@ -21,6 +22,7 @@ const copy = getCopy(clinic).location;
         <div class="flex gap-3">
           <Icon name="pin" class="mt-0.5 size-5 shrink-0 text-primary" />
           <div class="text-ink">
+            {address.clinicName && <p class="font-medium">{address.clinicName}</p>}
             <p>{address.street}</p>
             {address.complement && <p>{address.complement}</p>}
             {address.neighborhood && <p>{address.neighborhood}</p>}

@@ -9,11 +9,11 @@ interface Props {
 const { clinic } = Astro.props;
 const copy = getCopy(clinic).firstVisit;
 // Serviços que não são a própria consulta/retorno/teleconsulta (ex.: laudos) viram uma linha discreta.
-const extras = clinic.services.filter((s) => !/primeira|acompanhamento|retorno|teleconsulta/i.test(s.name));
+const extras = clinic.services.filter((s) => !/primeira|inicial|avalia|acompanhamento|retorno|teleconsulta|online|v[ií]deo/i.test(s.name));
 const notes = [
   ...extras.map((s) => `${copy.extraPrefix} ${s.name.toLowerCase()}`),
   clinic.insurance.note,
-  clinic.payment.length > 0 && `${copy.paymentPrefix}: ${clinic.payment.join(' ou ').toLowerCase()}`,
+  clinic.payment?.length && `${copy.paymentPrefix}: ${clinic.payment.join(' ou ').toLowerCase()}`,
 ].filter(Boolean) as string[];
 ---
 

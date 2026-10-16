@@ -162,6 +162,15 @@ const clinica: ClinicConfig = {
     technicalDirector: 'Dra. Nome Completo — CRM-UF 000000 / RQE 00000', // obrigatório para clínica (PJ)
   },
 
+  // ─── Layout (opcional) ──────────────────────────────────────
+  // Para as prévias não ficarem iguais.
+  // style: {
+  //   hero: 'circle',      // 'arch' (foto em arco que se abre) | 'circle' (foto/monograma em círculo com anel de texto)
+  //   conditions: 'chips', // 'marquee' (faixas deslizando) | 'chips' (etiquetas fixas)
+  // },
+  // approach: [{ title: 'Escuta atenta', text: '…' }], // vira a seção "Abordagem"
+  // (doctor.experience preenchido liga a seção "Trajetória": formação + experiência)
+
   // ─── Textos das seções (opcional) ───────────────────────────
   // Todos têm padrão em src/lib/copy.ts. Sobrescreva só o que precisar.
   // Variáveis: {medico} ("a Dra. Nome"), {titulo}, {cidade}, {uf}, {publico}.

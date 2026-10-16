@@ -1,0 +1,53 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import type { ClinicConfig } from '../clinics/types';
+import { getCopy } from '../lib/copy';
+
+/** Formação + experiência em linha do tempo. Só aparece quando a config tem `doctor.experience`. */
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const copy = getCopy(clinic).journey;
+const { education, experience = [] } = clinic.doctor;
+const columns = [
+  { label: copy.education, items: education },
+  { label: copy.experience, items: experience },
+].filter((c) => c.items.length > 0);
+// "Medicina — UFMS (2013)" → título + detalhe, para o detalhe ficar mais discreto.
+const split = (s: string) => {
+  const [head, ...tail] = s.split(' — ');
+  return { head, tail: tail.join(' — ') };
+};
+---
+
+{
+  experience.length > 0 && (
+    <section id="trajetoria" data-tone-at="base" class="section-y" aria-labelledby="trajetoria-titulo">
+      <div class="container-page">
+        <SectionHeading id="trajetoria-titulo" eyebrow={copy.eyebrow} title={copy.title} />
+        <div class="grid gap-14 md:grid-cols-2 md:gap-20">
+          {columns.map((col) => (
+            <div>
+              <h3 class="eyebrow mb-6 !text-muted" data-reveal>
+                {col.label}
+              </h3>
+              <ol class="relative border-l border-line pl-8">
+                {col.items.map((item, i) => {
+                  const { head, tail } = split(item);
+                  return (
+                    <li class="relative pb-9 last:pb-0" data-reveal style={`--i:${i}`}>
+                      <span class="absolute top-2 -left-[calc(2rem+5px)] size-[9px] rounded-full bg-accent ring-4 ring-[var(--c-background)]" aria-hidden="true" />
+                      <p class="font-serif text-2xl leading-snug text-ink">{head}</p>
+                      {tail && <p class="mt-1 text-[15px] leading-relaxed text-muted">{tail}</p>}
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

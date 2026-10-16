@@ -1,0 +1,37 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import type { ClinicConfig } from '../clinics/types';
+import { getCopy } from '../lib/copy';
+
+/** Princípios da forma de atender (config `approach`). Numerais romanos marcam a ordem. */
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const copy = getCopy(clinic).approach;
+const items = clinic.approach ?? [];
+const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+---
+
+{
+  items.length > 0 && (
+    <section id="abordagem" data-tone-at="sand" class="section-y" aria-labelledby="abordagem-titulo">
+      <div class="container-page">
+        <SectionHeading id="abordagem-titulo" eyebrow={copy.eyebrow} title={copy.title} />
+        <ol class="grid gap-x-16 gap-y-12 md:grid-cols-2">
+          {items.map((it, i) => (
+            <li class="grid grid-cols-[3.5rem_minmax(0,1fr)] gap-x-5 pt-7" data-rule style={`--i:${i % 2}`}>
+              <span class="font-serif text-4xl leading-none text-primary italic" aria-hidden="true">
+                {roman[i] ?? i + 1}
+              </span>
+              <div data-reveal style={`--i:${i % 2}`}>
+                <h3 class="text-[1.85rem] leading-tight text-ink">{it.title}</h3>
+                <p class="mt-2 text-[17px] leading-relaxed text-muted">{it.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )
+}

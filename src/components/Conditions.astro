@@ -20,7 +20,22 @@ const rows = [clinic.conditions, [...clinic.conditions].reverse()];
       intro={copy.intro}
     />
   </div>
-  <!-- Faixas deslizando: a primeira é a lista acessível; as cópias são decorativas. -->
+  <!-- "chips": etiquetas fixas. Padrão: faixas deslizando (a primeira é a lista acessível; as cópias são decorativas). -->
+  {
+    clinic.style?.conditions === 'chips' ? (
+      <ul class="container-page flex flex-wrap gap-3 md:gap-4" aria-label={copy.title}>
+        {clinic.conditions.map((c, i) => (
+          <li
+            class="flex items-center gap-3 rounded-full border border-line bg-white px-6 py-3.5 font-serif text-xl text-[var(--ink-base)] md:px-7 md:py-4 md:text-2xl"
+            data-reveal
+            style={`--i:${i}`}
+          >
+            <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+            {c.name}
+          </li>
+        ))}
+      </ul>
+    ) : (
   <div class="marquee">
     {
       rows.map((row, r) => (
@@ -46,5 +61,7 @@ const rows = [clinic.conditions, [...clinic.conditions].reverse()];
       ))
     }
   </div>
+    )
+  }
   <p class="container-page mt-10 text-sm text-muted" data-reveal>{copy.note}</p>
 </section>

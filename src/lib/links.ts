@@ -1,4 +1,4 @@
-import type { Address, ClinicConfig } from '../clinics/types';
+import type { Address, ClinicConfig, Doctor } from '../clinics/types';
 
 export const whatsappUrl = (c: ClinicConfig) =>
   `https://wa.me/${c.contact.whatsapp}?text=${encodeURIComponent(c.contact.whatsappMessage)}`;
@@ -34,3 +34,37 @@ export const initials = (name: string) =>
     .filter((_, i, arr) => i === 0 || i === arr.length - 1)
     .join('')
     .toUpperCase();
+
+/** "CRM-MS 5844 · RQE 4155"; na prévia sem os números, "CRM e RQE em confirmação". */
+export const credentials = (d: Doctor) => {
+  const parts = [d.crm, d.rqe].filter((x): x is string => !!x && !!x.trim());
+  if (parts.length === 2) return parts.join(' · ');
+  if (parts.length === 1) return `${parts[0]} · ${d.crm ? 'RQE' : 'CRM'} em confirmação`;
+  return 'CRM e RQE em confirmação';
+};
+
+/** Horários sempre como lista. */
+export const hoursList = (h: string | string[] | null) => (h == null ? [] : Array.isArray(h) ? h : [h]);
+
+const lum = (hex: string) => {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const contrast = (a: string, b: string) => {
+  const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
+  return (x + 0.05) / (y + 0.05);
+};
+const mixWhite = (hex: string, t: number) =>
+  '#' + [1, 3, 5].map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * (1 - t) + 255 * t).toString(16).padStart(2, '0')).join('');
+
+/** A cor de destaque, clareada só o necessário para ter contraste 4.5:1 sobre o fundo dado. */
+export const legibleOn = (fg: string, bg: string, min = 4.5) => {
+  for (let t = 0; t <= 1; t += 0.05) {
+    const c = mixWhite(fg, t);
+    if (contrast(c, bg) >= min) return c;
+  }
+  return '#ffffff';
+};

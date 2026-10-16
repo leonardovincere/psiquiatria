@@ -54,7 +54,7 @@
   h2,
   h3 {
     font-family: var(--font-serif);
-    font-weight: 400;
+    font-weight: var(--heading-weight, 400);
     text-wrap: balance;
     letter-spacing: -0.015em;
   }
@@ -117,7 +117,7 @@
   --c-text: #ffffff;
   --c-muted: color-mix(in srgb, #ffffff 84%, var(--primary-base));
   --c-border: color-mix(in srgb, #ffffff 22%, var(--primary-base));
-  --c-primary: var(--c-accent);
+  --c-primary: var(--c-accent-deep, var(--c-accent));
 }
 [data-tone-root] :where(h1, h2, h3, p, li, span, a, summary, address, em) {
   transition: color 0.7s var(--ease-out), border-color 0.7s var(--ease-out);

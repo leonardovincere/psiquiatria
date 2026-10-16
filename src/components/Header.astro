@@ -32,8 +32,9 @@ const nav = [
           />
         </a>
       ) : (
-        <a href="#inicio" class="font-serif text-xl text-ink">
-          {clinic.clinic.name}
+        <a href="#inicio" class="flex flex-col items-center leading-none lg:items-start">
+          <span class="font-serif text-[1.6rem] text-ink">{clinic.clinic.name}</span>
+          <span class="mt-1.5 text-[10.5px] font-semibold tracking-[0.22em] text-primary uppercase">{clinic.doctor.title}</span>
         </a>
       )
     }

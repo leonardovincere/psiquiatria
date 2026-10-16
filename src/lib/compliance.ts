@@ -24,13 +24,20 @@ const FORBIDDEN: { pattern: RegExp; reason: string }[] = [
   { pattern: /\bantes\s+e\s+depois\b/i, reason: 'antes e depois' },
 ];
 
+// Áreas sem RQE / com restrições do CFM: não podem aparecer como especialidade nos textos exibidos.
+const NON_RECOGNIZED: { pattern: RegExp; reason: string }[] = [
+  { pattern: /ortomolecular/i, reason: 'prática com restrições do CFM' },
+  { pattern: /medicina\s+(integrativa|funcional)/i, reason: 'área sem RQE' },
+  { pattern: /nutrologia|nutr[oó]logo/i, reason: 'especialidade sem RQE informado' },
+];
+
 // Campos técnicos ou não exibidos, que não são texto publicitário.
 const SKIP_KEYS = new Set([
   'theme', 'photo', 'slug', 'siteUrl', 'contact', 'sourceUrl', 'mapsUrl', 'href', 'keywords',
   'logo', 'logoLight', 'logoMark', 'favicon', 'appleTouchIcon',
 ]);
 // Caminhos específicos não exibidos na página.
-const SKIP_PATHS = new Set(['socialProof.highlights']);
+const SKIP_PATHS = new Set(['socialProof.highlights', 'doctor.complementaryCourses', 'seo.keywords']);
 
 function collectStrings(value: unknown, path: string, out: { path: string; text: string }[]) {
   if (typeof value === 'string') out.push({ path, text: value });
@@ -47,8 +54,13 @@ function collectStrings(value: unknown, path: string, out: { path: string; text:
 export function assertCompliance(clinic: ClinicConfig) {
   const problems: string[] = [];
 
-  if (!clinic.doctor.crm.trim()) problems.push('doctor.crm é obrigatório');
-  if (!clinic.doctor.rqe.trim()) problems.push('doctor.rqe é obrigatório ao anunciar especialidade');
+  // CRM/RQE: obrigatórios para publicar. Na prévia, a página mostra "em confirmação" e o build só avisa.
+  const missing = [!clinic.doctor.crm?.trim() && 'doctor.crm', !clinic.doctor.rqe?.trim() && 'doctor.rqe'].filter(Boolean);
+  if (missing.length) {
+    const msg = `${missing.join(' e ')} ausente(s) — obrigatório(s) pela CFM 2.336/2023`;
+    if (clinic.isPreview) console.warn(`[compliance] ${clinic.slug}: ${msg} (prévia: exibido como "em confirmação").`);
+    else problems.push(msg);
+  }
   if (!/^\d{12,13}$/.test(clinic.contact.whatsapp)) {
     problems.push('contact.whatsapp deve conter só dígitos, com DDI e DDD (ex.: 5511999999999)');
   }
@@ -58,8 +70,10 @@ export function assertCompliance(clinic: ClinicConfig) {
 
   const strings: { path: string; text: string }[] = [];
   if (clinic.compliance.noOutcomePromises) collectStrings(clinic, '', strings);
+  const rules = clinic.compliance.hideNonRecognizedSpecialties ? [...FORBIDDEN, ...NON_RECOGNIZED] : FORBIDDEN;
+  if (clinic.compliance.hideNonRecognizedSpecialties && !strings.length) collectStrings(clinic, '', strings);
   for (const { path, text } of strings) {
-    for (const { pattern, reason } of FORBIDDEN) {
+    for (const { pattern, reason } of rules) {
       const match = text.match(pattern);
       if (match) problems.push(`${path}: "${match[0]}" (${reason})`);
     }

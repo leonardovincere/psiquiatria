@@ -16,7 +16,7 @@ const items: Highlight[] = clinic.highlights?.length
         value: '',
         label: modalities.presencial && modalities.teleconsulta ? 'Presencial e teleconsulta' : modalities.teleconsulta ? 'Teleconsulta' : 'Atendimento presencial',
       },
-      ...(socialProof.enabled ? [{ value: '', label: socialProof.label, href: socialProof.sourceUrl }] : []),
+      ...(socialProof.enabled && socialProof.label ? [{ value: '', label: socialProof.label, href: socialProof.sourceUrl ?? undefined }] : []),
     ];
 ---
 

@@ -3,6 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import PreviewBanner from '../components/PreviewBanner.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import HeroCircle from '../components/HeroCircle.astro';
+import Approach from '../components/Approach.astro';
+import Journey from '../components/Journey.astro';
 import FactsStrip from '../components/FactsStrip.astro';
 import About from '../components/About.astro';
 import Conditions from '../components/Conditions.astro';
@@ -35,10 +38,12 @@ const copy = getCopy(clinic);
   {clinic.isPreview && <PreviewBanner text={clinic.previewBanner} suffix={copy.previewSuffix} />}
   <Header clinic={clinic} />
   <main id="conteudo" data-tone-root data-tone="base">
-    <Hero clinic={clinic} />
+    {clinic.style?.hero === 'circle' ? <HeroCircle clinic={clinic} /> : <Hero clinic={clinic} />}
     <FactsStrip clinic={clinic} />
     <About clinic={clinic} />
     <LotusDivider src={clinic.clinic.logoMark} />
+    <Approach clinic={clinic} />
+    <Journey clinic={clinic} />
     <Conditions clinic={clinic} />
     <FirstVisit clinic={clinic} />
     {clinic.modalities.teleconsulta && <Telehealth clinic={clinic} />}

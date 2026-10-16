@@ -3,6 +3,7 @@ import Icon from './Icon.astro';
 import Words from './Words.astro';
 import type { ClinicConfig } from '../clinics/types';
 import { getCopy } from '../lib/copy';
+import { credentials } from '../lib/links';
 
 interface Props {
   clinic: ClinicConfig;
@@ -24,7 +25,7 @@ const links = [
     <h2 id="sobre-titulo" class="text-4xl leading-[1.08] text-ink md:text-5xl" data-words><Words text={doctor.shortName} /></h2>
     <p class="mt-6 text-[15px] leading-relaxed text-muted" data-reveal style="--i:1">
       {doctor.title}<br />
-      <span class="font-medium text-ink">{doctor.crm} · {doctor.rqe}</span>
+      <span class="font-medium text-ink">{credentials(doctor)}</span>
     </p>
     {
       links.length > 0 && (
@@ -59,7 +60,7 @@ const links = [
     }
     <figcaption class="mt-8 flex flex-col gap-3 pt-6 text-[15px] text-muted" data-rule>
       {rest.map((p) => <p class="text-base leading-relaxed text-muted md:text-lg" data-reveal>{p}</p>)}
-      {doctor.education.length > 0 && <p data-reveal style="--i:1">{doctor.education.join(' · ')}</p>}
+      {doctor.education.length > 0 && !doctor.experience?.length && <p data-reveal style="--i:1">{doctor.education.join(' · ')}</p>}
     </figcaption>
   </figure>
 </section>

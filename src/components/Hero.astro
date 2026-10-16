@@ -1,7 +1,7 @@
 ---
 import { getHeroPhoto, heroPhotoSizes } from '../lib/heroPhoto';
 import type { ClinicConfig } from '../clinics/types';
-import { initials } from '../lib/links';
+import { credentials, initials } from '../lib/links';
 import { getCopy } from '../lib/copy';
 import { heightFor } from '../lib/assetSize';
 
@@ -85,7 +85,7 @@ const [before, mark, after] =
       </div>
       <figcaption class="hero-in absolute bottom-4 left-4 rounded-2xl border border-line bg-white px-5 py-4 shadow-[0_18px_40px_-24px_color-mix(in_srgb,var(--ink-base)_40%,transparent)] md:bottom-6 md:left-6" style="--d:2">
         <span class="block font-serif text-xl text-[var(--ink-base)]">{doctor.shortName}</span>
-        <span class="mt-0.5 block text-[13px] text-[var(--muted-base)]">{doctor.title} · {doctor.crm} · {doctor.rqe}</span>
+        <span class="mt-0.5 block text-[13px] text-[var(--muted-base)]">{doctor.title} · {credentials(doctor)}</span>
       </figcaption>
     </figure>
   </div>
