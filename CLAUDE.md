@@ -80,6 +80,9 @@ Para a comparação, desligue as animações (`prefers-reduced-motion: reduce`) 
 
 - A Vercel publica a partir da branch **`main`**, no projeto **psiquiatria-vincere**. Ao terminar, faça commit e envie também para a `main`:
   `git push origin <branch-da-sessão>:main`.
+  Envie para a `main` **antes** da branch da sessão. Se o mesmo commit chegar primeiro numa branch, a Vercel faz só o deploy de prévia
+  e não publica a produção (os links da clínica dão 404). Confira em
+  `https://api.github.com/repos/leonardovincere/psiquiatria/deployments`: precisa aparecer "Production – psiquiatria-vincere" com o commit novo.
 - Subdomínio: o usuário adiciona `<slug>.preview.vincereai.tech` em Vercel → psiquiatria-vincere → Settings → Domains.
   O DNS está na Hostinger, com um CNAME curinga `*.preview` → `cname.vercel-dns.com`; não precisa mexer lá.
 - Antes do domínio ficar válido, a prévia já abre em `https://psiquiatria-vincere.vercel.app/<slug>`.
