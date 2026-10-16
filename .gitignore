@@ -5,3 +5,12 @@ dist/
 .env.*
 !.env.example
 .DS_Store
+
+# Vídeo comercial (Remotion): dependências, capturas e arquivos gerados
+video/node_modules/
+video/captures/
+video/out/
+video/public/captures/
+video/public/audio/
+video/src/clinic.json
+video/public/fonts/
