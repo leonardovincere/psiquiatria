@@ -81,6 +81,26 @@
       "has": [
         {
           "type": "host",
+          "value": "katherynne-tome-alves.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/katherynne-tome-alves"
+    },
+    {
+      "source": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "katherynne-tome-alves.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/katherynne-tome-alves/robots.txt"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "leonardo-fabricio.preview.vincereai.tech"
         }
       ],
