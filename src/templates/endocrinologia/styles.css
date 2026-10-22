@@ -123,7 +123,8 @@
   display: none;
 }
 [data-specialty='endocrinologia'] #sobre blockquote {
-  font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+  /* Mínimo de 24 px: texto "grande" (WCAG), para as palavras ainda apagadas da citação terem contraste suficiente. */
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
   line-height: 1.35;
 }
 

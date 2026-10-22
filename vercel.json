@@ -41,6 +41,26 @@
       "has": [
         {
           "type": "host",
+          "value": "exemplo-endocrino.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/exemplo-endocrino"
+    },
+    {
+      "source": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "exemplo-endocrino.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/exemplo-endocrino/robots.txt"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "leonardo-fabricio.preview.vincereai.tech"
         }
       ],

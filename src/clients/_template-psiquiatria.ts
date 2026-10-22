@@ -177,7 +177,7 @@ const clinica: ClientConfig = {
   // (doctor.experience preenchido liga a seção "Trajetória": formação + experiência)
 
   // ─── Textos das seções (opcional) ───────────────────────────
-  // Todos têm padrão em src/lib/copy.ts. Sobrescreva só o que precisar.
+  // Todos têm padrão em src/templates/psiquiatria/copy.ts. Sobrescreva só o que precisar.
   // Variáveis: {medico} ("a Dra. Nome"), {titulo}, {cidade}, {uf}, {publico}.
   // copy: {
   //   telehealth: { points: ['Link enviado antes do horário', 'Sigilo e privacidade', 'Receita digital válida'] },

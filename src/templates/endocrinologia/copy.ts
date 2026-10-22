@@ -131,7 +131,7 @@ export const ENDOCRINOLOGIA_COPY: EndocrinologiaCopy = {
   finalCta: {
     title: 'Agende sua consulta',
     titleEm: 'e leve seus exames.',
-    text: 'Fale com a equipe de {medico} pelo WhatsApp para marcar a primeira consulta ou um retorno.',
+    text: 'Marque a primeira consulta ou um retorno com {medico} pelo WhatsApp.',
     callPrefix: 'ou ligue',
   },
   emergencyNotice:

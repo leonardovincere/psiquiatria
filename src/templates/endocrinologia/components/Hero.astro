@@ -45,7 +45,8 @@ const modalities = [clinic.modalities.presencial && 'Presencial', clinic.modalit
         </div>
       </dl>
 
-      <div class="endo-in mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-7" style="--d:4">
+      <!-- data-hide-sticky: a barra fixa de agendamento some enquanto este botão está na tela. -->
+      <div class="endo-in mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-7" style="--d:4" data-hide-sticky>
         <WhatsAppButton href={whatsappUrl(clinic)} label={copy.scheduleCta} class="self-start" />
         <a href="#consulta" class="arrow-nudge inline-flex min-h-12 items-center gap-2 self-start font-medium text-primary sm:self-auto">
           <span class="underline decoration-accent decoration-2 underline-offset-[7px]">{copy.hero.link}</span>
@@ -71,7 +72,7 @@ const modalities = [clinic.modalities.presencial && 'Presencial', clinic.modalit
             fetchpriority="high"
           />
         ) : (
-          <div class="endo-photo card-light flex aspect-[4/5] w-full flex-col justify-between border border-line bg-white p-7 md:p-9">
+          <div class="endo-photo card-light flex aspect-[5/4] w-full sm:aspect-[4/5] flex-col justify-between border border-line bg-white p-7 md:p-9">
             <span class="text-[12px] font-semibold tracking-[0.12em] text-muted uppercase">{clinic.clinic.name}</span>
             <span class="text-[6.5rem] leading-none font-medium text-primary md:text-[8rem]" aria-hidden="true">
               {initials(doctor.name)}
