@@ -1,0 +1,68 @@
+---
+import Icon from '../../../components/shared/Icon.astro';
+import SectionHeading from '../../../components/shared/SectionHeading.astro';
+import { ENDO_ICONS } from '../icons';
+import type { EndocrinologiaCopy, Exams } from '../types';
+
+interface Props {
+  exams: Exams;
+  copy: EndocrinologiaCopy['exams'];
+}
+const { exams, copy } = Astro.props;
+const items = exams.items ?? [];
+// Barras decorativas do destaque de bioimpedância (proporções ilustrativas, sem valores).
+const bars = [
+  { h: 0.82, label: 'Massa magra' },
+  { h: 0.46, label: 'Gordura' },
+  { h: 0.64, label: 'Água' },
+];
+---
+
+<section id="exames" data-tone-at="base" class="section-y container-page" aria-labelledby="exames-titulo">
+  <div class="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
+    <div>
+      <SectionHeading id="exames-titulo" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} class="!mb-8" />
+      {
+        exams.bioimpedance && (
+          <div class="endo-bia card-light border border-line bg-white p-7 md:p-8" data-reveal>
+            <div class="mb-6 flex h-28 items-end gap-5 border-b border-line pb-px" aria-hidden="true">
+              {bars.map((b) => (
+                <span class="flex flex-1 flex-col items-center gap-2">
+                  <span class="endo-bar w-full" style={`height:${Math.round(b.h * 100)}px`} />
+                </span>
+              ))}
+            </div>
+            <div class="mb-5 flex justify-between gap-3 text-[12px] font-semibold tracking-[0.08em] text-muted uppercase" aria-hidden="true">
+              {bars.map((b) => <span class="flex-1 text-center">{b.label}</span>)}
+            </div>
+            <h3 class="flex items-center gap-2.5 text-[1.4rem] text-ink">
+              <Icon svg={ENDO_ICONS.chart} class="size-5 text-primary" />
+              {copy.bioimpedanceTitle}
+            </h3>
+            <p class="mt-2 leading-relaxed text-muted">{copy.bioimpedanceText}</p>
+          </div>
+        )
+      }
+    </div>
+    <div class="flex flex-col">
+      {
+        items.length > 0 && (
+          <ul class="border-t border-line">
+            {items.map((item, i) => (
+              <li class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 border-b border-line py-6" data-reveal style={`--i:${i}`}>
+                <span class="mt-0.5 flex size-10 items-center justify-center text-primary">
+                  <Icon svg={ENDO_ICONS.flask} class="size-6" />
+                </span>
+                <div>
+                  <h3 class="text-xl text-ink">{item.name}</h3>
+                  <p class="mt-1 leading-relaxed text-muted">{item.description}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <p class="mt-6 text-[15px] text-muted" data-reveal>{copy.note}</p>
+    </div>
+  </div>
+</section>

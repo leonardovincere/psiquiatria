@@ -1,0 +1,134 @@
+/*
+ * Estilos do template de endocrinologia. Tudo fica sob [data-specialty='endocrinologia']
+ * (atributo do <html>, definido no Page.astro), então nada vaza para as outras especialidades.
+ * Fora de @layer de propósito: vence os utilitários do Tailwind e restiliza os
+ * componentes compartilhados pelos ganchos de classe (.btn-cta, .icon-bubble, .map-box…).
+ *
+ * Direção: clínica e técnica. Títulos sem serifa, cantos retos, filetes finos,
+ * grade milimetrada no topo, números tabulares. Movimento mínimo.
+ */
+
+[data-specialty='endocrinologia'] {
+  --endo-radius: 10px;
+}
+[data-specialty='endocrinologia'] :is(h1, h2, h3) {
+  letter-spacing: -0.022em;
+}
+/* Destaques dos títulos em cor, sem itálico. */
+[data-specialty='endocrinologia'] :is(h1, h2) em {
+  font-style: normal;
+}
+[data-specialty='endocrinologia'] .endo-mono {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+[data-specialty='endocrinologia'] .eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.6rem;
+  vertical-align: 0.06em;
+  background: var(--c-accent);
+}
+
+/* Cantos retos nos componentes compartilhados. */
+[data-specialty='endocrinologia'] :is(.btn-cta, .icon-bubble, .map-pill, .note-box, .chip, .endo-registry, .endo-photo, .endo-cards, .endo-bia) {
+  border-radius: var(--endo-radius);
+}
+[data-specialty='endocrinologia'] .map-box {
+  border-radius: 14px;
+}
+
+/* ─── Topo ─── */
+.endo-grid {
+  --grid: color-mix(in srgb, var(--primary-base) 8%, transparent);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse 85% 75% at 72% 40%, #000 25%, transparent 78%);
+}
+.endo-corner {
+  position: absolute;
+  z-index: 1;
+  width: 28px;
+  height: 28px;
+  border: 0 solid var(--c-accent);
+}
+.endo-corner-tl {
+  top: -10px;
+  left: -10px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+}
+.endo-corner-br {
+  right: -10px;
+  bottom: -10px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+}
+@keyframes endo-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+[data-specialty='endocrinologia'] .endo-in {
+  animation: endo-rise 0.8s var(--ease-out) both;
+  animation-delay: calc(var(--d, 0) * 80ms);
+}
+
+/* ─── Consulta e acompanhamento: linha do tempo ─── */
+.endo-timeline {
+  position: relative;
+}
+.endo-timeline::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 15.5px;
+  width: 1px;
+  background: var(--c-border);
+}
+.endo-step {
+  border-radius: 8px;
+}
+.endo-tick {
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  background: var(--c-accent);
+}
+
+/* ─── Bioimpedância: barras que sobem quando o cartão aparece ─── */
+.endo-bar {
+  display: block;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(to top, var(--c-primary), color-mix(in srgb, var(--c-primary) 55%, var(--c-accent)));
+  transform-origin: bottom;
+  transition: transform 0.9s var(--ease-out) 0.15s;
+}
+.js .endo-bia:not(.is-visible) .endo-bar {
+  transform: scaleY(0.2);
+}
+
+/* ─── Sobre: citação mais contida, com filete em vez de aspas ─── */
+[data-specialty='endocrinologia'] #sobre figure {
+  border-left: 2px solid var(--c-accent);
+  padding-left: 1.5rem;
+}
+[data-specialty='endocrinologia'] #sobre figure > svg {
+  display: none;
+}
+[data-specialty='endocrinologia'] #sobre blockquote {
+  font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+  line-height: 1.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .endo-bia:not(.is-visible) .endo-bar {
+    transform: none;
+  }
+}

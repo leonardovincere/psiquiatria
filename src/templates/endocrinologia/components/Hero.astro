@@ -1,0 +1,88 @@
+---
+import WhatsAppButton from '../../../components/shared/WhatsAppButton.astro';
+import { getHeroPhoto, heroPhotoSizes } from '../../../lib/heroPhoto';
+import { credentials, initials, whatsappUrl } from '../../../lib/links';
+import type { EndocrinologiaClient, EndocrinologiaCopy } from '../types';
+
+interface Props {
+  clinic: EndocrinologiaClient;
+  copy: EndocrinologiaCopy;
+}
+const { clinic, copy } = Astro.props;
+const { doctor } = clinic;
+const { tagline, taglineHighlight, heroEyebrow } = clinic.clinic;
+const photo = await getHeroPhoto(clinic);
+
+// Divide a tagline em volta do trecho destacado.
+const idx = taglineHighlight ? tagline.indexOf(taglineHighlight) : -1;
+const [before, mark, after] =
+  idx >= 0 ? [tagline.slice(0, idx), taglineHighlight!, tagline.slice(idx + taglineHighlight!.length)] : [tagline, '', ''];
+const modalities = [clinic.modalities.presencial && 'Presencial', clinic.modalities.teleconsulta && 'Teleconsulta'].filter(Boolean);
+---
+
+<!--
+  Topo técnico: texto à esquerda com o registro profissional em destaque (CRM/RQE sempre visíveis)
+  e, à direita, a foto em moldura reta sobre uma grade milimetrada. Sem foto, uma ficha com o monograma.
+-->
+<section id="inicio" data-tone-at="base" class="endo-hero relative overflow-hidden">
+  <div class="endo-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+  <div class="container-page relative grid items-center gap-12 pt-10 pb-16 md:pt-16 md:pb-24 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20 lg:pt-20">
+    <div class="flex flex-col gap-6">
+      <p class="eyebrow">{heroEyebrow ?? copy.hero.eyebrowFallback}</p>
+      <h1 class="text-[2.5rem] leading-[1.06] text-ink sm:text-[3.4rem] lg:text-[4rem] xl:text-[4.5rem]">
+        {before}{mark && <em class="text-primary">{mark}</em>}{after}
+      </h1>
+      <p class="max-w-xl text-lg leading-relaxed text-muted md:text-xl">{copy.hero.subtitle}</p>
+
+      <dl class="endo-in endo-registry card-light mt-2 grid max-w-xl grid-cols-1 border border-line bg-white sm:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]" style="--d:3">
+        <div class="px-5 py-4">
+          <dt class="text-[12px] font-semibold tracking-[0.12em] text-muted uppercase">{doctor.title}</dt>
+          <dd class="mt-1 text-lg font-medium text-ink">{doctor.name}</dd>
+        </div>
+        <div class="border-t border-line px-5 py-4 sm:border-t-0 sm:border-l">
+          <dt class="text-[12px] font-semibold tracking-[0.12em] text-muted uppercase">{copy.hero.credentialsLabel}</dt>
+          <dd class="endo-mono mt-1 text-[15px] text-ink">{credentials(doctor)}</dd>
+        </div>
+      </dl>
+
+      <div class="endo-in mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-7" style="--d:4">
+        <WhatsAppButton href={whatsappUrl(clinic)} label={copy.scheduleCta} class="self-start" />
+        <a href="#consulta" class="arrow-nudge inline-flex min-h-12 items-center gap-2 self-start font-medium text-primary sm:self-auto">
+          <span class="underline decoration-accent decoration-2 underline-offset-[7px]">{copy.hero.link}</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+
+    <figure class="endo-in relative m-0 w-full max-w-[520px] justify-self-center lg:max-w-[460px] lg:justify-self-end xl:max-w-[520px]" style="--d:2">
+      <span class="endo-corner endo-corner-tl" aria-hidden="true"></span>
+      <span class="endo-corner endo-corner-br" aria-hidden="true"></span>
+      {
+        photo ? (
+          <img
+            src={photo.src}
+            srcset={photo.srcSet.attribute}
+            sizes={heroPhotoSizes}
+            width={photo.attributes.width}
+            height={photo.attributes.height}
+            alt={`Foto de ${doctor.name}`}
+            class="endo-photo aspect-[4/5] w-full object-cover"
+            decoding="async"
+            fetchpriority="high"
+          />
+        ) : (
+          <div class="endo-photo card-light flex aspect-[4/5] w-full flex-col justify-between border border-line bg-white p-7 md:p-9">
+            <span class="text-[12px] font-semibold tracking-[0.12em] text-muted uppercase">{clinic.clinic.name}</span>
+            <span class="text-[6.5rem] leading-none font-medium text-primary md:text-[8rem]" aria-hidden="true">
+              {initials(doctor.name)}
+            </span>
+            <span class="flex flex-col gap-1 border-t border-line pt-5 text-[15px] text-muted">
+              <span class="font-medium text-ink">{doctor.shortName}</span>
+              <span>{clinic.clinic.city} — {clinic.clinic.state}{modalities.length > 0 && ` · ${modalities.join(' e ')}`}</span>
+            </span>
+          </div>
+        )
+      }
+    </figure>
+  </div>
+</section>

@@ -1,4 +1,5 @@
 import type { PsiquiatriaClient } from '../templates/psiquiatria/types';
+import type { EndocrinologiaClient } from '../templates/endocrinologia/types';
 
 /**
  * Estrutura do config de cada cliente (src/clients/<slug>.ts).
@@ -72,6 +73,8 @@ export interface Insurance {
   /** null = a confirmar. */
   acceptsInsurance: boolean | null;
   note: string | null;
+  /** Convênios aceitos, por nome (exibidos pelos templates que têm a seção de convênios). */
+  plans?: string[];
 }
 
 export interface Service {
@@ -248,6 +251,6 @@ export interface BaseClientConfig {
 }
 
 /** Config de um cliente: uma variante por especialidade. */
-export type ClientConfig = PsiquiatriaClient;
+export type ClientConfig = PsiquiatriaClient | EndocrinologiaClient;
 
 export type Specialty = ClientConfig['specialty'];

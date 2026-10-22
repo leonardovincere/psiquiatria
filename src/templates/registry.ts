@@ -1,6 +1,7 @@
 import type { ClientConfig, Specialty } from '../clients/types';
 import type { SpecialtyTemplate } from './types';
 import { psiquiatria } from './psiquiatria';
+import { endocrinologia } from './endocrinologia';
 
 /**
  * Especialidade → template. O tipo exige um template para cada valor de
@@ -11,6 +12,7 @@ type Registry = { [S in Specialty]: SpecialtyTemplate<Extract<ClientConfig, { sp
 
 export const registry: Registry = {
   psiquiatria,
+  endocrinologia,
 };
 
 /** Template da especialidade do cliente. */

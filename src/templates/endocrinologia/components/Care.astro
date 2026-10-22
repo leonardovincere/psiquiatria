@@ -1,0 +1,46 @@
+---
+import SectionHeading from '../../../components/shared/SectionHeading.astro';
+import type { CareStep, EndocrinologiaCopy } from '../types';
+
+interface Props {
+  firstVisit: CareStep[];
+  followUp: CareStep[];
+  copy: EndocrinologiaCopy['care'];
+}
+const { firstVisit, followUp, copy } = Astro.props;
+const tracks = [
+  { id: 'primeira', label: copy.firstVisit, steps: firstVisit },
+  { id: 'retornos', label: copy.followUp, steps: followUp },
+].filter((t) => t.steps.length > 0);
+---
+
+<!-- Duas trilhas lado a lado: o que acontece na primeira consulta e como segue o acompanhamento. -->
+<section id="consulta" data-tone-at="sand" class="section-y container-page" aria-labelledby="consulta-titulo">
+  <SectionHeading id="consulta-titulo" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} />
+  <div class="grid gap-14 lg:grid-cols-2 lg:gap-20">
+    {
+      tracks.map((track) => (
+        <div>
+          <h3 class="mb-8 flex items-center gap-3 text-[1.5rem] text-ink" data-reveal>
+            <span class="endo-tick" aria-hidden="true" />
+            {track.label}
+          </h3>
+          <ol class="endo-timeline">
+            {track.steps.map((step, i) => (
+              <li class="relative pb-9 pl-12 last:pb-0" data-reveal style={`--i:${i}`}>
+                <span class="endo-step endo-mono absolute top-0 left-0 flex size-8 items-center justify-center border border-primary bg-background text-[13px] font-medium text-primary" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <p class="text-lg font-medium text-ink">
+                  <span class="sr-only">{track.label}, etapa {i + 1}: </span>
+                  {step.title}
+                </p>
+                <p class="mt-1.5 leading-relaxed text-muted">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))
+    }
+  </div>
+</section>

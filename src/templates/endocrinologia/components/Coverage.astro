@@ -1,0 +1,33 @@
+---
+import type { EndocrinologiaClient, EndocrinologiaCopy } from '../types';
+
+/** Convênios e pagamento, exibidos dentro da seção de localização (slot do Location compartilhado). */
+interface Props {
+  clinic: EndocrinologiaClient;
+  copy: EndocrinologiaCopy['coverage'];
+}
+const { clinic, copy } = Astro.props;
+const { acceptsInsurance, note, plans = [] } = clinic.insurance;
+const payment = clinic.payment?.length ? `${copy.paymentPrefix}: ${clinic.payment.join(' ou ').toLowerCase()}` : null;
+---
+
+<div class="mt-10 border-t border-line pt-8" data-reveal>
+  <h3 class="mb-4 text-[1.35rem] text-ink">{copy.title}</h3>
+  {
+    acceptsInsurance && plans.length > 0 ? (
+      <>
+        <p class="mb-3 text-[13px] font-semibold tracking-[0.12em] text-muted uppercase">{copy.plans}</p>
+        <ul class="flex flex-wrap gap-2">
+          {plans.map((p) => (
+            <li class="chip border border-line bg-white px-3 py-1.5 text-[15px] text-ink">{p}</li>
+          ))}
+        </ul>
+      </>
+    ) : acceptsInsurance === false ? (
+      <p class="text-ink">{copy.privateCare}</p>
+    ) : (
+      <p class="text-ink">{copy.toConfirm}</p>
+    )
+  }
+  {(note || payment) && <p class="mt-4 text-[15px] leading-relaxed text-muted">{[note, payment].filter(Boolean).join(' · ')}</p>}
+</div>

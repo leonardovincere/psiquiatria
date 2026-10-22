@@ -63,6 +63,8 @@ const hours = hoursList(clinic.hours);
       >
         {copy.mapsLink} <span class="arrow" aria-hidden="true">↗</span>
       </a>
+      <!-- Conteúdo extra do template (ex.: convênios), abaixo do endereço. -->
+      <slot />
     </div>
 
     <!-- Fachada: o iframe do Google Maps (~1 MB de JS) só carrega no clique. -->

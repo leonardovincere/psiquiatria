@@ -1,0 +1,76 @@
+---
+import Layout from '../../components/shared/Layout.astro';
+import PreviewBanner from '../../components/shared/PreviewBanner.astro';
+import Header from '../../components/shared/Header.astro';
+import FactsStrip from '../../components/shared/FactsStrip.astro';
+import About from '../../components/shared/About.astro';
+import Telehealth from '../../components/shared/Telehealth.astro';
+import Faq from '../../components/shared/Faq.astro';
+import Location from '../../components/shared/Location.astro';
+import FinalCta from '../../components/shared/FinalCta.astro';
+import Footer from '../../components/shared/Footer.astro';
+import StickyCta from '../../components/shared/StickyCta.astro';
+import Hero from './components/Hero.astro';
+import Areas from './components/Areas.astro';
+import Care from './components/Care.astro';
+import Exams from './components/Exams.astro';
+import Coverage from './components/Coverage.astro';
+import type { EndocrinologiaClient } from './types';
+import { getCopy } from './copy';
+import { factsFor, whatsappUrl } from '../../lib/links';
+
+/**
+ * Página de endocrinologia: topo com registro profissional, áreas de atuação,
+ * consulta e acompanhamento, exames (opcional), sobre, teleconsulta, dúvidas,
+ * localização com convênios e CTA final. Renderizada pela rota única via registry.
+ */
+interface Props {
+  clinic: EndocrinologiaClient;
+}
+const { clinic } = Astro.props;
+const copy = getCopy(clinic);
+const wa = whatsappUrl(clinic);
+const exams = clinic.exams?.enabled ? clinic.exams : null;
+const nav = [
+  { href: '#areas', label: copy.nav.areas },
+  { href: '#consulta', label: copy.nav.care },
+  ...(exams ? [{ href: '#exames', label: copy.nav.exams }] : []),
+  { href: '#sobre', label: copy.nav.about },
+  { href: '#duvidas', label: copy.nav.faq },
+  ...(clinic.modalities.presencial ? [{ href: '#localizacao', label: copy.nav.location }] : []),
+];
+---
+
+<Layout clinic={clinic} schemaSpecialty={copy.schemaSpecialty} attrs={{ 'data-specialty': 'endocrinologia' }}>
+  <a
+    href="#conteudo"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-primary focus:px-4 focus:py-2 focus:text-on-primary"
+    >Pular para o conteúdo</a
+  >
+  {clinic.isPreview && <PreviewBanner text={clinic.previewBanner} suffix={copy.previewSuffix} />}
+  <Header clinic={clinic} nav={nav} />
+  <main id="conteudo" data-tone-root data-tone="base">
+    <Hero clinic={clinic} copy={copy} />
+    <FactsStrip items={factsFor(clinic)} />
+    <Areas items={clinic.areas ?? copy.areas.items} copy={copy.areas} />
+    <Care
+      firstVisit={clinic.care?.firstVisit ?? copy.care.firstVisitSteps}
+      followUp={clinic.care?.followUp ?? copy.care.followUpSteps}
+      copy={copy.care}
+    />
+    {exams && <Exams exams={exams} copy={copy.exams} />}
+    <About clinic={clinic} eyebrow={copy.about.eyebrow} />
+    {clinic.modalities.teleconsulta && <Telehealth clinic={clinic} copy={copy.telehealth} />}
+    <Faq title={copy.faq.title} items={clinic.faq} />
+    {
+      clinic.modalities.presencial && (
+        <Location clinic={clinic} copy={copy.location}>
+          <Coverage clinic={clinic} copy={copy.coverage} />
+        </Location>
+      )
+    }
+    <FinalCta clinic={clinic} copy={copy} />
+  </main>
+  <Footer clinic={clinic} emergencyNotice={copy.emergencyNotice} legalNotice={copy.legalNotice} />
+  <StickyCta href={wa} label={copy.scheduleCta} />
+</Layout>
