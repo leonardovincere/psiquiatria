@@ -1,96 +1,73 @@
-# Landing pages para clínicas de psiquiatria
+# Fábrica de prévias — Vincere.AI
 
-Astro + Tailwind CSS v4, multi-clínica. Cada clínica é um arquivo `src/clients/<slug>.ts`; o build gera uma página
-estática por clínica em `/<slug>`. No ar, cada uma fica em `https://<slug>.preview.vincereai.tech`.
-
-## Uso
+Sites de demonstração para médicos prospectados. Astro + Tailwind CSS v4, site estático, publicado na Vercel.
+Cada cliente é um arquivo `src/clients/<slug>.ts` e vira uma página. Especialidades: **psiquiatria** e **endocrinologia**.
 
 ```bash
 npm install
-npm run dev        # http://localhost:4321/animus
-npm run build      # gera dist/ com todas as clínicas
-npm run preview
+npm run dev      # http://localhost:4321/<slug>
+npm run build    # checa tipos e regras do CFM e gera dist/
+npm run lint     # checa tipos e se src/components/shared continua sem texto de especialidade
+npm run routes   # gera no vercel.json a regra de subdomínio de cada cliente
 ```
 
-## Nova clínica
+## Criar uma prévia nova
 
-1. Copie `src/clients/_template-psiquiatria.ts` para `src/clients/<slug>.ts` (minúsculas, números e hífen) e ajuste `slug`.
-   O template é comentado campo a campo; o tipo `ClientConfig` (`src/clients/types.ts`) documenta o resto.
-2. Imagens em `public/clinics/<slug>/` (logo, símbolo, favicon). Tamanhos são lidos dos arquivos no build.
-3. Opcional: fontes recortadas em `src/assets/fonts/<slug>/` (`heading-normal.woff2`, `heading-italic.woff2`,
-   `body-normal.woff2`). Sem elas, o build baixa do Google Fonts.
-4. `npm run build` → `/<slug>`. Arquivos que começam com `_` são ignorados.
+1. Copie o molde da especialidade para `src/clients/<slug>.ts` (o nome do arquivo é o slug: minúsculas, números e hífen):
+   - `src/clients/_template-psiquiatria.ts`
+   - `src/clients/_template-endocrinologia.ts` (um exemplo pronto está em `src/clients/exemplo-endocrino.ts`)
+2. Preencha os campos. O campo `specialty` escolhe o template; se faltar um campo obrigatório dessa especialidade,
+   o build aponta qual. Dado que você não tem vira `null` com `// TODO`. Nunca invente CRM, RQE, endereço ou números.
+3. Imagens em `public/clinics/<slug>/`; fontes recortadas em `src/assets/fonts/<slug>/` (passo a passo no `CLAUDE.md`).
+4. Rode `npm run routes` e `npm run build`, e faça commit (inclusive do `vercel.json`).
+5. Acesse:
+   - local: `http://localhost:4321/<slug>`
+   - no ar: `https://psiquiatria-vincere.vercel.app/<slug>`
+   - e, depois de adicionar o domínio em Vercel → psiquiatria-vincere → Settings → Domains: `https://<slug>.preview.vincereai.tech`
 
-Para cada prévia ter cara própria: `style.hero` (`arch` | `circle` | `cinema`), `style.conditions` (`marquee` | `chips`),
-`style.finish` (`soft` | `editorial`: botões retos, seções numeradas, textura de papel, fundo animado, barra de leitura |
-`cinema`: cenas escuras, títulos que entram em foco, granulação de filme, abertura em letterbox),
-`research` (seção "Pesquisa"), `articles` (conteúdo educativo),
-`style.intro` (abertura com cortina, só na 1ª visita),
-`theme.headingWeight`, `approach` (seção "Abordagem") e `doctor.experience` (seção "Trajetória").
-CRM/RQE vazios só são aceitos em prévia (a página mostra "em confirmação"); para publicar, o build exige.
+Toda prévia (`isPreview: true`) sai com `noindex, nofollow`, `robots.txt` bloqueado e `X-Robots-Tag` no domínio de prévia.
+O projeto não gera sitemap.
 
-Nada da clínica fica no código dos componentes: dados, cores, fontes, imagens e textos vêm da config.
-Textos de seção têm padrão em `src/lib/copy.ts` e podem ser sobrescritos por clínica em `copy`
-(variáveis: `{medico}`, `{titulo}`, `{cidade}`, `{uf}`, `{publico}`). Dados da agência ficam em `src/lib/agency.ts`.
+## Como está organizado
 
-## Deploy (Vercel)
+```
+src/clients/<slug>.ts        dados de cada cliente (ClientConfig, discriminado por specialty)
+src/clients/types.ts         campos comuns (BaseClientConfig, BaseCopy) e a união ClientConfig
+src/components/shared/       estrutura comum: Layout/SEO, cabeçalho, rodapé, WhatsApp, sobre, FAQ, localização, CTA
+src/templates/<especialidade>/
+  Page.astro                 a página da especialidade
+  components/                seções próprias
+  types.ts                   campos próprios do cliente dessa especialidade
+  copy.ts                    textos padrão (o cliente sobrescreve em `copy`)
+  theme.ts, icons.ts, images.ts, compliance.ts, styles.css
+  index.ts                   exporta o template (formato SpecialtyTemplate)
+src/templates/registry.ts    specialty → template
+src/pages/[slug].astro       rota única: lê o cliente e renderiza o template
+```
 
-`vercel.json`:
-- `<slug>.preview.vincereai.tech/` serve `/<slug>` e `/robots.txt` serve `/<slug>/robots.txt`;
-- qualquer outro host em `/` redireciona para https://vincereai.tech (a home não lista clínicas);
-- todo o domínio de prévia recebe `X-Robots-Tag: noindex, nofollow`;
-- `cleanUrls`: `/animus.html` é servido como `/animus`.
+## Adicionar uma especialidade
 
-Na Vercel, adicione o domínio curinga `*.preview.vincereai.tech` ao projeto (exige os nameservers do
-domínio na Vercel ou a configuração de DNS que ela indicar).
+Use `src/templates/endocrinologia/` como modelo.
 
-### `isPreview`
+1. Crie `src/templates/<especialidade>/` com:
+   - `types.ts` com `interface <Esp>Client extends BaseClientConfig { specialty: '<especialidade>'; … }`;
+   - `copy.ts` com os textos padrão (um tipo que estende `BaseCopy`) e o aviso de publicidade médica no topo;
+   - `theme.ts`, `icons.ts`, `images.ts` e `compliance.ts` (termos vedados próprios);
+   - as seções em `components/` e um `Page.astro` que monta a página com os componentes de `shared/`;
+   - `styles.css`, com tudo dentro de `[data-specialty='<especialidade>']`;
+   - `index.ts`, que exporta o objeto do template.
+2. Acrescente `<Esp>Client` à união `ClientConfig` em `src/clients/types.ts`.
+3. Registre o template em `src/templates/registry.ts`. Enquanto faltar, o build não passa.
+4. Importe o `styles.css` em `src/styles/global.css`.
+5. Crie o molde `src/clients/_template-<especialidade>.ts` e um cliente de exemplo, rode `npm run routes`, `npm run lint` e `npm run build`,
+   e confira que as prévias existentes não mudaram (comparação pixel a pixel, veja o `CLAUDE.md`).
 
-Com `isPreview: true` (sempre, para cada clínica):
-- `<meta name="robots" content="noindex, nofollow, noarchive">` e `robots.txt` com `Disallow: /`;
-- faixa com o texto de `previewBanner` no topo ("Vincere.AI" vira link);
-- JSON-LD omitido.
+Se uma seção servir a várias especialidades, coloque-a em `src/components/shared/` recebendo os textos por props.
+Se ela precisar de um dado novo, crie um campo opcional em `BaseClientConfig`.
 
-## Publicidade médica (Resolução CFM nº 2.336/2023)
+## Publicidade médica (CFM 2.336/2023)
 
-- CRM e RQE aparecem sempre na seção “Sobre” e no rodapé (e no hero com `compliance.showCrmRqeEverywhere`); diretor(a) técnico(a) no rodapé.
-- Com `compliance.noOutcomePromises: true`, `src/lib/compliance.ts` falha o build ao encontrar termos de risco nos textos
-  (cura, garantia, 100%, definitivo, milagre, superlativos como “o melhor psiquiatra”, descontos/promoções, “antes e depois”).
-  É uma rede de segurança — a revisão humana continua necessária.
-- Aviso de emergência (SAMU 192 / CVV 188) no rodapé e menção à Resolução CFM nº 2.314/2022 na teleconsulta.
-
-## Seções
-
-Hero (texto + foto) · Números em destaque (`highlights`) · Sobre (citação que acende ao rolar) · Condições (faixas deslizando)
-· Primeira consulta (4 passos curtos + laudos, convênio e pagamento numa linha) · Teleconsulta (3 pontos com ícones)
-· FAQ (só o que não está no resto da página) · Onde estamos · Convite final · Rodapé compacto com CRM/RQE, diretora técnica,
-redes e aviso de emergência · botão fixo de WhatsApp (barra no celular, pílula no desktop), que some no convite final.
-
-## Movimento
-
-Camada de animação contida, sem bibliotecas (CSS + ~2 KB de JS), em `src/styles/global.css` e no script de `Layout.astro`:
-
-- **Entrada do hero**: o título sobe palavra por palavra por trás de uma máscara, a flor de lótus
-  desabrocha (clip-path) e passa a "respirar", e o destaque da tagline é sublinhado.
-- **Foto que se abre**: a foto começa no arco e se abre até a largura da tela conforme a rolagem (`--p` de 0 a 1).
-- **Títulos em máscara**: `data-words` + `Words.astro` revelam cada título palavra por palavra ao entrar na tela.
-- **Texto que acende**: o parágrafo principal do "Sobre" (`data-scrub`) passa de claro a escuro palavra por palavra.
-- **Faixas de condições** deslizando devagar em sentidos opostos (decorativas, `aria-hidden`; a lista com descrições continua abaixo).
-- **Tom por seção**: o fundo da página muda suavemente (creme → areia → azul na teleconsulta) conforme a seção
-  no centro da tela (`data-tone-at`); cartões com `.card-light` mantêm as cores.
-- **Microinterações**: botões levantam, setas deslizam, cabeçalho fixo ganha fundo ao rolar, FAQ abre suavemente.
-- Tudo respeita `prefers-reduced-motion`, e sem JS a página aparece inteira e legível.
-
-## Fontes
-
-As fontes do `theme` são servidas pelo próprio site (Astro Fonts API), sem requisição ao Google na visita, com
-fallback de métricas ajustadas (o texto não "pula" quando a fonte chega). Se existirem
-`src/assets/fonts/<slug>/heading-normal.woff2`, `heading-italic.woff2` e `body-normal.woff2`, elas são usadas
-(recorte para os pesos e caracteres do português, ~80 KB no total); senão, o build baixa do Google Fonts.
-
-## Performance
-
-Zero JS de framework; CSS inline; fontes auto-hospedadas e pré-carregadas; foto do topo pré-carregada; foto otimizada em WebP; flor de lótus vetorizada (SVG);
-o iframe do Google Maps só carrega ao clicar (fachada). Lighthouse na prévia `animus`:
-mobile 100 / 100 / 100, desktop 100 / 100 / 100 (performance / acessibilidade / boas práticas);
-SEO 100 com `isPreview: false` (na prévia o `noindex` derruba o SEO de propósito).
+`src/lib/compliance.ts` barra no build promessa de resultado, "garantia", "100%", superlativos, descontos e "antes e depois",
+além dos termos de cada template. CRM e RQE podem ficar em confirmação na prévia, mas são exigidos para publicar.
+Nenhum template exibe depoimentos de pacientes; a prova social é só o número agregado de avaliações, com link para a fonte.
+A checagem automática não substitui a revisão humana.
