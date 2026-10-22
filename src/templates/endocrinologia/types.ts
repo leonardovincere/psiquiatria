@@ -15,6 +15,21 @@ export interface Area {
 export interface CareStep {
   title: string;
   text: string;
+  /** Ícone do template (./icons.ts), usado no acabamento "luxe". Sem ele, um ícone padrão pela posição. */
+  icon?: EndoIconName;
+}
+
+/** Escolhas de layout do template (opcional). */
+export interface EndoStyle {
+  /**
+   * Acabamento: "clinic" (padrão: técnico, cantos retos, grade milimetrada no topo) ou
+   * "luxe" (minimalista e premium: fundo com estrutura molecular sutil, topo centralizado com
+   * medalhão de vidro espelhado, áreas em cartões de ícone que se expandem, consulta em abas,
+   * cabeçalho fosco, chamadas em fonte cursiva (theme.fontScript) e rodapé com assinatura).
+   */
+  finish?: 'clinic' | 'luxe';
+  /** Abertura cinematográfica na 1ª visita (padrão: ligada no "luxe"). */
+  intro?: boolean;
 }
 
 /** Exame ou avaliação feita no consultório. */
@@ -48,6 +63,8 @@ export interface EndocrinologiaCopy extends BaseCopy {
   };
   exams: { eyebrow: string; title: string; intro: string; bioimpedanceTitle: string; bioimpedanceText: string; note: string };
   coverage: { title: string; plans: string; toConfirm: string; privateCare: string; paymentPrefix: string };
+  /** Títulos das colunas do rodapé com assinatura (acabamento "luxe"). */
+  footer: { address: string; contact: string; explore: string; hours: string; whatsapp: string };
 }
 
 export interface EndocrinologiaClient extends BaseClientConfig {
@@ -62,6 +79,8 @@ export interface EndocrinologiaClient extends BaseClientConfig {
   care?: { firstVisit?: CareStep[]; followUp?: CareStep[] };
   /** Exames e bioimpedância no consultório (opcional, desligado se ausente). */
   exams?: Exams;
+  /** Layout (opcional): acabamento e abertura. */
+  style?: EndoStyle;
   /*
    * Depoimentos de pacientes: este template não tem a seção, de propósito.
    * A regra do projeto (CFM 2.336/2023) é mostrar só o número agregado de

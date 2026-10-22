@@ -137,6 +137,13 @@ const katherynne: ClientConfig = {
     text: '#1E241A',
     fontHeading: 'Fraunces',
     fontBody: 'DM Sans',
+    fontScript: 'Pinyon Script', // cursiva só em detalhes: monograma, assinatura e chamadas das seções
+  },
+
+  // Acabamento minimalista e premium: abertura cinematográfica, topo espelhado, fundo molecular,
+  // áreas em cartões que se expandem, consulta em abas, cabeçalho fosco e rodapé com assinatura.
+  style: {
+    finish: 'luxe',
   },
 
   // ─── SEO (vale quando sair da prévia) ───────────────────────
@@ -155,9 +162,12 @@ const katherynne: ClientConfig = {
     technicalDirector: null, // TODO: se o Espaço A for pessoa jurídica, nome + CRM do diretor técnico
   },
 
+  // Menos texto: as áreas abrem ao toque e a consulta vira abas com ícones.
   copy: {
     scheduleCta: 'Agendar consulta pelo WhatsApp',
     hero: { subtitle: 'Atendimento em Endocrinologia e Metabologia no Monte Castelo, em Campo Grande.' },
+    areas: { intro: 'Toque em cada área para saber como ela é acompanhada.', note: '' },
+    care: { intro: '' },
   },
 };
 

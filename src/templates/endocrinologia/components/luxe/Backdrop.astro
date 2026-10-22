@@ -1,0 +1,32 @@
+---
+import { LATTICE, STEROID } from './motifs';
+
+/**
+ * Fundo fixo do acabamento "luxe": luzes suaves que respiram devagar, um favo molecular
+ * quase invisível que acompanha a rolagem e duas fórmulas de esteroide flutuando.
+ * Só transform/opacity (sem custo de pintura); parado com "reduzir movimento".
+ */
+---
+
+<div class="lx-backdrop" aria-hidden="true">
+  <span class="lx-wash"></span>
+  <span class="lx-orb lx-orb-a"></span>
+  <span class="lx-orb lx-orb-b"></span>
+  <span class="lx-orb lx-orb-c"></span>
+  <svg class="lx-lattice" width="100%" height="100%">
+    <defs>
+      <pattern id="lx-hex" width={LATTICE.width} height={LATTICE.height} patternUnits="userSpaceOnUse">
+        <path d={LATTICE.d} fill="none" stroke="currentColor" stroke-width="0.6"></path>
+      </pattern>
+    </defs>
+    <rect width="100%" height="120%" fill="url(#lx-hex)"></rect>
+  </svg>
+  {
+    ['lx-mol-a', 'lx-mol-b'].map((cls) => (
+      <svg class:list={['lx-mol', cls]} viewBox={STEROID.viewBox} fill="none">
+        <path d={STEROID.d} stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" />
+        {STEROID.dots.map(([x, y]) => <circle cx={x} cy={y} r="2.6" fill="currentColor" />)}
+      </svg>
+    ))
+  }
+</div>

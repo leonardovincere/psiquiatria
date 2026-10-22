@@ -1,0 +1,91 @@
+---
+import WhatsAppButton from '../../../../components/shared/WhatsAppButton.astro';
+import { getHeroPhoto } from '../../../../lib/heroPhoto';
+import { credentials, initials, whatsappUrl } from '../../../../lib/links';
+import type { EndocrinologiaClient, EndocrinologiaCopy } from '../../types';
+import { PULSE } from './motifs';
+
+interface Props {
+  clinic: EndocrinologiaClient;
+  copy: EndocrinologiaCopy;
+}
+const { clinic, copy } = Astro.props;
+const { doctor } = clinic;
+const { tagline, taglineHighlight, heroEyebrow } = clinic.clinic;
+const photo = await getHeroPhoto(clinic);
+
+const idx = taglineHighlight ? tagline.indexOf(taglineHighlight) : -1;
+const [before, mark, after] =
+  idx >= 0 ? [tagline.slice(0, idx), taglineHighlight!, tagline.slice(idx + taglineHighlight!.length)] : [tagline, '', ''];
+// Marcas do anel do medalhão, como um relógio: o ritmo dos hormônios ao longo do dia.
+const ticks = Array.from({ length: 60 }, (_, i) => i);
+---
+
+<!--
+  Topo "luxe": composição centralizada e simétrica. Medalhão de vidro com o monograma em cursiva
+  (ou a foto), refletido como num espelho, entre duas ondas de pulso hormonal espelhadas.
+  CRM/RQE sempre visíveis logo abaixo do botão.
+-->
+<section id="inicio" data-tone-at="base" class="lx-hero relative overflow-hidden">
+  <div class="container-page relative flex flex-col items-center pt-10 pb-20 text-center md:pt-14 md:pb-28">
+    <p class="lx-kicker lx-rise" style="--d:0">{heroEyebrow ?? copy.hero.eyebrowFallback}</p>
+
+    <div class="lx-medallion-wrap lx-rise" style="--d:1">
+      <div class="lx-hero-waves" aria-hidden="true">
+        {
+          ['lx-wave-top', 'lx-wave-bottom'].map((cls) => (
+            <svg class:list={['lx-wave', cls]} viewBox={PULSE.viewBox} preserveAspectRatio="none">
+              <path d={PULSE.d} />
+            </svg>
+          ))
+        }
+      </div>
+      <div class="lx-medallion">
+        <svg class="lx-ring" viewBox="0 0 200 200" aria-hidden="true">
+          {
+            ticks.map((i) => (
+              <line x1="100" y1="4" x2="100" y2={i % 5 === 0 ? 13 : 9} transform={`rotate(${i * 6} 100 100)`} />
+            ))
+          }
+        </svg>
+        {
+          photo ? (
+            <img
+              src={photo.src}
+              srcset={photo.srcSet.attribute}
+              sizes="220px"
+              width={photo.attributes.width}
+              height={photo.attributes.height}
+              alt={`Foto de ${doctor.name}`}
+              class="lx-medallion-photo"
+              decoding="async"
+              fetchpriority="high"
+            />
+          ) : (
+            <span class="lx-monogram" aria-hidden="true">{initials(doctor.name)}</span>
+          )
+        }
+        <span class="lx-sheen" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <h1 class="lx-title text-ink">
+      {before}{mark && <em>{mark}</em>}{after}
+    </h1>
+    <p class="lx-rise mt-6 max-w-xl text-lg leading-relaxed text-muted md:text-xl" style="--d:3">{copy.hero.subtitle}</p>
+
+    <div class="lx-rise mt-10 flex flex-col items-center gap-5 sm:flex-row sm:gap-8" style="--d:4" data-hide-sticky>
+      <WhatsAppButton href={whatsappUrl(clinic)} label={copy.scheduleCta} />
+      <a href="#consulta" class="arrow-nudge inline-flex min-h-12 items-center gap-2 font-medium text-primary">
+        <span class="underline decoration-accent decoration-1 underline-offset-[7px]">{copy.hero.link}</span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <p class="lx-rise lx-credentials mt-10 text-[14px] text-muted" style="--d:5">
+      <span class="text-ink">{doctor.name}</span>
+      <span aria-hidden="true"> · </span>{doctor.title}
+      <span aria-hidden="true"> · </span>{credentials(doctor)}
+    </p>
+  </div>
+</section>

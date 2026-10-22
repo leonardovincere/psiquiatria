@@ -15,6 +15,10 @@ export const ENDO_ICONS = {
   flask:
     '<path d="M9.5 3.5h5M10.5 3.5v5.2L5.4 17.4A2 2 0 0 0 7.1 20.5h9.8a2 2 0 0 0 1.7-3.1l-5.1-8.7V3.5"/><path d="M7.5 14.5h9"/>',
   pulse: '<path d="M3 12h4l2-5 4 10 2-5h6"/>',
+  chat: '<path d="M4.5 18.5v-11a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H9l-4.5 3Z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/>',
+  clipboard:
+    '<rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5V3.5h6v1M8.5 10h7M8.5 13.5h7M8.5 17h4"/>',
+  calendar: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8 13.5h2M14 13.5h2M8 16.5h2"/>',
 } as const;
 
 export type EndoIconName = keyof typeof ENDO_ICONS;

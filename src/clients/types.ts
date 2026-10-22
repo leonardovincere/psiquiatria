@@ -164,6 +164,8 @@ export interface Theme {
   /** Peso dos títulos (400 ou 500). Fontes finas, como Cormorant, ficam melhores com 500. */
   headingWeight?: 400 | 500;
   fontBody: string;
+  /** Fonte cursiva opcional (Google Fonts), usada só em detalhes pelos templates que a aproveitam. Ex.: "Pinyon Script". */
+  fontScript?: string | null;
 }
 
 export interface Seo {

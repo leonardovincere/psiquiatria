@@ -48,6 +48,10 @@ ou no `types.ts` do template se for só de uma. Nada de especialidade em `src/co
    Baixe com `@fontsource-variable/<fonte>` do npm numa pasta de rascunho e recorte com fonttools (`varLib.instancer` para os pesos e `pyftsubset` para os caracteres do português).
    Sem esses arquivos, o build tenta baixar do Google Fonts. Neste ambiente de nuvem esse download costuma falhar e o site cai na fonte reserva, por isso prefira os arquivos locais.
 4. Deixe cada prévia com cara própria. Em **endocrinologia**: `theme`, `exams` (exames e bioimpedância), `areas`, `care` e `highlights`.
+   Para um visual minimalista e premium, `style.finish: 'luxe'`: abertura cinematográfica (pulso hormonal + nome em cursiva + letterbox),
+   topo centralizado com medalhão de vidro espelhado, fundo com estrutura molecular sutil, áreas em cartões de ícone que se expandem,
+   consulta em abas, cabeçalho fosco, dúvidas maiores e rodapé com assinatura. Combine com `theme.fontScript` (cursiva só nos detalhes,
+   arquivo `script-normal.woff2` na pasta de fontes da clínica). Sem `style`, vale o acabamento técnico padrão (`clinic`).
    Em **psiquiatria**, combine as opções de `style` de um jeito diferente das clínicas existentes
    (`grep -n "style" src/clients/*.ts` mostra o que cada uma usa; sem `style`, valem os padrões `arch` + `marquee` + `soft`, como na Animus):
    - `style.hero`: `arch` (foto em arco que se abre ao rolar), `circle` (foto ou monograma num círculo com anel de texto)

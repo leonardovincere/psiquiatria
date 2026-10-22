@@ -1,0 +1,63 @@
+---
+import Icon from '../../../../components/shared/Icon.astro';
+import SectionHeading from '../../../../components/shared/SectionHeading.astro';
+import { ENDO_ICONS, type EndoIconName } from '../../icons';
+import type { CareStep, EndocrinologiaCopy } from '../../types';
+
+interface Props {
+  firstVisit: CareStep[];
+  followUp: CareStep[];
+  copy: EndocrinologiaCopy['care'];
+}
+const { firstVisit, followUp, copy } = Astro.props;
+const fallback: Record<string, EndoIconName[]> = {
+  primeira: ['chat', 'flask', 'clipboard', 'chart'],
+  retornos: ['chart', 'cycle', 'calendar', 'pulse'],
+};
+const tracks = [
+  { id: 'primeira', label: copy.firstVisit, steps: firstVisit },
+  { id: 'retornos', label: copy.followUp, steps: followUp },
+].filter((t) => t.steps.length > 0);
+---
+
+<!--
+  Consulta em duas abas (primeira consulta / acompanhamento), feitas com botões de opção:
+  funcionam sem JavaScript e pelo teclado. Cada etapa é um ícone numa linha que se desenha.
+-->
+<section id="consulta" data-tone-at="sand" class="lx-care section-y container-page" aria-labelledby="consulta-titulo">
+  <SectionHeading id="consulta-titulo" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} />
+  {
+    tracks.length > 1 && (
+      <fieldset class="lx-seg" data-reveal>
+        <legend class="sr-only">{copy.title}</legend>
+        {tracks.map((t, i) => (
+          <>
+            <input type="radio" name="lx-care" id={`lx-care-${t.id}`} value={t.id} checked={i === 0} class="sr-only" />
+            <label for={`lx-care-${t.id}`}>{t.label}</label>
+          </>
+        ))}
+      </fieldset>
+    )
+  }
+  {
+    tracks.map((track) => (
+      <div class="lx-track" data-track={track.id}>
+        <h3 class="sr-only">{track.label}</h3>
+        <ol class="lx-steps" style={`--n:${track.steps.length}`} data-rule>
+          {track.steps.map((step, i) => (
+            <li class="lx-step" data-reveal style={`--i:${i}`}>
+              <span class="lx-step-icon">
+                <Icon svg={ENDO_ICONS[step.icon ?? fallback[track.id][i % 4]]} class="size-6" />
+              </span>
+              <span class="lx-step-num" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <p class="lx-step-title">{step.title}</p>
+              <p class="lx-step-text">{step.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    ))
+  }
+</section>

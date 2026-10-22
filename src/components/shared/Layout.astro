@@ -35,11 +35,13 @@ const cssVars = [
   // Fontes da clínica (definidas no astro.config como --fh-<slug> / --fb-<slug>).
   `--f-heading:var(--fh-${clinic.slug})`,
   `--f-body:var(--fb-${clinic.slug})`,
+  ...(t.fontScript ? [`--f-script:var(--fs-${clinic.slug})`] : []),
 ].join(';');
 // O componente <Font> só aceita as variáveis declaradas no astro.config; são geradas por slug.
 type CssVar = Parameters<typeof Font>[0]['cssVariable'];
 const headingVar = `--fh-${clinic.slug}` as CssVar;
 const bodyVar = `--fb-${clinic.slug}` as CssVar;
+const scriptVar = t.fontScript ? (`--fs-${clinic.slug}` as CssVar) : null;
 
 const canonical = clinicUrl(clinic);
 const heroPhoto = await getHeroPhoto(clinic);
@@ -131,6 +133,7 @@ const jsonLd = {
     <!-- Fontes auto-hospedadas; pré-carrega só o que aparece na primeira tela. -->
     <Font cssVariable={headingVar} preload={[{ weight: '400', style: 'normal' }]} />
     <Font cssVariable={bodyVar} preload={[{ weight: '400', style: 'normal' }]} />
+    {scriptVar && <Font cssVariable={scriptVar} />}
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />

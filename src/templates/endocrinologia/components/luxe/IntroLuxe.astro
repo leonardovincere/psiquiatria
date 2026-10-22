@@ -1,0 +1,27 @@
+---
+import type { EndocrinologiaClient } from '../../types';
+import { PULSE } from './motifs';
+
+/**
+ * Abertura cinematográfica (1ª visita da sessão): tela escura, o pulso hormonal se desenha,
+ * o nome surge em letra cursiva como uma assinatura e a tela se abre em duas faixas,
+ * como um letterbox. Só CSS; a página já está pintada por baixo (não atrasa o carregamento).
+ * Nunca aparece com "reduzir movimento".
+ */
+interface Props {
+  clinic: EndocrinologiaClient;
+}
+const { clinic } = Astro.props;
+---
+
+<div class="lx-intro" aria-hidden="true">
+  <span class="lx-intro-half lx-intro-top"></span>
+  <span class="lx-intro-half lx-intro-bottom"></span>
+  <div class="lx-intro-stage">
+    <svg class="lx-intro-pulse" viewBox="0 0 1200 70" preserveAspectRatio="none">
+      <path d={PULSE.half} pathLength="1"></path>
+    </svg>
+    <span class="lx-intro-name">{clinic.clinic.name}</span>
+    <span class="lx-intro-sub">{clinic.doctor.name}</span>
+  </div>
+</div>

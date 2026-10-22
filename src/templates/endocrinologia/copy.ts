@@ -128,6 +128,7 @@ export const ENDOCRINOLOGIA_COPY: EndocrinologiaCopy = {
     privateCare: 'Atendimento particular.',
     paymentPrefix: 'Pagamento',
   },
+  footer: { address: 'Endereço', contact: 'Contato', explore: 'Navegue', hours: 'Horários', whatsapp: 'Conversar pelo WhatsApp' },
   finalCta: {
     title: 'Agende sua consulta',
     titleEm: 'e leve seus exames.',

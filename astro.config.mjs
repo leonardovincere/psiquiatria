@@ -33,7 +33,7 @@ const clinics = await Promise.all(
  */
 /**
  * @param {string} slug
- * @param {'heading' | 'body'} role
+ * @param {'heading' | 'body' | 'script'} role
  * @param {string} name
  * @param {`--${string}`} cssVariable
  * @param {Array<'normal' | 'italic'>} styles
@@ -83,6 +83,10 @@ export default defineConfig({
   fonts: clinics.flatMap((c) => [
     family(c.slug, 'heading', c.theme.fontHeading, `--fh-${c.slug}`, ['normal', 'italic'], '400 500', ['Georgia', 'serif']),
     family(c.slug, 'body', c.theme.fontBody, `--fb-${c.slug}`, ['normal'], '400 600', ['sans-serif']),
+    // Fonte cursiva opcional (theme.fontScript), para detalhes: monograma, assinatura, chamadas.
+    ...(c.theme.fontScript
+      ? [family(c.slug, 'script', c.theme.fontScript, `--fs-${c.slug}`, ['normal'], '400', ['cursive'])]
+      : []),
   ]),
   vite: {
     plugins: [tailwindcss()],

@@ -86,6 +86,10 @@ const cliente: ClientConfig = {
   //   items: [{ name: 'Ultrassonografia de tireoide', description: '…' }],
   // },
 
+  // Opcional: acabamento minimalista e premium (abertura cinematográfica, topo espelhado, cartões que se expandem…).
+  // Fica melhor com theme.fontScript (ex.: 'Pinyon Script'). Sem `style`, vale o acabamento técnico padrão.
+  // style: { finish: 'luxe' },
+
   // Até 3 destaques logo abaixo do topo (opcional). Só fatos; nada de "o melhor".
   // highlights: [{ value: 'Desde 2015', label: 'endocrinologista em Cidade' }],
 

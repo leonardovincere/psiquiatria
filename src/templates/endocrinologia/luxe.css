@@ -1,0 +1,976 @@
+/*
+ * Acabamento "luxe" do template de endocrinologia (style.finish = 'luxe').
+ * Tudo fica sob [data-finish='luxe'] (atributo do <html>, definido no Page.astro só quando a
+ * clínica escolhe o "luxe"): as outras páginas não mudam.
+ *
+ * Direção: minimalista e premium. Muito respiro, vidro fosco, filetes finos, fonte cursiva
+ * (theme.fontScript) só em detalhes. Fundo com estrutura molecular quase invisível.
+ * Movimento lento e suave (desfoque + subida curta), sempre desligado com "reduzir movimento".
+ */
+
+[data-finish='luxe'] {
+  --lx-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --lx-script: var(--f-script, var(--f-heading)), cursive;
+  --lx-hairline: color-mix(in srgb, var(--c-text) 9%, transparent);
+  --lx-card: color-mix(in srgb, #ffffff 72%, transparent);
+  --lx-card-line: color-mix(in srgb, #ffffff 55%, var(--c-secondary));
+  --endo-radius: 20px;
+}
+
+/* O fundo fixo (Backdrop) aparece através das seções: o <main> fica transparente. */
+[data-finish='luxe'] [data-tone-root],
+[data-finish='luxe'] [data-tone-root][data-tone] {
+  background-color: transparent;
+}
+
+/* ─── Fundo ─────────────────────────────────────────────────────────────── */
+.lx-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--c-primary);
+}
+/* Véu que tinge o fundo nas seções de tom "sand" (troca lenta, sem corte). */
+.lx-wash {
+  position: absolute;
+  inset: 0;
+  background: var(--c-surface);
+  opacity: 0;
+  transition: opacity 1.8s var(--lx-ease);
+}
+html:has([data-tone-root][data-tone='sand']) .lx-wash {
+  opacity: 0.75;
+}
+.lx-orb {
+  position: absolute;
+  width: 64vmax;
+  height: 64vmax;
+  border-radius: 50%;
+  will-change: transform;
+  animation: lx-float 38s ease-in-out infinite alternate;
+}
+.lx-orb-a {
+  top: -26vmax;
+  right: -20vmax;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-secondary) 75%, transparent), transparent);
+}
+.lx-orb-b {
+  bottom: -32vmax;
+  left: -24vmax;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-accent) 20%, transparent), transparent);
+  animation-duration: 46s;
+  animation-delay: -12s;
+}
+.lx-orb-c {
+  top: 36%;
+  left: 40%;
+  width: 42vmax;
+  height: 42vmax;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-primary) 8%, transparent), transparent);
+  animation-duration: 52s;
+  animation-delay: -24s;
+}
+@keyframes lx-float {
+  50% {
+    transform: translate3d(4vmax, 3vmax, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-3vmax, 5vmax, 0) scale(0.95);
+  }
+}
+.lx-lattice {
+  position: absolute;
+  inset: 0;
+  height: 125%;
+  opacity: 0.1;
+  mask-image:
+    radial-gradient(ellipse 55% 45% at 92% 8%, #000, transparent 72%),
+    radial-gradient(ellipse 45% 40% at 4% 78%, #000, transparent 72%);
+}
+.lx-mol {
+  position: absolute;
+  width: clamp(170px, 20vw, 320px);
+  opacity: 0.11;
+}
+.lx-mol-a {
+  top: 18%;
+  left: -50px;
+  rotate: -14deg;
+}
+.lx-mol-b {
+  right: -40px;
+  bottom: 10%;
+  rotate: 18deg;
+}
+/* Parallax lento guiado pela rolagem (navegadores com scroll-driven animations). */
+@supports (animation-timeline: scroll()) {
+  .lx-lattice {
+    animation: lx-drift linear both;
+    animation-timeline: scroll(root);
+  }
+  .lx-mol-a {
+    animation: lx-mol-a linear both;
+    animation-timeline: scroll(root);
+  }
+  .lx-mol-b {
+    animation: lx-mol-b linear both;
+    animation-timeline: scroll(root);
+  }
+}
+@keyframes lx-drift {
+  to {
+    transform: translateY(-18%);
+  }
+}
+@keyframes lx-mol-a {
+  to {
+    transform: translateY(-30vh) rotate(28deg);
+  }
+}
+@keyframes lx-mol-b {
+  to {
+    transform: translateY(-45vh) rotate(-24deg);
+  }
+}
+
+/* ─── Abertura ──────────────────────────────────────────────────────────── */
+html.has-intro[data-finish='luxe'] {
+  --lx-start: 2.3s;
+}
+.lx-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  pointer-events: none;
+  animation: lx-gone 0s linear 3.4s forwards;
+}
+html.intro-seen .lx-intro {
+  display: none;
+}
+.lx-intro-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  animation: lx-open-top 1.2s cubic-bezier(0.77, 0, 0.18, 1) 2.1s forwards;
+}
+.lx-intro-top {
+  top: 0;
+  background: radial-gradient(ellipse 80% 120% at 50% 100%, color-mix(in srgb, var(--c-primary) 50%, var(--c-ink-deep)), var(--c-ink-deep) 75%);
+}
+.lx-intro-bottom {
+  bottom: 0;
+  background: radial-gradient(ellipse 80% 120% at 50% 0%, color-mix(in srgb, var(--c-primary) 50%, var(--c-ink-deep)), var(--c-ink-deep) 75%);
+  animation-name: lx-open-bottom;
+}
+.lx-intro-stage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: min(620px, 86vw);
+  animation: lx-stage-out 0.7s var(--lx-ease) 1.85s forwards;
+}
+.lx-intro-pulse {
+  width: 100%;
+  height: 46px;
+  overflow: visible;
+}
+.lx-intro-pulse path {
+  fill: none;
+  stroke: var(--c-accent);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lx-draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.1s forwards;
+}
+.lx-intro-name {
+  padding: 0 0.35em;
+  font-family: var(--lx-script);
+  font-size: clamp(3.6rem, 11vw, 6.4rem);
+  line-height: 1.2;
+  clip-path: inset(0 100% 0 0);
+  animation: lx-sign 1.25s cubic-bezier(0.6, 0.05, 0.3, 1) 0.5s forwards;
+}
+.lx-intro-sub {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #ffffff 78%, transparent);
+  opacity: 0;
+  animation: lx-fade 0.9s ease 1.15s forwards;
+}
+@keyframes lx-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes lx-sign {
+  to {
+    clip-path: inset(0 -10% 0 0);
+  }
+}
+@keyframes lx-fade {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes lx-stage-out {
+  to {
+    opacity: 0;
+    transform: scale(1.05);
+    filter: blur(8px);
+  }
+}
+@keyframes lx-open-top {
+  to {
+    transform: translateY(-101%);
+  }
+}
+@keyframes lx-open-bottom {
+  to {
+    transform: translateY(101%);
+  }
+}
+@keyframes lx-gone {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* ─── Cabeçalho fosco ───────────────────────────────────────────────────── */
+[data-finish='luxe'] .site-header,
+[data-finish='luxe'] .site-header.is-scrolled {
+  background-color: color-mix(in srgb, var(--c-background) 58%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow: 0 1px 0 var(--lx-hairline);
+}
+[data-finish='luxe'] .site-header a > span.font-serif {
+  font-family: var(--lx-script);
+  font-size: 2.1rem;
+  line-height: 0.9;
+}
+[data-finish='luxe'] .site-header nav a {
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  padding-block: 4px;
+  transition:
+    background-size 0.4s var(--lx-ease),
+    color 0.3s;
+}
+[data-finish='luxe'] .site-header nav a:hover {
+  background-size: 100% 1px;
+}
+
+/* ─── Tipografia: chamadas em cursiva, destaques em itálico ─────────────── */
+[data-finish='luxe'] .eyebrow {
+  font-family: var(--lx-script);
+  font-size: clamp(1.75rem, 2.6vw, 2.2rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--c-primary);
+}
+[data-finish='luxe'] .eyebrow::before {
+  display: none;
+}
+[data-finish='luxe'] :is(h1, h2) em {
+  font-style: italic;
+}
+[data-finish='luxe'] h2 {
+  letter-spacing: -0.028em;
+}
+
+/* ─── Botões ────────────────────────────────────────────────────────────── */
+[data-finish='luxe'] .btn-cta {
+  border-radius: 999px;
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--c-primary) 86%, #ffffff),
+    var(--c-primary) 55%,
+    color-mix(in srgb, var(--c-primary) 82%, #000000)
+  );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    0 18px 36px -20px color-mix(in srgb, var(--c-primary) 85%, transparent);
+  letter-spacing: 0.01em;
+}
+
+/* ─── Topo ──────────────────────────────────────────────────────────────── */
+.lx-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--c-primary);
+  text-wrap: balance;
+}
+.lx-kicker::before,
+.lx-kicker::after {
+  content: '';
+  flex: none;
+  width: 2.25rem;
+  height: 1px;
+  background: var(--c-accent);
+}
+@media (width < 40rem) {
+  .lx-kicker {
+    max-width: 30ch;
+    letter-spacing: 0.2em;
+    line-height: 1.8;
+  }
+  .lx-kicker::before,
+  .lx-kicker::after {
+    display: none;
+  }
+}
+.lx-medallion-wrap {
+  --m: clamp(148px, 14vw, 196px);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  margin-block: 2.25rem 4.25rem;
+}
+/* Linha do "espelho" onde o medalhão se apoia. */
+.lx-medallion-wrap::after {
+  content: '';
+  position: absolute;
+  top: calc(50% + var(--m) / 2 + 8px);
+  left: 50%;
+  width: min(460px, 76vw);
+  height: 1px;
+  translate: -50% 0;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--c-primary) 28%, transparent), transparent);
+}
+.lx-hero-waves {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 120px;
+  translate: -50% -50%;
+  pointer-events: none;
+  mask-image: linear-gradient(90deg, transparent 4%, #000 24%, #000 76%, transparent 96%);
+}
+.lx-wave {
+  position: absolute;
+  left: 0;
+  width: 200%;
+  height: 60px;
+  overflow: visible;
+  color: var(--c-primary);
+  animation: lx-flow 30s linear infinite;
+}
+.lx-wave path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.4;
+}
+.lx-wave-top {
+  top: 0;
+}
+/* A segunda onda é o reflexo da primeira, em mel, correndo ao contrário. */
+.lx-wave-bottom {
+  top: 60px;
+  scale: 1 -1;
+  color: var(--c-accent);
+  animation-direction: reverse;
+}
+@keyframes lx-flow {
+  to {
+    translate: -50% 0;
+  }
+}
+.lx-medallion {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--m);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, #ffffff 85%, transparent);
+  border-radius: 50%;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, #ffffff 86%, transparent),
+    color-mix(in srgb, #ffffff 34%, transparent) 55%,
+    color-mix(in srgb, var(--c-secondary) 45%, transparent)
+  );
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -22px 44px -24px color-mix(in srgb, var(--c-primary) 34%, transparent),
+    0 34px 60px -34px color-mix(in srgb, var(--c-primary) 55%, transparent);
+  -webkit-backdrop-filter: blur(10px) saturate(1.3);
+  backdrop-filter: blur(10px) saturate(1.3);
+  -webkit-box-reflect: below 16px linear-gradient(transparent 60%, rgb(0 0 0 / 0.2));
+}
+.lx-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: lx-spin 140s linear infinite;
+}
+.lx-ring line {
+  stroke: var(--c-primary);
+  stroke-width: 1;
+  opacity: 0.32;
+}
+@keyframes lx-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+.lx-monogram {
+  font-family: var(--lx-script);
+  font-size: calc(var(--m) * 0.44);
+  line-height: 1;
+  color: var(--c-primary);
+  translate: 0 4%;
+}
+.lx-medallion-photo {
+  width: 84%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.lx-sheen {
+  position: absolute;
+  inset: -30%;
+  background: linear-gradient(115deg, transparent 42%, rgb(255 255 255 / 0.7) 50%, transparent 58%);
+  translate: -70% 0;
+  animation: lx-sheen 8s var(--lx-ease) calc(var(--lx-start, 0s) + 1.6s) infinite;
+}
+@keyframes lx-sheen {
+  0% {
+    translate: -70% 0;
+  }
+  28%,
+  100% {
+    translate: 70% 0;
+  }
+}
+.lx-title {
+  max-width: 21ch;
+  font-size: clamp(2.4rem, 5.6vw, 4.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.032em;
+}
+.lx-title em {
+  color: var(--c-primary);
+}
+.lx-credentials {
+  letter-spacing: 0.01em;
+}
+
+/* Entrada do topo: depois da abertura (--lx-start), cada peça sobe e ganha foco. */
+@keyframes lx-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(8px);
+  }
+}
+/* O título só se move (sem opacidade): já está pintado, não atrasa o carregamento. */
+@keyframes lx-title {
+  from {
+    transform: translateY(28px) scale(0.985);
+  }
+}
+html.js[data-finish='luxe'] #inicio .lx-rise {
+  animation: lx-rise 1.4s var(--lx-ease) both;
+  animation-delay: calc(var(--lx-start, 0s) + var(--d, 0) * 110ms);
+}
+html.js[data-finish='luxe'] #inicio .lx-title {
+  animation: lx-title 1.7s var(--lx-ease) both;
+  animation-delay: calc(var(--lx-start, 0s) + 160ms);
+}
+
+/* ─── Revelação ao rolar: mais lenta e suave (desfoque + subida curta) ──── */
+html.js[data-finish='luxe'] [data-reveal] {
+  transform: translateY(14px);
+  filter: blur(6px);
+  transition:
+    opacity 1.3s var(--lx-ease),
+    transform 1.3s var(--lx-ease),
+    filter 1.3s var(--lx-ease);
+  transition-delay: calc(var(--i, 0) * 100ms);
+}
+html.js[data-finish='luxe'] [data-reveal].is-visible {
+  transform: none;
+  filter: none;
+}
+html.js[data-finish='luxe'] [data-words] .w {
+  overflow: visible;
+}
+html.js[data-finish='luxe'] [data-words] .w > span {
+  opacity: 0;
+  transform: translateY(0.3em);
+  filter: blur(5px);
+  transition:
+    opacity 1.2s var(--lx-ease),
+    transform 1.2s var(--lx-ease),
+    filter 1.2s var(--lx-ease);
+  transition-delay: calc(var(--k, 0) * 60ms);
+}
+html.js[data-finish='luxe'] [data-words].is-visible .w > span {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ─── Destaques ─────────────────────────────────────────────────────────── */
+[data-finish='luxe'] .facts {
+  border-color: var(--lx-hairline);
+  background: color-mix(in srgb, #ffffff 30%, transparent);
+}
+
+/* ─── Áreas: cartões de ícone que se expandem ───────────────────────────── */
+.lx-glass {
+  border: 1px solid var(--lx-card-line);
+  border-radius: 22px;
+  background: var(--lx-card);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 26px 50px -40px color-mix(in srgb, var(--c-primary) 60%, transparent);
+}
+.lx-tile {
+  transition:
+    border-color 0.4s,
+    box-shadow 0.5s var(--lx-ease),
+    translate 0.5s var(--lx-ease);
+}
+.lx-tile:hover {
+  translate: 0 -3px;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 34px 60px -38px color-mix(in srgb, var(--c-primary) 70%, transparent);
+}
+.lx-tile[open] {
+  border-color: color-mix(in srgb, var(--c-primary) 30%, transparent);
+}
+.lx-tile summary {
+  position: relative;
+  display: flex;
+  min-height: 9.5rem;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  list-style: none;
+  cursor: pointer;
+  border-radius: 22px;
+}
+.lx-tile summary::-webkit-details-marker {
+  display: none;
+}
+.lx-tile-icon {
+  display: grid;
+  width: 3.25rem;
+  height: 3.25rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--c-primary) 22%, transparent);
+  border-radius: 50%;
+  color: var(--c-primary);
+  transition:
+    background-color 0.5s var(--lx-ease),
+    color 0.5s var(--lx-ease),
+    rotate 0.8s var(--lx-ease);
+}
+.lx-tile:hover .lx-tile-icon {
+  rotate: -8deg;
+}
+.lx-tile[open] .lx-tile-icon {
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+}
+.lx-tile-name {
+  padding-right: 1.5rem;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--c-text);
+}
+.lx-plus {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--c-border);
+  border-radius: 50%;
+  transition: rotate 0.5s var(--lx-ease);
+}
+.lx-plus::before,
+.lx-plus::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 1.5px;
+  background: var(--c-primary);
+  translate: -50% -50%;
+}
+.lx-plus::after {
+  rotate: 90deg;
+}
+.lx-tile[open] .lx-plus {
+  rotate: 45deg;
+}
+.lx-tile-body p {
+  padding: 0 1.25rem 1.4rem;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--c-muted);
+}
+@media (width >= 48rem) {
+  .lx-tile summary {
+    min-height: 12rem;
+    padding: 1.75rem;
+  }
+  .lx-tile-name {
+    font-size: 1.5rem;
+  }
+  .lx-plus {
+    top: 1.75rem;
+    right: 1.75rem;
+  }
+  .lx-tile-body p {
+    padding: 0 1.75rem 1.9rem;
+    font-size: 16px;
+  }
+}
+/* Abertura suave dos cartões e das dúvidas (navegadores com interpolate-size). */
+@supports (interpolate-size: allow-keywords) {
+  .lx-tile {
+    interpolate-size: allow-keywords;
+  }
+  .lx-tile::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 0.6s var(--lx-ease),
+      content-visibility 0.6s allow-discrete;
+  }
+  .lx-tile[open]::details-content {
+    block-size: auto;
+  }
+}
+
+/* ─── Consulta: abas e etapas em ícones ─────────────────────────────────── */
+.lx-seg {
+  display: inline-flex;
+  margin-bottom: 3rem;
+  padding: 5px;
+  border: 1px solid var(--lx-card-line);
+  border-radius: 999px;
+  background: var(--lx-card);
+}
+.lx-seg label {
+  padding: 0.7rem 1.35rem;
+  white-space: nowrap;
+  text-align: center;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--c-muted);
+  cursor: pointer;
+  transition:
+    background-color 0.45s var(--lx-ease),
+    color 0.45s var(--lx-ease);
+}
+@media (width < 40rem) {
+  .lx-seg {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+  }
+  .lx-seg label {
+    padding-inline: 0.5rem;
+    font-size: 14px;
+  }
+}
+.lx-seg input:checked + label {
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+}
+.lx-seg input:focus-visible + label {
+  outline: 2px solid var(--c-primary);
+  outline-offset: 2px;
+}
+.lx-care:has(#lx-care-primeira:checked) [data-track='retornos'],
+.lx-care:has(#lx-care-retornos:checked) [data-track='primeira'] {
+  display: none;
+}
+.lx-track {
+  animation: lx-track-in 0.8s var(--lx-ease);
+}
+@keyframes lx-track-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+.lx-steps {
+  position: relative;
+  display: grid;
+  gap: 2.25rem;
+}
+/* Celular: linha vertical ligando os ícones. */
+.lx-steps::before {
+  content: '';
+  position: absolute;
+  top: 1.75rem;
+  bottom: 1.75rem;
+  left: 1.75rem;
+  width: 1px;
+  background: var(--c-border);
+}
+html.js[data-finish='luxe'] .lx-steps[data-rule] {
+  background-image: none;
+}
+.lx-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  column-gap: 1.25rem;
+  align-content: start;
+}
+.lx-step-icon {
+  display: grid;
+  grid-row: span 3;
+  width: 3.5rem;
+  height: 3.5rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--c-primary) 25%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, #ffffff 92%, var(--c-background));
+  color: var(--c-primary);
+}
+.lx-step-num {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--c-primary);
+}
+.lx-step-title {
+  margin-top: 0.15rem;
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  line-height: 1.25;
+  color: var(--c-text);
+}
+.lx-step-text {
+  margin-top: 0.4rem;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--c-muted);
+}
+@media (width >= 48rem) {
+  .lx-steps {
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: 2.5rem;
+  }
+  .lx-steps::before {
+    display: none;
+  }
+  /* Desktop: a linha horizontal que se desenha ao aparecer (data-rule) passa pelo centro dos ícones. */
+  html.js[data-finish='luxe'] .lx-steps[data-rule] {
+    background-image: linear-gradient(var(--c-border), var(--c-border));
+    background-position: 0 1.75rem;
+  }
+  html:not(.js)[data-finish='luxe'] .lx-steps {
+    background: linear-gradient(var(--c-border), var(--c-border)) 0 1.75rem / 100% 1px no-repeat;
+  }
+  .lx-step {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lx-step-icon {
+    grid-row: auto;
+    margin-bottom: 1.4rem;
+  }
+}
+
+/* ─── Sobre ─────────────────────────────────────────────────────────────── */
+[data-finish='luxe'] #sobre figure {
+  border-left-width: 1px;
+}
+
+/* ─── Dúvidas: maiores e mais arejadas ──────────────────────────────────── */
+[data-finish='luxe'] #duvidas summary {
+  padding-block: 1.75rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 2.1vw, 1.7rem);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+[data-finish='luxe'] #duvidas summary > span {
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--c-border);
+  border-radius: 50%;
+  transition:
+    background-color 0.4s var(--lx-ease),
+    color 0.4s var(--lx-ease),
+    border-color 0.4s;
+}
+[data-finish='luxe'] #duvidas summary > span > span:first-child {
+  left: calc(50% - 8px);
+}
+[data-finish='luxe'] #duvidas summary > span > span:last-child {
+  top: calc(50% - 8px);
+}
+[data-finish='luxe'] #duvidas details[open] summary > span {
+  border-color: transparent;
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+}
+[data-finish='luxe'] #duvidas .faq-body p {
+  max-width: 62ch;
+  padding-bottom: 2rem;
+  font-size: 1.125rem;
+}
+
+/* ─── Localização ───────────────────────────────────────────────────────── */
+[data-finish='luxe'] .map-box {
+  border-radius: 26px;
+}
+[data-finish='luxe'] .chip {
+  border-radius: 999px;
+}
+
+/* ─── Convite final: medalhão pequeno com o monograma ───────────────────── */
+.lx-mini-mark {
+  display: grid;
+  width: 5.5rem;
+  height: 5.5rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, #ffffff 85%, transparent);
+  border-radius: 50%;
+  background: linear-gradient(150deg, #ffffff, color-mix(in srgb, var(--c-secondary) 45%, #ffffff));
+  box-shadow: 0 24px 40px -26px color-mix(in srgb, var(--c-primary) 60%, transparent);
+  font-family: var(--lx-script);
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--c-primary);
+}
+
+/* ─── Rodapé com assinatura ─────────────────────────────────────────────── */
+.lx-crest {
+  position: relative;
+  overflow: hidden;
+  padding-top: 5rem;
+  background: var(--c-ink-deep);
+  color: rgb(255 255 255 / 0.75);
+  font-size: 15px;
+  line-height: 1.65;
+}
+.lx-crest::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 70% at 50% 0%, color-mix(in srgb, var(--c-primary) 55%, transparent), transparent 70%);
+  pointer-events: none;
+}
+.lx-crest > * {
+  position: relative;
+}
+.lx-crest-sign {
+  margin-bottom: 2.5rem;
+  padding: 0 0.2em 0.12em;
+  font-family: var(--lx-script);
+  font-size: clamp(4.5rem, 16vw, 11rem);
+  line-height: 1.3;
+  text-align: center;
+  background: linear-gradient(180deg, #ffffff 15%, color-mix(in srgb, #ffffff 25%, transparent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.lx-crest-cols {
+  display: grid;
+  gap: 2.5rem;
+  padding-block: 3rem;
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+}
+@media (width >= 40rem) {
+  .lx-crest-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (width >= 64rem) {
+  .lx-crest-cols {
+    grid-template-columns: none;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+  }
+}
+.lx-crest-h {
+  margin-bottom: 1rem;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+.lx-crest-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 1.75rem;
+  color: rgb(255 255 255 / 0.88);
+  transition: color 0.3s;
+}
+.lx-crest-link:hover {
+  color: var(--c-accent);
+}
+/* O rodapé compartilhado continua a faixa escura, sem emenda. */
+[data-finish='luxe'] footer {
+  padding-top: 0.5rem;
+}
+[data-finish='luxe'] footer .note-box {
+  border-color: rgb(255 255 255 / 0.14);
+  border-radius: 16px;
+}
+
+/* ─── Reduzir movimento ─────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .lx-intro {
+    display: none !important;
+  }
+  html.js[data-finish='luxe'] [data-reveal],
+  html.js[data-finish='luxe'] [data-words] .w > span {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .lx-lattice,
+  .lx-mol-a,
+  .lx-mol-b {
+    transform: none !important;
+  }
+  .lx-sheen {
+    display: none;
+  }
+}

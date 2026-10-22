@@ -1,0 +1,94 @@
+---
+import Icon from '../../../../components/shared/Icon.astro';
+import { formatAddress, hoursList, whatsappUrl } from '../../../../lib/links';
+import type { EndocrinologiaClient, EndocrinologiaCopy } from '../../types';
+
+/**
+ * Abertura do rodapé no acabamento "luxe": o nome em cursiva como assinatura, grande e discreto,
+ * e colunas curtas de endereço, contato e navegação. O rodapé compartilhado vem logo abaixo, na mesma cor.
+ */
+interface Props {
+  clinic: EndocrinologiaClient;
+  copy: EndocrinologiaCopy['footer'];
+  nav: { href: string; label: string }[];
+}
+const { clinic, copy, nav } = Astro.props;
+const { address, contact } = clinic;
+const hours = hoursList(clinic.hours);
+---
+
+<section class="lx-crest" aria-label={clinic.clinic.fullName}>
+  <div class="container-page">
+    <p class="lx-crest-sign" aria-hidden="true">{clinic.clinic.name}</p>
+    <div class="lx-crest-cols">
+      {
+        clinic.modalities.presencial && (
+          <div>
+            <h2 class="lx-crest-h">{copy.address}</h2>
+            <address class="not-italic">
+              {address.clinicName && <span class="block text-white">{address.clinicName}</span>}
+              {formatAddress(address)}
+            </address>
+          </div>
+        )
+      }
+      <div>
+        <h2 class="lx-crest-h">{copy.contact}</h2>
+        <ul class="flex flex-col gap-2">
+          <li>
+            <a href={whatsappUrl(clinic)} target="_blank" rel="noopener" class="lx-crest-link">
+              <Icon name="whatsapp" class="size-4" />
+              {copy.whatsapp}
+              <span class="sr-only">(abre o WhatsApp em nova aba)</span>
+            </a>
+          </li>
+          {
+            contact.phone && (
+              <li>
+                <a href={`tel:${contact.phone.replace(/\D/g, '')}`} class="lx-crest-link">
+                  <Icon name="phone" class="size-4" />
+                  {contact.phone}
+                </a>
+              </li>
+            )
+          }
+          {
+            contact.email && (
+              <li>
+                <a href={`mailto:${contact.email}`} class="lx-crest-link">
+                  {contact.email}
+                </a>
+              </li>
+            )
+          }
+        </ul>
+      </div>
+      {
+        hours.length > 0 && (
+          <div>
+            <h2 class="lx-crest-h">{copy.hours}</h2>
+            <ul>
+              {hours.map((h) => (
+                <li>{h}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      <nav aria-label={copy.explore}>
+        <h2 class="lx-crest-h">{copy.explore}</h2>
+        <ul class="flex flex-col gap-2">
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href} class="lx-crest-link">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </div>
+</section>

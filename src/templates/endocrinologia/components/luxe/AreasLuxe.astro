@@ -1,0 +1,36 @@
+---
+import Icon from '../../../../components/shared/Icon.astro';
+import SectionHeading from '../../../../components/shared/SectionHeading.astro';
+import { ENDO_ICONS } from '../../icons';
+import type { Area, EndocrinologiaCopy } from '../../types';
+
+interface Props {
+  items: Area[];
+  copy: EndocrinologiaCopy['areas'];
+}
+const { items, copy } = Astro.props;
+---
+
+<!-- Áreas em cartões de ícone: só o nome à mostra; a descrição abre ao tocar (um por vez). -->
+<section id="areas" data-tone-at="base" class="section-y container-page" aria-labelledby="areas-titulo">
+  <SectionHeading id="areas-titulo" layout="split" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} />
+  <div class="lx-tiles grid grid-cols-2 items-start gap-3 md:gap-5 lg:grid-cols-3">
+    {
+      items.map((area, i) => (
+        <details class="lx-tile lx-glass" name="areas" data-reveal style={`--i:${i % 3}`}>
+          <summary>
+            <span class="lx-tile-icon">
+              <Icon svg={area.icon ? ENDO_ICONS[area.icon] : ENDO_ICONS.pulse} class="size-6 md:size-7" />
+            </span>
+            <span class="lx-tile-name">{area.name}</span>
+            <span class="lx-plus" aria-hidden="true" />
+          </summary>
+          <div class="lx-tile-body">
+            <p>{area.description}</p>
+          </div>
+        </details>
+      ))
+    }
+  </div>
+  {copy.note && <p class="mt-8 max-w-2xl text-[15px] text-muted" data-reveal>{copy.note}</p>}
+</section>

@@ -15,9 +15,15 @@ import Areas from './components/Areas.astro';
 import Care from './components/Care.astro';
 import Exams from './components/Exams.astro';
 import Coverage from './components/Coverage.astro';
+import Backdrop from './components/luxe/Backdrop.astro';
+import IntroLuxe from './components/luxe/IntroLuxe.astro';
+import HeroLuxe from './components/luxe/HeroLuxe.astro';
+import AreasLuxe from './components/luxe/AreasLuxe.astro';
+import CareLuxe from './components/luxe/CareLuxe.astro';
+import FooterCrest from './components/luxe/FooterCrest.astro';
 import type { EndocrinologiaClient } from './types';
 import { getCopy } from './copy';
-import { factsFor, whatsappUrl } from '../../lib/links';
+import { factsFor, initials, whatsappUrl } from '../../lib/links';
 
 /**
  * Página de endocrinologia: topo com registro profissional, áreas de atuação,
@@ -31,6 +37,12 @@ const { clinic } = Astro.props;
 const copy = getCopy(clinic);
 const wa = whatsappUrl(clinic);
 const exams = clinic.exams?.enabled ? clinic.exams : null;
+// Acabamento "luxe": variação minimalista e premium (ver EndoStyle em ./types.ts). Sem ele, nada muda.
+const luxe = clinic.style?.finish === 'luxe';
+const intro = luxe && (clinic.style?.intro ?? true);
+const firstVisit = clinic.care?.firstVisit ?? copy.care.firstVisitSteps;
+const followUp = clinic.care?.followUp ?? copy.care.followUpSteps;
+const areas = clinic.areas ?? copy.areas.items;
 const nav = [
   { href: '#areas', label: copy.nav.areas },
   { href: '#consulta', label: copy.nav.care },
@@ -41,7 +53,20 @@ const nav = [
 ];
 ---
 
-<Layout clinic={clinic} schemaSpecialty={copy.schemaSpecialty} attrs={{ 'data-specialty': 'endocrinologia' }}>
+<Layout
+  clinic={clinic}
+  schemaSpecialty={copy.schemaSpecialty}
+  attrs={{ 'data-specialty': 'endocrinologia', ...(luxe ? { 'data-finish': 'luxe' } : {}) }}
+  intro={intro}
+>
+  {
+    luxe && (
+      <Fragment slot="before">
+        <Backdrop />
+        {intro && <IntroLuxe clinic={clinic} />}
+      </Fragment>
+    )
+  }
   <a
     href="#conteudo"
     class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-primary focus:px-4 focus:py-2 focus:text-on-primary"
@@ -50,14 +75,16 @@ const nav = [
   {clinic.isPreview && <PreviewBanner text={clinic.previewBanner} suffix={copy.previewSuffix} />}
   <Header clinic={clinic} nav={nav} />
   <main id="conteudo" data-tone-root data-tone="base">
-    <Hero clinic={clinic} copy={copy} />
+    {luxe ? <HeroLuxe clinic={clinic} copy={copy} /> : <Hero clinic={clinic} copy={copy} />}
     <FactsStrip items={factsFor(clinic)} />
-    <Areas items={clinic.areas ?? copy.areas.items} copy={copy.areas} />
-    <Care
-      firstVisit={clinic.care?.firstVisit ?? copy.care.firstVisitSteps}
-      followUp={clinic.care?.followUp ?? copy.care.followUpSteps}
-      copy={copy.care}
-    />
+    {luxe ? <AreasLuxe items={areas} copy={copy.areas} /> : <Areas items={areas} copy={copy.areas} />}
+    {
+      luxe ? (
+        <CareLuxe firstVisit={firstVisit} followUp={followUp} copy={copy.care} />
+      ) : (
+        <Care firstVisit={firstVisit} followUp={followUp} copy={copy.care} />
+      )
+    }
     {exams && <Exams exams={exams} copy={copy.exams} />}
     <About clinic={clinic} eyebrow={copy.about.eyebrow} />
     {clinic.modalities.teleconsulta && <Telehealth clinic={clinic} copy={copy.telehealth} />}
@@ -69,8 +96,11 @@ const nav = [
         </Location>
       )
     }
-    <FinalCta clinic={clinic} copy={copy} />
+    <FinalCta clinic={clinic} copy={copy}>
+      {luxe && <span slot="mark" class="lx-mini-mark" aria-hidden="true" data-reveal>{initials(clinic.doctor.name)}</span>}
+    </FinalCta>
   </main>
+  {luxe && <FooterCrest clinic={clinic} copy={copy.footer} nav={nav} />}
   <Footer clinic={clinic} emergencyNotice={copy.emergencyNotice} legalNotice={copy.legalNotice} />
   <StickyCta href={wa} label={copy.scheduleCta} />
 </Layout>
