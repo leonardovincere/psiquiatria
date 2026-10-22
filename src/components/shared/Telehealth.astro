@@ -1,15 +1,14 @@
 ---
 import Icon from './Icon.astro';
 import Words from './Words.astro';
-import type { ClinicConfig } from '../clinics/types';
-import { getCopy } from '../lib/copy';
-import { heightFor } from '../lib/assetSize';
+import type { ClinicConfig, SiteCopy } from '../../clinics/types';
+import { heightFor } from '../../lib/assetSize';
 
 interface Props {
   clinic: ClinicConfig;
+  copy: SiteCopy['telehealth'];
 }
-const { clinic } = Astro.props;
-const copy = getCopy(clinic).telehealth;
+const { clinic, copy } = Astro.props;
 const icons = ['video', 'lock', 'doc'] as const;
 const points = copy.points.map((text, i) => ({ icon: icons[i], text }));
 const titleWords = copy.title.trim().split(/\s+/).length;

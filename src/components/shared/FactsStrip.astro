@@ -1,12 +1,11 @@
 ---
-import type { ClinicConfig } from '../clinics/types';
-import { factsFor } from '../lib/links';
+import type { Highlight } from '../../clinics/types';
 
 interface Props {
-  clinic: ClinicConfig;
+  /** Fatos em destaque (factsFor). */
+  items: Highlight[];
 }
-const { clinic } = Astro.props;
-const items = factsFor(clinic);
+const { items } = Astro.props;
 ---
 
 <section aria-label="Em destaque" data-tone-at="base" class="facts card-light border-y border-line bg-surface">

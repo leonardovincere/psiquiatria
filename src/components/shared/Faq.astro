@@ -1,21 +1,20 @@
 ---
 import Words from './Words.astro';
-import type { ClinicConfig } from '../clinics/types';
-import { getCopy } from '../lib/copy';
+import type { FaqItem } from '../../clinics/types';
 
 interface Props {
-  clinic: ClinicConfig;
+  title: string;
+  items: FaqItem[];
 }
-const { clinic } = Astro.props;
-const copy = getCopy(clinic);
+const { title, items } = Astro.props;
 ---
 
 <section id="duvidas" data-tone-at="sand" class="section-y" aria-labelledby="duvidas-titulo">
   <div class="container-page grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-24">
-    <h2 id="duvidas-titulo" class="text-4xl leading-[1.08] text-ink md:text-5xl" data-words><Words text={copy.faq.title} /></h2>
+    <h2 id="duvidas-titulo" class="text-4xl leading-[1.08] text-ink md:text-5xl" data-words><Words text={title} /></h2>
     <div class="border-t border-line">
       {
-        clinic.faq.map((item, i) => (
+        items.map((item, i) => (
           <details class="faq group border-b border-line" data-reveal style={`--i:${i}`}>
             <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-lg font-medium text-ink transition-colors hover:text-primary md:text-[19px] [&::-webkit-details-marker]:hidden">
               {item.q}

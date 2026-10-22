@@ -1,17 +1,15 @@
 ---
 import Icon from './Icon.astro';
-import type { ClinicConfig } from '../clinics/types';
-import { whatsappUrl } from '../lib/links';
-import { getCopy } from '../lib/copy';
 
 interface Props {
-  clinic: ClinicConfig;
-  label?: string;
+  /** Link wa.me já montado (whatsappUrl). */
+  href: string;
+  label: string;
   size?: 'md' | 'lg';
   variant?: 'primary' | 'accent';
   class?: string;
 }
-const { clinic, label = getCopy(clinic).scheduleCta, size = 'lg', variant = 'primary', class: className = '' } = Astro.props;
+const { href, label, size = 'lg', variant = 'primary', class: className = '' } = Astro.props;
 const sizes = { md: 'min-h-11 px-5 text-sm', lg: 'min-h-14 px-7 text-base md:text-[17px]' };
 const variants = {
   primary: 'bg-primary text-on-primary',
@@ -20,7 +18,7 @@ const variants = {
 ---
 
 <a
-  href={whatsappUrl(clinic)}
+  href={href}
   target="_blank"
   rel="noopener"
   class:list={[

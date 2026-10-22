@@ -1,7 +1,7 @@
 ---
-import WhatsAppButton from './WhatsAppButton.astro';
+import WhatsAppButton from './shared/WhatsAppButton.astro';
 import type { ClinicConfig } from '../clinics/types';
-import { credentials, factsFor } from '../lib/links';
+import { credentials, factsFor, whatsappUrl } from '../lib/links';
 import { getCopy } from '../lib/copy';
 import { getHeroPhoto, heroPhotoSizes } from '../lib/heroPhoto';
 
@@ -83,7 +83,7 @@ const words = segments.flatMap((s) =>
       </h1>
       <p class="cine-fade max-w-xl text-lg leading-relaxed text-muted md:text-xl" style="--d:3">{copy.hero.subtitle}</p>
       <div class="cine-fade flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8" style="--d:4">
-        <WhatsAppButton clinic={clinic} class="cine-btn" />
+        <WhatsAppButton href={whatsappUrl(clinic)} label={copy.scheduleCta} class="cine-btn" />
         <a href="#primeira-consulta" class="arrow-nudge inline-flex min-h-12 items-center gap-2 self-start font-medium text-ink sm:self-auto">
           <span class="underline decoration-accent-deep decoration-1 underline-offset-[7px]">{copy.hero.link}</span>
           <span class="arrow" aria-hidden="true">→</span>

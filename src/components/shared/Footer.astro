@@ -1,18 +1,19 @@
 ---
 import Icon from './Icon.astro';
-import type { ClinicConfig } from '../clinics/types';
-import { AGENCY } from '../lib/agency';
-import { credentials } from '../lib/links';
-import { getCopy } from '../lib/copy';
-import { assetSize } from '../lib/assetSize';
+import type { ClinicConfig } from '../../clinics/types';
+import { AGENCY } from '../../lib/agency';
+import { credentials } from '../../lib/links';
+import { assetSize } from '../../lib/assetSize';
 
 interface Props {
   clinic: ClinicConfig;
+  /** Aviso de emergência (cada especialidade tem o seu). */
+  emergencyNotice: string;
+  legalNotice: string;
 }
-const { clinic } = Astro.props;
+const { clinic, emergencyNotice, legalNotice } = Astro.props;
 const { doctor, contact } = clinic;
 const year = new Date().getFullYear();
-const copy = getCopy(clinic);
 const logoSize = clinic.clinic.logoLight ? await assetSize(clinic.clinic.logoLight) : null;
 const social = [
   { href: `https://wa.me/${contact.whatsapp}`, label: 'WhatsApp', icon: 'whatsapp' },
@@ -25,7 +26,7 @@ const social = [
 <footer class="bg-ink-deep pt-14 pb-10 text-[14px] leading-relaxed text-white/75">
   <div class="container-page flex flex-col gap-10">
     <p class="note-box rounded-2xl border border-white/20 px-5 py-4 text-white" role="note">
-      {copy.emergencyNotice}
+      {emergencyNotice}
     </p>
 
     <div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
@@ -68,7 +69,7 @@ const social = [
 
     <div class="flex flex-col gap-3 border-t border-white/15 pt-6 text-[13px] text-white/65 md:flex-row md:items-start md:justify-between md:gap-10">
       <p>
-        © {year} {clinic.clinic.fullName}. {copy.legalNotice}
+        © {year} {clinic.clinic.fullName}. {legalNotice}
       </p>
       <p class="shrink-0">
         Desenvolvido por{' '}

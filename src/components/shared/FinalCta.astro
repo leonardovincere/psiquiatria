@@ -1,15 +1,15 @@
 ---
 import WhatsAppButton from './WhatsAppButton.astro';
-import type { ClinicConfig } from '../clinics/types';
-import { getCopy } from '../lib/copy';
-import { heightFor } from '../lib/assetSize';
+import type { ClinicConfig } from '../../clinics/types';
+import { heightFor } from '../../lib/assetSize';
+import { whatsappUrl } from '../../lib/links';
 
 interface Props {
   clinic: ClinicConfig;
+  copy: { scheduleCta: string; finalCta: { title: string; titleEm: string; text: string; callPrefix: string } };
 }
-const { clinic } = Astro.props;
+const { clinic, copy } = Astro.props;
 const { phone } = clinic.contact;
-const copy = getCopy(clinic);
 const markH = clinic.clinic.logoMark ? await heightFor(clinic.clinic.logoMark, 96) : 0;
 ---
 
@@ -27,7 +27,7 @@ const markH = clinic.clinic.logoMark ? await heightFor(clinic.clinic.logoMark, 9
       {copy.finalCta.text}
     </p>
     <div data-reveal style="--i:3" class="flex flex-col items-center gap-3">
-      <WhatsAppButton clinic={clinic} />
+      <WhatsAppButton href={whatsappUrl(clinic)} label={copy.scheduleCta} />
       {
         phone && (
           <p class="text-sm text-muted">

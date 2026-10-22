@@ -1,20 +1,14 @@
 ---
-import type { ClinicConfig } from '../clinics/types';
-import { assetSize } from '../lib/assetSize';
+import type { ClinicConfig } from '../../clinics/types';
+import { assetSize } from '../../lib/assetSize';
 
 interface Props {
   clinic: ClinicConfig;
+  /** Itens do menu (desktop), definidos pelo template da especialidade. */
+  nav: { href: string; label: string }[];
 }
-const { clinic } = Astro.props;
+const { clinic, nav } = Astro.props;
 const logoSize = clinic.clinic.logo ? await assetSize(clinic.clinic.logo) : null;
-const nav = [
-  { href: '#sobre', label: 'Sobre' },
-  { href: '#condicoes', label: 'Condições' },
-  { href: '#primeira-consulta', label: 'Primeira consulta' },
-  ...(clinic.modalities.teleconsulta ? [{ href: '#teleconsulta', label: 'Teleconsulta' }] : []),
-  { href: '#duvidas', label: 'Dúvidas' },
-  ...(clinic.modalities.presencial ? [{ href: '#localizacao', label: 'Onde estamos' }] : []),
-];
 ---
 
 <header class="site-header sticky top-0 z-40">

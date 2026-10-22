@@ -1,17 +1,26 @@
 ---
 import { Font } from 'astro:assets';
-import Intro from '../components/Intro.astro';
-import '../styles/global.css';
-import type { ClinicConfig } from '../clinics/types';
-import { legibleOn, readableOn } from '../lib/links';
-import { getHeroPhoto, heroPhotoSizes } from '../lib/heroPhoto';
-import { clinicUrl } from '../lib/agency';
-import { getCopy } from '../lib/copy';
+import '../../styles/global.css';
+import type { ClinicConfig } from '../../clinics/types';
+import { legibleOn, readableOn } from '../../lib/links';
+import { getHeroPhoto, heroPhotoSizes } from '../../lib/heroPhoto';
+import { clinicUrl } from '../../lib/agency';
 
+/**
+ * Documento HTML, SEO e metadados (canonical, Open Graph, robots, JSON-LD),
+ * cores e fontes da clínica. Serve a qualquer especialidade: o que é próprio
+ * do template entra por props (`attrs`, `intro`) e pelo slot "before".
+ */
 interface Props {
   clinic: ClinicConfig;
+  /** Especialidade no schema.org (valor vindo do template). */
+  schemaSpecialty: string;
+  /** Atributos extras no <html> (ganchos de estilo do template, ex.: data-finish). */
+  attrs?: Record<string, string>;
+  /** Abertura animada na 1ª visita: marca o <html> com has-intro / intro-seen. */
+  intro?: boolean;
 }
-const { clinic } = Astro.props;
+const { clinic, schemaSpecialty, attrs = {}, intro = false } = Astro.props;
 const { theme: t, seo, doctor, address, contact } = clinic;
 
 const cssVars = [
@@ -31,10 +40,6 @@ const cssVars = [
 type CssVar = Parameters<typeof Font>[0]['cssVariable'];
 const headingVar = `--fh-${clinic.slug}` as CssVar;
 const bodyVar = `--fb-${clinic.slug}` as CssVar;
-const copy = getCopy(clinic);
-const finish = clinic.style?.finish ?? 'soft';
-const intro = clinic.style?.intro ?? finish !== 'soft';
-const textured = finish !== 'soft';
 
 const canonical = clinicUrl(clinic);
 const heroPhoto = await getHeroPhoto(clinic);
@@ -47,7 +52,7 @@ const jsonLd = {
   description: seo.description,
   url: canonical,
   telephone: contact.phone ?? `+${contact.whatsapp}`,
-  medicalSpecialty: copy.schemaSpecialty,
+  medicalSpecialty: schemaSpecialty,
   address: {
     '@type': 'PostalAddress',
     streetAddress: [address.street, address.complement].filter(Boolean).join(', '),
@@ -63,14 +68,14 @@ const jsonLd = {
   employee: {
     '@type': 'Physician',
     name: doctor.name,
-    medicalSpecialty: copy.schemaSpecialty,
+    medicalSpecialty: schemaSpecialty,
     identifier: [doctor.crm, doctor.rqe].filter(Boolean),
   },
 };
 ---
 
 <!doctype html>
-<html lang="pt-BR" style={cssVars} data-finish={finish} data-hero={clinic.style?.hero ?? 'arch'}>
+<html lang="pt-BR" style={cssVars} {...attrs}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -139,9 +144,7 @@ const jsonLd = {
     {!clinic.isPreview && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body class="min-h-dvh antialiased">
-    {intro && <Intro clinic={clinic} />}
-    {textured && <div class="grain" aria-hidden="true" />}
-    {textured && <div class="read-progress" aria-hidden="true" />}
+    <slot name="before" />
     <slot />
     <script>
       // Revelação ao rolar: marca [data-reveal] e [data-rule] como visíveis uma única vez.
