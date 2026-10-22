@@ -1,5 +1,6 @@
 import type { ClinicConfig } from './types';
 import { assertCompliance } from '../lib/compliance';
+import { templateFor } from '../templates/registry';
 
 /**
  * Todas as clínicas: cada arquivo src/clinics/<slug>.ts (exceto index, types
@@ -21,7 +22,8 @@ export const clinics: ClinicConfig[] = Object.entries(modules).map(([path, mod])
   if (!SLUG.test(clinic.slug)) {
     throw new Error(`[clinics] ${path}: slug "${clinic.slug}" deve ter só letras minúsculas, números e hífens.`);
   }
-  assertCompliance(clinic);
+  const template = templateFor(clinic);
+  assertCompliance(clinic, template.forbiddenTerms, template.getCopy(clinic));
   return clinic;
 });
 

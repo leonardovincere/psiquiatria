@@ -1,53 +1,11 @@
-import type { ClinicConfig, SiteCopy } from '../clinics/types';
+import type { ClinicConfig } from '../clinics/types';
 
-/** Textos padrão das seções (genéricos para clínicas de psiquiatria). */
-const DEFAULT_COPY: SiteCopy = {
-  scheduleCta: 'Agendar pelo WhatsApp',
-  hero: {
-    eyebrowFallback: 'Psiquiatria · {publico} · {cidade}/{uf}',
-    subtitle: 'Com {medico}, {titulo} em {cidade}.',
-    link: 'Como funciona a primeira consulta',
-    ringText: '{titulo} · {cidade}/{uf} · ',
-  },
-  approach: { eyebrow: 'Abordagem', title: 'O que guia cada consulta' },
-  journey: { eyebrow: 'Trajetória', title: 'Formação e experiência', education: 'Formação', experience: 'Experiência' },
-  about: { eyebrow: 'Sobre' },
-  conditions: {
-    title: 'Condições acompanhadas',
-    intro: 'Não encontrou o que está sentindo? Fale com a gente — conversamos sobre o seu caso.',
-    note: 'Cada pessoa é única: a avaliação e o plano de cuidado são sempre individualizados.',
-  },
-  firstVisit: {
-    eyebrow: 'Passo a passo',
-    title: 'Como funciona a primeira consulta',
-    extraPrefix: 'Também emitimos',
-    paymentPrefix: 'Pagamento',
-  },
-  telehealth: {
-    eyebrow: 'Teleconsulta',
-    title: 'O mesmo cuidado,',
-    titleEm: 'de onde você estiver',
-    subtitle: 'Consulta por vídeo, pelo celular ou computador.',
-    points: ['Link enviado antes do horário', 'Sigilo e privacidade', 'Receita digital válida'],
-    note: 'Conforme a Resolução CFM nº 2.314/2022, que regulamenta a telemedicina. Em algumas situações, pode ser indicada uma consulta presencial.',
-  },
-  research: { eyebrow: 'Pesquisa', link: 'Ler o trabalho completo' },
-  articles: { eyebrow: 'Conteúdo' },
-  faq: { title: 'Perguntas frequentes' },
-  location: { title: 'Onde estamos', mapButton: 'Ver mapa interativo', mapsLink: 'Abrir no Google Maps' },
-  finalCta: {
-    title: 'Quando você quiser,',
-    titleEm: 'estamos aqui.',
-    text: 'Tire suas dúvidas ou agende sua consulta com {medico} pelo WhatsApp.',
-    callPrefix: 'ou ligue',
-  },
-  emergencyNotice:
-    'Este canal não atende emergências. Em situação de crise ou risco, procure o pronto-socorro mais próximo, ligue para o SAMU (192) ou para o CVV (188), disponível 24 horas.',
-  legalNotice:
-    'Conteúdo informativo, que não substitui a consulta médica. Publicidade médica conforme a Resolução CFM nº 2.336/2023.',
-  previewSuffix: 'versão de demonstração, não indexada',
-  schemaSpecialty: 'Psychiatric',
-};
+/**
+ * Mecanismo de textos, comum a todas as especialidades. Os textos padrão
+ * ficam no template de cada especialidade (src/templates/<especialidade>/copy.ts);
+ * a clínica sobrescreve o que quiser em `copy`.
+ * Variáveis: {medico}, {titulo}, {cidade}, {uf}, {publico}.
+ */
 
 const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
 function merge<T>(base: T, over: unknown): T {
@@ -66,9 +24,9 @@ export const doctorRef = (c: ClinicConfig) => {
   return `${article} ${c.doctor.shortName}`;
 };
 
-/** Textos da clínica: padrão + `copy` da config, com {medico}, {cidade}, {uf} e {publico} preenchidos. */
-export function getCopy(c: ClinicConfig): SiteCopy {
-  const merged = merge(DEFAULT_COPY, c.copy);
+/** Textos da clínica: padrão do template + `copy` da config, com {medico}, {cidade}, {uf} e {publico} preenchidos. */
+export function resolveCopy<T>(defaults: T, c: ClinicConfig): T {
+  const merged = merge(defaults, c.copy);
   const vars: Record<string, string> = {
     medico: doctorRef(c),
     cidade: c.clinic.city,
@@ -84,5 +42,5 @@ export function getCopy(c: ClinicConfig): SiteCopy {
         : isObj(v)
           ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, fill(x)]))
           : v;
-  return fill(merged) as SiteCopy;
+  return fill(merged) as T;
 }

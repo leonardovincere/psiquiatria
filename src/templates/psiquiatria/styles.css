@@ -1,0 +1,960 @@
+/*
+ * Estilos do template de psiquiatria: topo em arco que se abre, faixas de
+ * condições deslizando e os acabamentos "editorial" e "cinema" (style.finish).
+ * A base compartilhada (tokens, tons por seção, revelação ao rolar) fica em
+ * src/styles/base.css.
+ */
+
+/* 1. Entrada do hero. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes bloom {
+  from {
+    clip-path: circle(0% at 50% 100%);
+  }
+  to {
+    clip-path: circle(120% at 50% 100%);
+  }
+}
+@keyframes breathe {
+  50% {
+    transform: translate(-50%, -4px) scale(1.015);
+  }
+}
+@keyframes underline {
+  from {
+    background-size: 0% 0.09em;
+  }
+}
+.hero-in {
+  animation: rise 0.9s var(--ease-out) both;
+  animation-delay: calc(var(--d, 0) * 90ms);
+}
+.hero-lotus {
+  transform: translateX(-50%);
+  animation:
+    bloom 1s var(--ease-out) both,
+    breathe 9s ease-in-out 1.2s infinite;
+}
+.mark {
+  background-image: linear-gradient(var(--c-accent), var(--c-accent));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: 100% 0.09em;
+  animation: underline 0.7s var(--ease-out) 0.15s both;
+}
+
+/* 2. Foto que se abre: arco → largura total. --p (0–1) vem do JS. */
+.expand {
+  --p: 0;
+}
+.expand-frame {
+  width: calc(100% - (1 - var(--p)) * 18%);
+}
+.expand-photo {
+  aspect-ratio: 4 / 5;
+  max-height: 88svh;
+  border-radius: calc((1 - var(--p)) * 220px + var(--p) * 0px) calc((1 - var(--p)) * 220px) calc((1 - var(--p)) * 24px)
+    calc((1 - var(--p)) * 24px);
+}
+.expand-photo img {
+  transform: scale(calc(1.1 - var(--p) * 0.1));
+  transform-origin: 50% 35%;
+}
+.expand .hero-lotus {
+  opacity: calc(1 - var(--p) * 1.6);
+}
+/* Desktop: foto fixa em arco ao lado do texto; o efeito de abrir é só do celular/tablet. */
+@media (width >= 64rem) {
+  .expand {
+    --p: 0 !important;
+  }
+  .expand .expand-frame {
+    width: 100% !important;
+  }
+  .expand .expand-photo {
+    aspect-ratio: 4 / 5 !important;
+    border-radius: 240px 240px 28px 28px !important;
+  }
+  .expand .expand-photo img {
+    transform: none;
+  }
+}
+@media (width >= 48rem) {
+  .expand-frame {
+    width: calc(100% - (1 - var(--p)) * 30%);
+  }
+  .expand-photo {
+    aspect-ratio: 1 / 1;
+    border-radius: calc((1 - var(--p)) * 300px + var(--p) * 28px) calc((1 - var(--p)) * 300px + var(--p) * 28px) 28px 28px;
+  }
+}
+
+/* 5. Faixas de condições deslizando (pausa ao passar o mouse). */
+.marquee {
+  overflow: hidden;
+  display: grid;
+  gap: 12px;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: marquee 42s linear infinite;
+}
+.marquee-track.rev {
+  animation-direction: reverse;
+  animation-duration: 48s;
+}
+.marquee:hover .marquee-track,
+.marquee:active .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expand {
+    --p: 1 !important;
+  }
+  .marquee-track {
+    flex-wrap: wrap;
+    width: auto;
+  }
+  .marquee-track[aria-hidden='true'],
+  .marquee-track .dup {
+    display: none;
+  }
+}
+
+/* ═══ Acabamento "editorial" (style.finish) ═════════════════════════════════
+ * Fora de @layer de propósito: regras sem camada vencem os utilitários do
+ * Tailwind, então dá para restilizar os componentes pelos ganchos de classe
+ * (.btn-cta, .chip, .icon-bubble, .id-card…) sem duplicar markup.
+ */
+
+/* Abertura (Intro.astro). --intro-delay atrasa a entrada do topo até a cortina subir. */
+html.has-intro {
+  --intro-delay: 1.2s;
+}
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+  pointer-events: none;
+  animation: intro-lift 0.9s cubic-bezier(0.76, 0, 0.24, 1) 1.05s forwards;
+}
+.intro-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.intro-mark {
+  font-size: 4.5rem;
+  line-height: 1;
+  animation: intro-in 0.7s var(--ease-out) 0.05s both;
+}
+.intro-line {
+  width: 64px;
+  height: 1px;
+  background: var(--c-accent-deep, var(--c-accent));
+  transform-origin: 50% 50%;
+  animation: intro-line 0.7s var(--ease-out) 0.25s both;
+}
+.intro-name {
+  font-size: 1.6rem;
+  animation: intro-in 0.7s var(--ease-out) 0.35s both;
+}
+.intro-sub {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  animation: intro-in 0.7s var(--ease-out) 0.45s both;
+}
+@keyframes intro-lift {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 100% 0);
+    visibility: hidden;
+  }
+}
+@keyframes intro-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes intro-line {
+  from {
+    transform: scaleX(0);
+  }
+}
+html.intro-seen .intro {
+  display: none;
+}
+/* O topo "assenta" quando a cortina sobe (só transform: o texto já está pintado, não atrasa o LCP). */
+html.has-intro #inicio h1,
+html.has-intro #inicio .eyebrow,
+html.has-intro #inicio h1 ~ * {
+  animation: settle 1.1s var(--ease-out) var(--intro-delay) both;
+}
+@keyframes settle {
+  from {
+    transform: translateY(26px);
+  }
+}
+
+/* Textura de papel em toda a página (estática, sem custo de animação). */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Manchas de cor que se movem devagar atrás do topo (gradientes, sem blur: leve no celular). */
+.aurora {
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 140%;
+  pointer-events: none;
+  z-index: 0;
+}
+.aurora::before,
+.aurora::after {
+  content: '';
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  will-change: transform;
+}
+.aurora::before {
+  top: -25vmax;
+  right: -20vmax;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-secondary) 55%, transparent), transparent);
+  animation: drift-a 22s ease-in-out infinite alternate;
+}
+.aurora::after {
+  top: 10vmax;
+  left: -30vmax;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-accent) 18%, transparent), transparent);
+  animation: drift-b 26s ease-in-out infinite alternate;
+}
+@keyframes drift-a {
+  to {
+    transform: translate(-8vmax, 6vmax) scale(1.08);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate(10vmax, -4vmax) scale(0.94);
+  }
+}
+.hero-wrap > :not(.aurora) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Barra fina de progresso de leitura (scroll-driven; sem suporte, não aparece). */
+.read-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .read-progress {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 60;
+    background: var(--c-accent);
+    transform-origin: 0 50%;
+    animation: read-progress linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes read-progress {
+    from {
+      transform: scaleX(0);
+    }
+  }
+}
+
+[data-finish='editorial'] {
+  /* Botões retos, com preenchimento que desliza ao passar o mouse. */
+  .btn-cta {
+    border-radius: 2px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding-inline: 1.9rem;
+    box-shadow: none;
+    background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--c-text) 85%, var(--c-primary)) 50%,
+      transparent 50%
+    );
+    background-size: 201% 100%;
+    background-position: 100% 0;
+    transition: background-position 0.5s var(--ease-out);
+  }
+  .btn-cta svg {
+    width: 15px;
+    height: 15px;
+  }
+  .btn-cta:hover {
+    background-position: 0 0;
+  }
+  .btn-lift:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  /* Barra fixa: faixa reta colada no rodapé da tela (celular) / botão reto no canto (desktop). */
+  [data-sticky-cta] {
+    padding: 0;
+    border: 0;
+    background: none;
+    backdrop-filter: none;
+  }
+  .btn-sticky {
+    border-radius: 0;
+    min-height: calc(56px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (width >= 40rem) {
+    .btn-sticky {
+      border-radius: 2px;
+      min-height: 52px;
+      padding-bottom: 0;
+      box-shadow: none;
+    }
+  }
+
+  /* Seções numeradas no lugar de "etiquetas". */
+  main {
+    counter-reset: sec;
+  }
+  main > section:not(#inicio):has(.eyebrow) {
+    counter-increment: sec;
+  }
+  main > section:not(#inicio) .eyebrow:not(.no-num)::before {
+    content: counter(sec, decimal-leading-zero) '\2002\2014\2002';
+    color: var(--c-accent);
+  }
+
+  /* Condições: lista corrida em serifa, separada por barras, sem pílulas. */
+  .chip {
+    border: 0;
+    background: none;
+    padding: 0;
+    gap: 0;
+    font-size: clamp(1.7rem, 4.6vw, 2.8rem);
+    line-height: 1.25;
+  }
+  .chip .dot {
+    display: none;
+  }
+  ul > .chip + .chip::before {
+    content: '/';
+    margin: 0 0.5em 0 0.1em;
+    color: var(--c-accent);
+    font-style: normal;
+  }
+  /* Marcadores: traço fino em vez de pontinho. */
+  .dot {
+    width: 14px;
+    height: 1px;
+    border-radius: 0;
+  }
+  /* Ícones soltos, sem bolinha. */
+  .icon-bubble {
+    border-color: transparent;
+  }
+  /* Cartões viram blocos retos com filete. */
+  .id-card {
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--c-background);
+    border-color: var(--c-border);
+    border-top: 1px solid var(--c-accent);
+  }
+  .map-box,
+  .note-box {
+    border-radius: 2px;
+  }
+  .map-pill {
+    border-radius: 2px;
+    box-shadow: none;
+    border: 1px solid var(--c-border);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+  }
+  .facts {
+    background: transparent;
+  }
+  /* Menu: caixa-alta pequena com sublinhado que cresce. */
+  .site-header nav a {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+    padding-bottom: 3px;
+    transition:
+      background-size 0.35s var(--ease-out),
+      color 0.2s;
+  }
+  .site-header nav a:hover {
+    background-size: 100% 1px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro,
+  .read-progress {
+    display: none !important;
+  }
+  .aurora::before,
+  .aurora::after {
+    animation: none !important;
+  }
+}
+
+/* ═══ Acabamento "cinema" (style.finish) e topo "cinema" (style.hero) ═══════
+ * Cenas escuras (topo, pesquisa, convite final) intercaladas com o papel da
+ * página, títulos que entram em foco, granulação de filme e abertura em
+ * letterbox. As cenas escuras redefinem as variáveis de cor (como o tom
+ * "deep"), então os componentes não mudam de markup.
+ */
+:root {
+  --scene-bg: color-mix(in srgb, var(--primary-base) 62%, #05070a);
+  --scene-ink: #f6f2ea;
+}
+.scene-dark,
+[data-finish='cinema'] #contato,
+[data-hero='cinema'] .site-header:not(.is-scrolled) {
+  --c-text: var(--scene-ink);
+  --c-muted: color-mix(in srgb, var(--scene-ink) 76%, var(--scene-bg));
+  --c-border: color-mix(in srgb, var(--scene-ink) 20%, var(--scene-bg));
+  --c-primary: var(--c-accent-deep, var(--c-accent));
+  --c-background: var(--scene-bg);
+  color: var(--c-text);
+}
+.scene-dark,
+[data-finish='cinema'] #contato {
+  background-color: var(--scene-bg);
+}
+/* Botão principal sobre cena escura: claro, com texto escuro. */
+.scene-dark .btn-cta,
+[data-finish='cinema'] #contato .btn-cta {
+  background-color: var(--scene-ink);
+  color: var(--ink-base);
+}
+[data-finish='cinema'] [data-tone-root][data-tone='deep'] {
+  background-color: var(--scene-bg);
+}
+
+/* ─── Topo "cinema" ─── */
+.cine-light {
+  background: radial-gradient(56rem 36rem at 8% 112%, color-mix(in srgb, var(--c-secondary) 16%, transparent), transparent 70%);
+}
+/* Holofote: só transform (composto pela GPU). O JS do topo o leva até o ponteiro; no toque, passeia sozinho. */
+.cine-spot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80rem;
+  height: 60rem;
+  margin: -30rem 0 0 -40rem;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c-accent) 38%, transparent), transparent);
+  transform: translate(72vw, 26vh);
+  transition: transform 1.1s var(--ease-out);
+  will-change: transform;
+}
+@media (pointer: coarse) {
+  .cine-spot {
+    animation: spot-drift 16s ease-in-out infinite alternate;
+  }
+}
+@keyframes spot-drift {
+  from {
+    transform: translate(85vw, 18vh);
+  }
+  to {
+    transform: translate(25vw, 50vh);
+  }
+}
+/* Facho do projetor, que tremula de leve. */
+.cine-light::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from 196deg at 88% -12%,
+    transparent 0deg,
+    color-mix(in srgb, var(--c-secondary) 14%, transparent) 10deg,
+    color-mix(in srgb, var(--c-secondary) 6%, transparent) 22deg,
+    transparent 34deg
+  );
+  animation: flicker 7s steps(1) infinite;
+}
+/* Vinheta: cantos escurecidos, como na tela de cinema. */
+.cine-light::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgb(0 0 0 / 0.5) 100%);
+}
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  31% {
+    opacity: 0.82;
+  }
+  33% {
+    opacity: 1;
+  }
+  64% {
+    opacity: 0.9;
+  }
+  66% {
+    opacity: 1;
+  }
+}
+.cine-photo {
+  opacity: 0.36;
+  filter: grayscale(0.35) contrast(1.05);
+  animation: ken-burns 26s ease-out both;
+}
+@keyframes ken-burns {
+  from {
+    transform: scale(1.12);
+  }
+}
+
+/* Título: cada palavra entra em foco (já pintada desde o 1º quadro, só desfocada). */
+.cine-title {
+  color: var(--c-text);
+  letter-spacing: -0.025em;
+}
+.cine-title .cw {
+  display: inline-block;
+  animation: focus-in 1.7s var(--ease-out) both;
+  animation-delay: calc(var(--intro-delay, 0s) + 120ms + var(--k, 0) * 110ms);
+}
+.cine-title .cw-em em {
+  color: var(--c-primary);
+}
+@keyframes focus-in {
+  from {
+    filter: blur(18px);
+    transform: scale(1.08);
+    opacity: 0.25;
+  }
+}
+html[data-hero] #inicio.hero-cinema .cine-fade {
+  animation: fade-focus 1.2s var(--ease-out) both;
+  animation-delay: calc(var(--intro-delay, 0s) + 450ms + var(--d, 0) * 100ms);
+}
+html[data-hero='cinema'] #inicio.hero-cinema h1 {
+  animation: none;
+}
+@keyframes fade-focus {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(14px);
+  }
+}
+.billing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.75rem;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+.cine-cue-line {
+  width: 1px;
+  height: 36px;
+  background: currentColor;
+  transform-origin: 50% 0;
+  animation: cue 2.4s var(--ease-out) infinite;
+}
+@keyframes cue {
+  0% {
+    transform: scaleY(0);
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: 50% 0;
+  }
+  51% {
+    transform-origin: 50% 100%;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: 50% 100%;
+  }
+}
+/* Ao rolar, a cena do topo recua e perde o foco. */
+@supports (animation-timeline: view()) {
+  .cine-scene {
+    animation: scene-out linear both;
+    animation-timeline: view();
+    animation-range: exit 0% exit 90%;
+  }
+  @keyframes scene-out {
+    to {
+      opacity: 0.15;
+      transform: translateY(-6%) scale(0.97);
+      filter: blur(3px);
+    }
+  }
+}
+
+/* ─── Pesquisa (capa de publicação) ─── */
+.research-glow {
+  background: radial-gradient(46rem 30rem at 78% 42%, color-mix(in srgb, var(--c-accent) 24%, transparent), transparent 70%);
+}
+.research-cover {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--scene-ink) 3%, transparent);
+  box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.6);
+}
+/* Reflexo de luz que atravessa a capa uma vez, quando ela aparece. */
+.research-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 40%, color-mix(in srgb, var(--scene-ink) 10%, transparent) 50%, transparent 60%);
+  transform: translateX(-110%);
+}
+.research-cover.is-visible::after {
+  transition: transform 2.2s var(--ease-out) 0.4s;
+  transform: translateX(110%);
+}
+@supports (animation-timeline: view()) {
+  [data-finish='cinema'] .research-cover {
+    transform-origin: 50% 100%;
+    animation: cover-tilt linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+  }
+  @keyframes cover-tilt {
+    from {
+      transform: perspective(1200px) rotateX(16deg) translateY(48px) scale(0.94);
+    }
+  }
+}
+
+.article {
+  border-top: 1px solid transparent;
+}
+
+[data-finish='cinema'] {
+  /* Etiquetas com filete à esquerda, como créditos. */
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.24em;
+  }
+  .eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 2rem;
+    height: 1px;
+    margin-right: 0.9rem;
+    vertical-align: middle;
+    background: currentColor;
+  }
+
+  /* Botões retos com um reflexo de luz que passa ao apontar. */
+  .btn-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: 0;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding-inline: 2rem;
+    box-shadow: none;
+  }
+  .btn-cta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.4) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform 0.9s var(--ease-out);
+  }
+  .btn-cta:hover::after {
+    transform: translateX(120%);
+  }
+  .cine-btn::after {
+    animation: sheen 7s var(--ease-out) 3.5s infinite;
+  }
+  .btn-cta svg {
+    width: 16px;
+    height: 16px;
+  }
+  .btn-lift:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  [data-sticky-cta] {
+    padding: 0;
+    border: 0;
+    background: none;
+    backdrop-filter: none;
+  }
+  .btn-sticky {
+    min-height: calc(56px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (width >= 40rem) {
+    .btn-sticky {
+      min-height: 52px;
+      padding-bottom: 0;
+    }
+  }
+
+  /* Menu em caixa-alta pequena. */
+  .site-header nav a {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* Condições: letreiro em serifa grande, sem pílulas, separado por pontos. */
+  .marquee {
+    gap: 0.25rem;
+  }
+  .marquee-track {
+    gap: 0;
+  }
+  .marquee .chip {
+    border: 0;
+    background: none;
+    padding: 0 0.45em 0 0;
+    gap: 0.45em;
+    font-size: clamp(2.3rem, 7vw, 5.2rem);
+    line-height: 1.15;
+  }
+  .marquee .chip .dot {
+    width: 0.16em;
+    height: 0.16em;
+  }
+
+  /* Convite final: a cena escura que fecha o filme. */
+  #contato {
+    padding-top: 6rem;
+  }
+  @media (width >= 48rem) {
+    #contato {
+      padding-top: 8rem;
+    }
+  }
+
+  .map-box,
+  .note-box {
+    border-radius: 0;
+  }
+  .map-pill {
+    border-radius: 0;
+    box-shadow: none;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 12px;
+  }
+}
+@keyframes sheen {
+  0% {
+    transform: translateX(-120%);
+  }
+  18%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+/* Títulos de seção entram em foco (no lugar de subir pela máscara). */
+html.js[data-finish='cinema'] [data-words] .w {
+  overflow: visible;
+}
+html.js[data-finish='cinema'] [data-words] .w > span {
+  transform: none;
+  opacity: 0;
+  filter: blur(10px);
+  transition:
+    opacity 1.2s var(--ease-out),
+    filter 1.2s var(--ease-out);
+  transition-delay: calc(var(--k, 0) * 70ms);
+}
+html.js[data-finish='cinema'] [data-words].is-visible .w > span {
+  opacity: 1;
+  filter: none;
+}
+html.js[data-finish='cinema'] [data-reveal] {
+  filter: blur(6px);
+  transition:
+    opacity 1s var(--ease-out),
+    transform 1s var(--ease-out),
+    filter 1s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+html.js[data-finish='cinema'] [data-reveal].is-visible {
+  filter: none;
+}
+/* Etapas da primeira consulta: ficam nítidas no centro da tela. */
+@supports (animation-timeline: view()) {
+  [data-finish='cinema'] .scene-step > * {
+    transform-origin: 0 50%;
+    animation: step-focus linear both;
+    animation-timeline: view();
+  }
+  @keyframes step-focus {
+    0% {
+      filter: blur(2px);
+      transform: scale(0.97);
+    }
+    30%,
+    70% {
+      filter: none;
+      transform: none;
+    }
+    100% {
+      filter: blur(2px);
+      transform: scale(0.97);
+    }
+  }
+}
+
+/* Granulação de filme em movimento. */
+[data-finish='cinema'] .grain {
+  inset: -100%;
+  opacity: 0.06;
+  animation: grain 0.9s steps(5) infinite;
+}
+@keyframes grain {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-4%, 3%);
+  }
+  40% {
+    transform: translate(3%, -5%);
+  }
+  60% {
+    transform: translate(-6%, -2%);
+  }
+  80% {
+    transform: translate(5%, 4%);
+  }
+}
+
+/* Abertura em letterbox: faixas pretas com o nome, que se abrem para cima e para baixo. */
+.intro-bar {
+  display: none;
+}
+html.has-intro[data-finish='cinema'] {
+  --intro-delay: 1.45s;
+}
+[data-finish='cinema'] .intro {
+  background: none;
+  color: var(--scene-ink);
+  animation: intro-done 0s linear 2.4s forwards;
+}
+[data-finish='cinema'] .intro-bar {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background: #06080b;
+  animation: bar-open 1.1s cubic-bezier(0.76, 0, 0.24, 1) 1.25s forwards;
+}
+[data-finish='cinema'] .intro-bar-top {
+  top: 0;
+  --dir: -1;
+}
+[data-finish='cinema'] .intro-bar-bottom {
+  bottom: 0;
+  --dir: 1;
+}
+[data-finish='cinema'] .intro-inner {
+  position: relative;
+  z-index: 1;
+  animation: intro-out 0.5s ease 1.05s forwards;
+}
+[data-finish='cinema'] .intro-mark {
+  display: none;
+}
+[data-finish='cinema'] .intro-name {
+  font-size: clamp(2.1rem, 7vw, 3.6rem);
+  font-style: italic;
+  animation: focus-in 1.1s var(--ease-out) both;
+}
+[data-finish='cinema'] .intro-line {
+  width: 96px;
+  background: var(--c-accent-deep, var(--c-accent));
+}
+@keyframes bar-open {
+  to {
+    transform: translateY(calc(var(--dir) * 100%));
+  }
+}
+@keyframes intro-out {
+  to {
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+@keyframes intro-done {
+  to {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js[data-finish='cinema'] [data-words] .w > span,
+  html.js[data-finish='cinema'] [data-reveal] {
+    opacity: 1;
+    filter: none;
+  }
+  [data-finish='cinema'] .research-cover,
+  [data-finish='cinema'] .scene-step > *,
+  .cine-scene {
+    animation: none !important;
+  }
+}

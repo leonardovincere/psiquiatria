@@ -1,0 +1,84 @@
+---
+import Layout from '../../components/shared/Layout.astro';
+import PreviewBanner from '../../components/shared/PreviewBanner.astro';
+import Header from '../../components/shared/Header.astro';
+import Hero from './components/Hero.astro';
+import HeroCircle from './components/HeroCircle.astro';
+import HeroCinema from './components/HeroCinema.astro';
+import Intro from './components/Intro.astro';
+import Research from './components/Research.astro';
+import Articles from './components/Articles.astro';
+import Approach from './components/Approach.astro';
+import Journey from './components/Journey.astro';
+import FactsStrip from '../../components/shared/FactsStrip.astro';
+import About from '../../components/shared/About.astro';
+import Conditions from './components/Conditions.astro';
+import FirstVisit from './components/FirstVisit.astro';
+import Telehealth from '../../components/shared/Telehealth.astro';
+import Faq from '../../components/shared/Faq.astro';
+import Location from '../../components/shared/Location.astro';
+import LotusDivider from './components/LotusDivider.astro';
+import FinalCta from '../../components/shared/FinalCta.astro';
+import Footer from '../../components/shared/Footer.astro';
+import StickyCta from '../../components/shared/StickyCta.astro';
+import type { ClinicConfig } from '../../clinics/types';
+import { getCopy } from './copy';
+import { factsFor, whatsappUrl } from '../../lib/links';
+
+/** Página de psiquiatria. Renderizada pela rota única src/pages/[slug].astro, via registry. */
+interface Props {
+  clinic: ClinicConfig;
+}
+const { clinic } = Astro.props;
+const copy = getCopy(clinic);
+const hero = clinic.style?.hero ?? 'arch';
+const finish = clinic.style?.finish ?? 'soft';
+const intro = clinic.style?.intro ?? finish !== 'soft';
+const textured = finish !== 'soft';
+const wa = whatsappUrl(clinic);
+const nav = [
+  { href: '#sobre', label: 'Sobre' },
+  { href: '#condicoes', label: 'Condições' },
+  { href: '#primeira-consulta', label: 'Primeira consulta' },
+  ...(clinic.modalities.teleconsulta ? [{ href: '#teleconsulta', label: 'Teleconsulta' }] : []),
+  { href: '#duvidas', label: 'Dúvidas' },
+  ...(clinic.modalities.presencial ? [{ href: '#localizacao', label: 'Onde estamos' }] : []),
+];
+---
+
+<Layout clinic={clinic} schemaSpecialty={copy.schemaSpecialty} attrs={{ 'data-finish': finish, 'data-hero': hero }} intro={intro}>
+  <Fragment slot="before">
+    {intro && <Intro clinic={clinic} />}
+    {textured && <div class="grain" aria-hidden="true" />}
+    {textured && <div class="read-progress" aria-hidden="true" />}
+  </Fragment>
+  <a
+    href="#conteudo"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-on-primary"
+    >Pular para o conteúdo</a
+  >
+  {clinic.isPreview && <PreviewBanner text={clinic.previewBanner} suffix={copy.previewSuffix} />}
+  <Header clinic={clinic} nav={nav} />
+  <main id="conteudo" data-tone-root data-tone="base">
+    <div class:list={['hero-wrap relative', clinic.style?.finish === 'editorial' && 'overflow-hidden']}>
+      {clinic.style?.finish === 'editorial' && <div class="aurora" aria-hidden="true" />}
+      {hero === 'circle' ? <HeroCircle clinic={clinic} /> : hero === 'cinema' ? <HeroCinema clinic={clinic} /> : <Hero clinic={clinic} />}
+    </div>
+    {hero !== 'cinema' && <FactsStrip items={factsFor(clinic)} />}
+    <About clinic={clinic} eyebrow={copy.about.eyebrow} />
+    <Research clinic={clinic} />
+    <LotusDivider src={clinic.clinic.logoMark} />
+    <Approach clinic={clinic} />
+    <Journey clinic={clinic} />
+    <Conditions clinic={clinic} />
+    <FirstVisit clinic={clinic} />
+    {clinic.modalities.teleconsulta && <Telehealth clinic={clinic} copy={copy.telehealth} />}
+    <Articles clinic={clinic} />
+    <Faq title={copy.faq.title} items={clinic.faq} />
+    <LotusDivider src={clinic.clinic.logoMark} />
+    {clinic.modalities.presencial && <Location clinic={clinic} copy={copy.location} />}
+    <FinalCta clinic={clinic} copy={copy} />
+  </main>
+  <Footer clinic={clinic} emergencyNotice={copy.emergencyNotice} legalNotice={copy.legalNotice} />
+  <StickyCta href={wa} label={copy.scheduleCta} />
+</Layout>

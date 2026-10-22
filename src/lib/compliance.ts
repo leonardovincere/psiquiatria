@@ -6,26 +6,31 @@ import type { ClinicConfig } from '../clinics/types';
  * e sensacionalismo. Não substitui a revisão humana — é uma rede de segurança
  * para o build falhar antes de algo inadequado ir ao ar.
  */
-const FORBIDDEN: { pattern: RegExp; reason: string }[] = [
+export interface ComplianceRule {
+  pattern: RegExp;
+  reason: string;
+}
+
+/** Regras comuns a todas as especialidades. Cada template acrescenta as suas (`forbiddenTerms`). */
+const FORBIDDEN: ComplianceRule[] = [
   { pattern: /\bcur(a|ar|ado|ada|ados|adas|amos|o)\b/i, reason: 'promessa de cura' },
   { pattern: /\bgarant(ia|ido|ida|imos|e|ir)\b/i, reason: 'garantia de resultado' },
   { pattern: /\b100\s?%/i, reason: 'promessa de eficácia absoluta' },
   { pattern: /\bdefinitiv[oa]s?\b/i, reason: 'promessa de resultado definitivo' },
   { pattern: /\bmilagr/i, reason: 'sensacionalismo' },
   {
-    pattern: /\b(o|a|os|as)\s+(melhor|melhores)\s+(psiquiatra|médic|clínica|consultório|tratamento|atendimento|especialista)/i,
+    pattern: /\b(o|a|os|as)\s+(melhor|melhores)\s+(médic|clínica|consultório|tratamento|atendimento|especialista)/i,
     reason: 'superlativo / autopromoção',
   },
   { pattern: /\breferência\s+em\b/i, reason: 'superlativo / autopromoção' },
   { pattern: /\bn[ºo°]\s?1\b|\bnúmero\s+1\b/i, reason: 'superlativo / autopromoção' },
-  { pattern: /\b(livre|livrar)(-se)?\s+(da|de|do)\s+(ansiedade|depressão)/i, reason: 'promessa de resultado' },
   { pattern: /\bresultado(s)?\s+(rápido|imediato|garantido)/i, reason: 'promessa de resultado' },
   { pattern: /\bdesconto|promoç(ão|ões)|grátis|gratuit[ao]\b/i, reason: 'mercantilização da consulta' },
   { pattern: /\bantes\s+e\s+depois\b/i, reason: 'antes e depois' },
 ];
 
 // Áreas sem RQE / com restrições do CFM: não podem aparecer como especialidade nos textos exibidos.
-const NON_RECOGNIZED: { pattern: RegExp; reason: string }[] = [
+const NON_RECOGNIZED: ComplianceRule[] = [
   { pattern: /ortomolecular/i, reason: 'prática com restrições do CFM' },
   { pattern: /medicina\s+(integrativa|funcional)/i, reason: 'área sem RQE' },
   { pattern: /nutrologia|nutr[oó]logo/i, reason: 'especialidade sem RQE informado' },
@@ -51,7 +56,11 @@ function collectStrings(value: unknown, path: string, out: { path: string; text:
   }
 }
 
-export function assertCompliance(clinic: ClinicConfig) {
+/**
+ * @param templateRules termos vedados próprios da especialidade.
+ * @param resolvedCopy  textos finais da página (padrão do template + `copy`), conferidos junto com a config.
+ */
+export function assertCompliance(clinic: ClinicConfig, templateRules: ComplianceRule[] = [], resolvedCopy?: unknown) {
   const problems: string[] = [];
 
   // CRM/RQE: obrigatórios para publicar. Na prévia, a página mostra "em confirmação" e o build só avisa.
@@ -69,9 +78,13 @@ export function assertCompliance(clinic: ClinicConfig) {
   }
 
   const strings: { path: string; text: string }[] = [];
-  if (clinic.compliance.noOutcomePromises) collectStrings(clinic, '', strings);
-  const rules = clinic.compliance.hideNonRecognizedSpecialties ? [...FORBIDDEN, ...NON_RECOGNIZED] : FORBIDDEN;
-  if (clinic.compliance.hideNonRecognizedSpecialties && !strings.length) collectStrings(clinic, '', strings);
+  const scan = clinic.compliance.noOutcomePromises || clinic.compliance.hideNonRecognizedSpecialties;
+  if (scan) {
+    // O `copy` da config já entra resolvido (texto final); os demais campos vêm direto da config.
+    collectStrings({ ...clinic, copy: undefined }, '', strings);
+    collectStrings(resolvedCopy ?? clinic.copy, 'copy', strings);
+  }
+  const rules = [...FORBIDDEN, ...templateRules, ...(clinic.compliance.hideNonRecognizedSpecialties ? NON_RECOGNIZED : [])];
   for (const { path, text } of strings) {
     for (const { pattern, reason } of rules) {
       const match = text.match(pattern);
