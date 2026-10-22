@@ -13,8 +13,11 @@ mkdirSync(out, { recursive: true });
 const browserExecutable = '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell';
 
 const serveUrl = await bundle({ entryPoint: `${root}src/index.ts` });
-const composition = await selectComposition({ serveUrl, id: 'whatsapp', browserExecutable });
-const master = `${out}${clinic.slug}-master.mp4`;
+// COMP=marca escolhe o roteiro "marca própria" (padrão: whatsapp).
+const comp = process.env.COMP || 'whatsapp';
+const composition = await selectComposition({ serveUrl, id: comp, browserExecutable });
+const name = comp === 'whatsapp' ? clinic.slug : `${clinic.slug}-${comp}`;
+const master = `${out}${name}-master.mp4`;
 const only = process.env.FRAMES?.split('-').map(Number);
 await renderMedia({
   serveUrl,
@@ -36,7 +39,7 @@ console.log('\nmestre:', master);
 const dur = Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', master]).toString());
 const audioK = 128;
 const videoK = Math.floor((15.2 * 8 * 1024) / dur - audioK);
-const final = `${out}${clinic.slug}-whatsapp.mp4`;
+const final = `${out}${name}-whatsapp.mp4`;
 const common = ['-y', '-loglevel', 'error', '-i', master, '-c:v', 'libx264', '-preset', 'slow', '-b:v', `${videoK}k`, '-maxrate', `${Math.round(videoK * 1.6)}k`, '-bufsize', `${videoK * 2}k`, '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-r', '30'];
 execFileSync('ffmpeg', [...common, '-pass', '1', '-passlogfile', `${out}2pass`, '-an', '-f', 'mp4', '/dev/null'], { cwd: out });
 execFileSync('ffmpeg', [...common, '-pass', '2', '-passlogfile', `${out}2pass`, '-c:a', 'aac', '-b:a', `${audioK}k`, '-movflags', '+faststart', final], { cwd: out });
@@ -44,6 +47,6 @@ for (const f of ['2pass-0.log', '2pass-0.log.mbtree']) rmSync(`${out}${f}`, { fo
 console.log('final:', final, `${(statSync(final).size / 1024 / 1024).toFixed(2)} MB`, `${dur.toFixed(1)} s`, `vídeo ${videoK} kb/s`);
 
 // Miniatura: celular e nome lado a lado (cena "prova").
-const thumbFrame = Math.round((composition.fps * (Number(process.env.THUMB_AT) || 36.6)));
-await renderStill({ serveUrl, composition, frame: thumbFrame, output: `${out}${clinic.slug}-thumb.jpg`, imageFormat: 'jpeg', jpegQuality: 90, browserExecutable });
-console.log('miniatura:', `${out}${clinic.slug}-thumb.jpg`);
+const thumbFrame = Math.round((composition.fps * (Number(process.env.THUMB_AT) || (comp === 'marca' ? 38.6 : 36.6))));
+await renderStill({ serveUrl, composition, frame: thumbFrame, output: `${out}${name}-thumb.jpg`, imageFormat: 'jpeg', jpegQuality: 90, browserExecutable });
+console.log('miniatura:', `${out}${name}-thumb.jpg`);

@@ -6,7 +6,9 @@
     "data": "node --experimental-strip-types scripts/clinic-data.mjs",
     "capture": "node scripts/capture.mjs",
     "audio": "python3 scripts/audio.py",
-    "render": "node scripts/render.mjs"
+    "render": "node scripts/render.mjs",
+    "audio:marca": "python3 scripts/audio-marca.py",
+    "render:marca": "COMP=marca node scripts/render.mjs"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.536",

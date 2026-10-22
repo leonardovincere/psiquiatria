@@ -14,3 +14,4 @@ video/public/captures/
 video/public/audio/
 video/src/clinic.json
 video/public/fonts/
+video/scripts/__pycache__/

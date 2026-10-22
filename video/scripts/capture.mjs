@@ -68,11 +68,12 @@ const clock = () => {
 
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
-async function shoot(browser, name, device, plan) {
+async function shoot(browser, name, device, plan, { intro = false } = {}) {
   const ctx = await browser.newContext(device);
   await ctx.addInitScript(clock);
-  // Pula a cortina de abertura (só aparece na 1ª visita) e evita abrir o WhatsApp de verdade.
-  await ctx.addInitScript((s) => sessionStorage.setItem(`intro-${s}`, '1'), slug);
+  // Pula a cortina de abertura (só aparece na 1ª visita), a menos que o trecho seja a própria abertura,
+  // e evita abrir o WhatsApp de verdade.
+  if (!intro) await ctx.addInitScript((s) => sessionStorage.setItem(`intro-${s}`, '1'), slug);
   await ctx.route(/wa\.me|api\.whatsapp/, (r) => r.abort());
   const page = await ctx.newPage();
   const cdp = await ctx.newCDPSession(page);
@@ -80,7 +81,10 @@ async function shoot(browser, name, device, plan) {
   await cdp.send('Animation.setPlaybackRate', { playbackRate: 0 });
   await page.goto(`${base}/${slug}`, { waitUntil: 'load' });
   await page.evaluate(() => document.fonts.ready);
-  await page.addStyleTag({ content: 'html{scroll-behavior:auto!important} ::-webkit-scrollbar{display:none} *{caret-color:transparent}' });
+  // A abertura animada de <details> (::details-content) não segue o relógio controlado e ficaria fechada: abre direto.
+  await page.addStyleTag({
+    content: 'html{scroll-behavior:auto!important} ::-webkit-scrollbar{display:none} *{caret-color:transparent} details::details-content{transition:none!important}',
+  });
   await page.evaluate(() => window.__syncAnimations());
 
   const dir = `${TMP}${name}/`;
@@ -139,15 +143,25 @@ const mobile = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2.5, 
 const only = process.env.ONLY?.split(',');
 const old = existsSync(`${OUT}manifest.json`) ? JSON.parse(readFileSync(`${OUT}manifest.json`, 'utf8')).clips : [];
 const clips = [];
-const run = async (name, device, plan) => {
+const run = async (name, device, plan, opts) => {
   if (only && !only.includes(name)) {
     const prev = old.find((c) => c.name === name);
     if (prev) clips.push(prev);
     return;
   }
-  clips.push(await shoot(browser, name, device, plan));
+  clips.push(await shoot(browser, name, device, plan, opts));
 };
 
+// Os trechos dependem das seções de cada template (src/clinic.json, gerado por `npm run data`).
+const { specialty } = JSON.parse(readFileSync(new URL('../src/clinic.json', import.meta.url), 'utf8'));
+if (specialty === 'endocrinologia') await endocrinologia();
+else await psiquiatria();
+
+await browser.close();
+writeFileSync(`${OUT}manifest.json`, JSON.stringify({ fps: FPS, clips }, null, 2));
+
+// ─── Psiquiatria ─────────────────────────────────────────────────
+async function psiquiatria() {
 // Desktop: um trecho por seção (o vídeo corta entre eles).
 await run('d-hero', desktop, async (c) => {
   await c.hold(2.4);
@@ -206,6 +220,67 @@ await run('m-tour', mobile, async (c) => {
   await c.page.touchscreen.tap(r.x + r.width / 2, r.y + r.height / 2);
   await c.hold(1.2);
 });
+}
 
-await browser.close();
-writeFileSync(`${OUT}manifest.json`, JSON.stringify({ fps: FPS, clips }, null, 2));
+// ─── Endocrinologia (acabamento "luxe") ──────────────────────────
+async function endocrinologia() {
+  // A abertura cinematográfica inteira, até o topo assentar.
+  await run('d-intro', desktop, (c) => c.hold(4.6), { intro: true });
+  await run('d-hero', desktop, async (c) => {
+    await c.hold(1.8);
+    await c.scroll(560, 1.4);
+  });
+  await run('d-areas', desktop, async (c) => {
+    const top = await c.top('#areas', 160);
+    await c.jump(top - 140);
+    await c.scroll(top, 0.7);
+    await c.hold(0.3);
+    const r = await c.rect('.lx-tile:nth-child(2) summary');
+    await c.page.mouse.move(r.x + r.width / 2, r.y + r.height / 2);
+    await c.page.mouse.click(r.x + r.width / 2, r.y + r.height / 2);
+    c.mark('open', { x: r.x + r.width / 2, y: r.y + r.height / 2 });
+    await c.hold(1.6);
+  });
+  await run('d-care', desktop, async (c) => {
+    const top = await c.top('#consulta', -40);
+    await c.jump(top);
+    await c.hold(0.7);
+    await c.page.click('label[for="lx-care-retornos"]');
+    c.mark('tab');
+    await c.hold(1.6);
+  });
+  await run('d-faq', desktop, async (c) => {
+    const top = await c.top('#duvidas', -40);
+    await c.jump(top);
+    await c.hold(0.5);
+    await c.page.click('#duvidas details:nth-of-type(2) summary');
+    c.mark('open');
+    await c.hold(1.5);
+  });
+  await run('d-crest', desktop, async (c) => {
+    const top = await c.top('#contato', -60);
+    await c.jump(top);
+    await c.hold(0.4);
+    const end = await c.page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+    await c.scroll(end, 2.2);
+    await c.hold(0.4);
+  });
+
+  // Celular: topo, áreas (toque num cartão), consulta e o toque no botão do WhatsApp.
+  await run('m-tour', mobile, async (c) => {
+    await c.hold(1.8);
+    const areas = await c.top('#areas', 80);
+    await c.scroll(areas, 1.3);
+    const r = await c.rect('.lx-tile:nth-child(2) summary');
+    c.mark('tile', { x: r.x + r.width / 2, y: r.y + r.height / 2 });
+    await c.page.touchscreen.tap(r.x + r.width / 2, r.y + r.height / 2);
+    await c.hold(1.0);
+    const care = await c.top('#consulta', 40);
+    await c.scroll(care, 1.1);
+    await c.hold(0.4);
+    const b = await c.rect('[data-sticky-cta] a');
+    c.mark('tap', { x: b.x + b.width / 2, y: b.y + b.height / 2 });
+    await c.page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2);
+    await c.hold(1.1);
+  });
+}

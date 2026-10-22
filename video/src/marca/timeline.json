@@ -1,0 +1,41 @@
+{
+  "fps": 30,
+  "duration": 51,
+  "bpm": 120,
+  "scenes": {
+    "hook": [0, 3.5],
+    "search": [3.5, 9],
+    "scatter": [9, 16],
+    "crowd": [16, 20.5],
+    "turn": [20.5, 22.5],
+    "result": [22.5, 26],
+    "desktop": [26, 35.5],
+    "mobile": [35.5, 42],
+    "pillars": [42, 46],
+    "closing": [46, 51]
+  },
+  "typing": { "start": 4.2, "cps": 13, "query": "{short} {term}" },
+  "enter": 7.1,
+  "fragments": [
+    { "at": 9.25, "kind": "guide", "label": "Guia do convênio" },
+    { "at": 9.95, "kind": "directory", "label": "Diretório de médicos" },
+    { "at": 10.65, "kind": "social", "label": "Rede social" }
+  ],
+  "crowdPick": 19.6,
+  "resultEnter": 23.0,
+  "click": 25.0,
+  "desktopClips": [
+    { "name": "d-intro", "from": 0.3, "seconds": 3.5, "caption": "Uma primeira impressão *à sua altura.*", "focus": [0.5, 0.45] },
+    { "name": "d-areas", "from": 0.6, "seconds": 2.0, "caption": "Tudo claro, *em um toque.*", "focus": [0.4, 0.35] },
+    { "name": "d-care", "from": 0.3, "seconds": 2.0, "caption": "O paciente sabe *o que esperar.*", "focus": [0.35, 0.45] },
+    { "name": "d-crest", "from": 0.2, "seconds": 2.0, "caption": "Uma marca *só sua.*", "focus": [0.5, 0.3] }
+  ],
+  "mobileClip": { "name": "m-tour", "from": 0.2 },
+  "pillars": [
+    { "at": 42.5, "icon": "gauge", "title": "Rápido", "text": "Nota 100 de velocidade no teste do Google" },
+    { "at": 43.5, "icon": "spark", "title": "Bonito", "text": "Com a identidade de {clinic}" },
+    { "at": 44.5, "icon": "search", "title": "Encontrável", "text": "Pensado para aparecer no Google" }
+  ],
+  "logoIn": 48.2,
+  "tagIn": 49.1
+}

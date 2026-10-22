@@ -5,9 +5,11 @@ import { mkdirSync } from 'node:fs';
 const root = new URL('../', import.meta.url).pathname;
 const browserExecutable = '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell';
 const serveUrl = await bundle({ entryPoint: `${root}src/index.ts` });
-const composition = await selectComposition({ serveUrl, id: 'whatsapp', browserExecutable });
+// COMP=marca escolhe o roteiro "marca própria" (padrão: whatsapp).
+const comp = process.env.COMP || 'whatsapp';
+const composition = await selectComposition({ serveUrl, id: comp, browserExecutable });
 mkdirSync(`${root}out/stills`, { recursive: true });
 for (const s of process.argv.slice(2).map(Number)) {
-  await renderStill({ serveUrl, composition, frame: Math.round(s * composition.fps), output: `${root}out/stills/${s}.jpg`, imageFormat: 'jpeg', jpegQuality: 85, browserExecutable });
+  await renderStill({ serveUrl, composition, frame: Math.round(s * composition.fps), output: `${root}out/stills/${comp}-${s}.jpg`, imageFormat: 'jpeg', jpegQuality: 85, browserExecutable });
   console.log(s);
 }

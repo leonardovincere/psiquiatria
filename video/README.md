@@ -15,6 +15,26 @@ npm run audio                   # trilha e efeitos sintetizados, -14 LUFS (publi
 npm run render                  # out/<slug>-whatsapp.mp4 (< 16 MB) e out/<slug>-thumb.jpg
 ```
 
+## Roteiro "marca própria" (composição `marca`)
+
+Para quem ainda não tem site: busca pelo nome → informações soltas (guia do convênio, diretório,
+perfil privado) → "mais uma na lista" numa plataforma genérica → virada para a luz → o site dela no
+resultado → computador → celular → rápido, bonito, encontrável → "Sua marca. Seu site. Seus pacientes."
+Usa as cores e a cursiva (`theme.fontScript`) da clínica; os trechos gravados dependem da especialidade
+(`scripts/capture.mjs`; hoje, endocrinologia com acabamento "luxe").
+
+```bash
+npm run data -- <slug> && npm run capture -- <slug>
+npm run audio:marca             # public/audio/marca.wav
+npm run render:marca            # out/<slug>-marca-whatsapp.mp4 e out/<slug>-marca-thumb.jpg
+```
+
+- Tempos, fragmentos, legendas e pilares: `src/marca/timeline.json`; cenas em `src/marca/scenes.tsx`.
+- Trilha: `scripts/audio-marca.py`, com os timbres de `scripts/synth.py` (reutilizável por novos roteiros).
+- Quadros soltos: `COMP=marca node scripts/stills.mjs 11 24.6` → `out/stills/marca-*.jpg`.
+
+## Detalhes
+
 - Tempos de cena, trechos e legendas: `src/timeline.json` (o áudio lê o mesmo arquivo).
   Os trechos do desktop têm múltiplos de 0,5 s para os cortes caírem na batida (120 BPM).
 - O que cada trecho grava (rolagem, hover, FAQ, toque no WhatsApp): `scripts/capture.mjs`.
