@@ -53,14 +53,18 @@ ou no `types.ts` do template se for só de uma. Nada de especialidade em `src/co
    - `style.hero`: `arch` (foto em arco que se abre ao rolar), `circle` (foto ou monograma num círculo com anel de texto)
      ou `cinema` (tela cheia escura com luz de projetor, título que entra em foco, créditos de cartaz; foto opcional ao fundo).
      Com `cinema`, os destaques ficam no próprio topo (a faixa de destaques some).
+     Ou `neural` (rede neural viva em canvas, monograma desenhado em traço, título centralizado e letterbox 2.39:1 que se abre ao rolar;
+     o convite final repete a rede). Também traz os destaques no topo.
    - `style.conditions`: `marquee` (faixas deslizando) ou `chips` (lista fixa).
    - `style.finish`: `soft` (arredondado), `editorial` (botões retos, seções numeradas, textura, fundo animado, barra de leitura)
      ou `cinema` (cenas escuras intercaladas, títulos em foco, granulação de filme, condições como letreiro, primeira consulta
-     com título preso na rolagem, abertura em letterbox).
+     com título preso na rolagem, abertura em letterbox)
+     ou `noir` (o `cinema` inteiro à noite: pede `theme` escuro, com `background` escuro, `text` claro e `primary` como a luz).
    - `style.intro`: abertura com cortina, só na 1ª visita.
    - `theme`: cores, fontes e `headingWeight`.
    - Seções opcionais: `approach` liga "Abordagem"; `doctor.experience` liga "Trajetória"; `highlights` (ou `credentials`) são os números em destaque;
-     `research` liga "Pesquisa" (trabalho acadêmico como capa de publicação); `articles` liga o conteúdo educativo.
+     `research` liga "Pesquisa" (trabalho acadêmico como capa de publicação); `articles` liga o conteúdo educativo;
+     `myths` liga "Mitos" (mito riscado → verdade, guiado pela rolagem); `audiences` liga "Fases da vida" (cartazes de filme).
    Se nada disso der uma cara diferente o bastante, crie uma variação nova e reutilizável (opção em `style`), nunca um componente exclusivo de uma clínica.
 5. Rode `npm run routes`: ele gera no `vercel.json` a regra do subdomínio da clínica nova. Faça commit do `vercel.json`; sem isso, o build para com um aviso.
 6. Rode `npm run build` e verifique:
@@ -97,6 +101,9 @@ Para a comparação, desligue as animações (`prefers-reduced-motion: reduce`) 
 
 - A Vercel publica a partir da branch **`main`**, no projeto **psiquiatria-vincere**. Ao terminar, faça commit e envie também para a `main`:
   `git push origin <branch-da-sessão>:main`.
+  Confira em `https://api.github.com/repos/leonardovincere/psiquiatria/deployments` se aparece "Production – psiquiatria-vincere"
+  com o commit novo. Se só aparecer "Preview", a branch de produção da Vercel não é a `main` (Settings → Environments → Production
+  → Branch Tracking; a tela Overview mostra "push to the … branch"). Peça ao usuário para trocar para `main`; não envie para outras branches sem ele pedir.
 - Subdomínio: o usuário adiciona `<slug>.preview.vincereai.tech` em Vercel → psiquiatria-vincere → Settings → Domains.
   O DNS está na Hostinger, com um CNAME curinga `*.preview` → `cname.vercel-dns.com`; não precisa mexer lá.
 - Antes do domínio ficar válido, a prévia já abre em `https://psiquiatria-vincere.vercel.app/<slug>`.

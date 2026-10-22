@@ -1,0 +1,31 @@
+---
+import type { PsiquiatriaClient } from '../types';
+import { initials } from '../../../lib/links';
+import { heightFor } from '../../../lib/assetSize';
+
+/**
+ * Símbolo da marca: o `logoMark` da clínica, ou um monograma com as iniciais
+ * dentro de um anel, desenhado em traço e depois preenchido (classes
+ * .mono-ring / .mono-text, animadas no CSS do topo "neural").
+ */
+interface Props {
+  clinic: PsiquiatriaClient;
+  class?: string;
+}
+const { clinic, class: className = '' } = Astro.props;
+const { logoMark } = clinic.clinic;
+const mono = initials(clinic.clinic.name.startsWith('Dr') ? clinic.doctor.shortName : clinic.clinic.name).slice(0, 2);
+const markH = logoMark ? await heightFor(logoMark, 96) : 0;
+---
+
+{
+  logoMark ? (
+    <img src={logoMark} alt="" aria-hidden="true" width="96" height={markH} class:list={['monogram', className]} />
+  ) : (
+    <svg class:list={['monogram', className]} viewBox="0 0 120 120" aria-hidden="true">
+      <circle class="mono-ring" cx="60" cy="60" r="57" pathLength="1" />
+      <circle class="mono-ring mono-ring-inner" cx="60" cy="60" r="50" pathLength="1" />
+      <text class="mono-text" x="60" y="62" text-anchor="middle" dominant-baseline="middle">{mono}</text>
+    </svg>
+  )
+}

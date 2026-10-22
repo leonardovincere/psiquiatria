@@ -15,7 +15,7 @@ const notes = [
   clinic.insurance.note,
   clinic.payment?.length && `${copy.paymentPrefix}: ${clinic.payment.join(' ou ').toLowerCase()}`,
 ].filter(Boolean) as string[];
-const cinema = clinic.style?.finish === 'cinema';
+const cinema = clinic.style?.finish === 'cinema' || clinic.style?.finish === 'noir';
 ---
 
 {

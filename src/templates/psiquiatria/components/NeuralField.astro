@@ -1,0 +1,233 @@
+---
+/**
+ * Rede neural viva em <canvas> (topo "neural" e convite final): os neurônios
+ * acendem do centro para fora, pulsos na cor principal correm pelas ligações
+ * e disparam os vizinhos. No desktop, o ponteiro vira mais um neurônio.
+ * Decorativa (aria-hidden). Começa só depois do carregamento, pausa fora da
+ * tela e, com "reduzir movimento", desenha um único quadro parado.
+ * Cores: --c-secondary (ligações) e --primary-base (pulsos).
+ */
+interface Props {
+  class?: string;
+  /** Densidade relativa da rede (1 = padrão). */
+  density?: number;
+}
+const { class: className = '', density = 1 } = Astro.props;
+---
+
+<canvas class:list={['neural-field', className]} data-neural data-density={density} aria-hidden="true"></canvas>
+
+<script>
+  type Node = { x: number; y: number; vx: number; vy: number; r: number; born: number; fire: number };
+  type Pulse = { a: number; b: number; t: number; dur: number; hops: number };
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(pointer: fine)').matches;
+
+  // Sorteio determinístico: a rede tem sempre o mesmo desenho.
+  const rng = (seed: number) => () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+
+  function start(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const css = getComputedStyle(canvas);
+    const line = css.getPropertyValue('--c-secondary').trim() || '#4466dd';
+    const spark = css.getPropertyValue('--primary-base').trim() || '#d4af37';
+    const density = Number(canvas.dataset.density) || 1;
+    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+
+    let w = 0, h = 0, link = 0;
+    let nodes: Node[] = [];
+    let pulses: Pulse[] = [];
+    let t0 = performance.now();
+    let last = t0;
+    let nextPulse = 0;
+    let running = false;
+    let raf = 0;
+    const pointer = { x: -1e4, y: -1e4, on: false };
+
+    const build = () => {
+      const r = canvas.getBoundingClientRect();
+      w = Math.max(1, Math.round(r.width * dpr));
+      h = Math.max(1, Math.round(r.height * dpr));
+      canvas.width = w;
+      canvas.height = h;
+      const area = (r.width * r.height) / 1e4;
+      const n = Math.round(Math.min(110, Math.max(34, area * 0.55 * density)));
+      link = Math.min(170, Math.max(110, r.width / 9)) * dpr;
+      const rand = rng(7);
+      const cx = w / 2, cy = h * 0.45;
+      const maxD = Math.hypot(w, h) / 2;
+      nodes = Array.from({ length: n }, () => {
+        const x = rand() * w, y = rand() * h;
+        return {
+          x, y,
+          vx: (rand() - 0.5) * 0.06 * dpr,
+          vy: (rand() - 0.5) * 0.06 * dpr,
+          r: (0.7 + rand() * 1.5) * dpr,
+          // Acende do centro para fora, sinapse a sinapse.
+          born: (Math.hypot(x - cx, y - cy) / maxD) * 2200 + rand() * 500,
+          fire: 0,
+        };
+      });
+    };
+
+    const neighbors = (i: number) => {
+      const a = nodes[i];
+      const out: number[] = [];
+      nodes.forEach((b, j) => {
+        if (j !== i && Math.hypot(a.x - b.x, a.y - b.y) < link) out.push(j);
+      });
+      return out;
+    };
+
+    const spawn = (from?: number, hops = 0) => {
+      const a = from ?? Math.floor(Math.random() * nodes.length);
+      const ns = neighbors(a);
+      if (!ns.length) return;
+      const b = ns[Math.floor(Math.random() * ns.length)];
+      pulses.push({ a, b, t: 0, dur: 900 + Math.random() * 700, hops });
+    };
+
+    const draw = (now: number, dt: number) => {
+      const age = reduce ? 1e5 : now - t0;
+      ctx.clearRect(0, 0, w, h);
+      const lit = (n: Node) => Math.min(1, Math.max(0, (age - n.born) / 700));
+
+      if (!reduce) {
+        for (const n of nodes) {
+          n.x += n.vx * dt;
+          n.y += n.vy * dt;
+          if (n.x < 0 || n.x > w) n.vx *= -1;
+          if (n.y < 0 || n.y > h) n.vy *= -1;
+          n.fire = Math.max(0, n.fire - dt / 900);
+        }
+      }
+
+      // Ligações
+      ctx.lineWidth = dpr * 0.8;
+      ctx.strokeStyle = line;
+      const all = pointer.on ? [...nodes, { x: pointer.x, y: pointer.y, born: 0 } as Node] : nodes;
+      for (let i = 0; i < all.length; i++) {
+        const a = all[i];
+        const la = i < nodes.length ? lit(a) : 1;
+        if (!la) continue;
+        for (let j = i + 1; j < all.length; j++) {
+          const b = all[j];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d > link) continue;
+          const lb = j < nodes.length ? lit(b) : 1;
+          const alpha = (1 - d / link) * 0.42 * Math.min(la, lb);
+          if (alpha < 0.01) continue;
+          ctx.globalAlpha = alpha;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+
+      // Neurônios
+      for (const n of nodes) {
+        const l = lit(n);
+        if (!l) continue;
+        if (n.fire > 0) {
+          ctx.globalAlpha = n.fire * 0.35;
+          ctx.fillStyle = spark;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r * 7, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = l * (0.55 + n.fire * 0.45);
+        ctx.fillStyle = n.fire > 0.2 ? spark : line;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r * (1 + n.fire), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Pulsos: correm pela ligação e disparam o neurônio de chegada, que pode passar adiante.
+      if (!reduce) {
+        if (age > 1400 && now > nextPulse) {
+          spawn();
+          nextPulse = now + 260 + Math.random() * 380;
+        }
+        ctx.fillStyle = spark;
+        pulses = pulses.filter((p) => {
+          p.t += dt / p.dur;
+          const a = nodes[p.a], b = nodes[p.b];
+          if (p.t >= 1) {
+            b.fire = 1;
+            if (p.hops < 4 && Math.random() < 0.6) spawn(p.b, p.hops + 1);
+            return false;
+          }
+          const x = a.x + (b.x - a.x) * p.t, y = a.y + (b.y - a.y) * p.t;
+          ctx.globalAlpha = 0.18;
+          ctx.beginPath();
+          ctx.arc(x, y, 5 * dpr, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 0.95;
+          ctx.beginPath();
+          ctx.arc(x, y, 1.6 * dpr, 0, Math.PI * 2);
+          ctx.fill();
+          return true;
+        });
+      }
+      ctx.globalAlpha = 1;
+    };
+
+    const loop = (now: number) => {
+      const dt = Math.min(64, now - last);
+      last = now;
+      draw(now, dt);
+      if (running) raf = requestAnimationFrame(loop);
+    };
+    const play = () => {
+      if (running || reduce) return;
+      running = true;
+      last = performance.now();
+      raf = requestAnimationFrame(loop);
+    };
+    const pause = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+
+    build();
+    canvas.classList.add('is-on');
+    if (reduce) {
+      draw(performance.now(), 0);
+      addEventListener('resize', () => (build(), draw(performance.now(), 0)));
+      return;
+    }
+
+    let visible = false;
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      visible && !document.hidden ? play() : pause();
+    }).observe(canvas);
+    document.addEventListener('visibilitychange', () => (visible && !document.hidden ? play() : pause()));
+
+    let rt = 0;
+    addEventListener('resize', () => {
+      clearTimeout(rt);
+      rt = window.setTimeout(build, 200);
+    });
+
+    if (fine) {
+      const host = canvas.parentElement!;
+      host.addEventListener('pointermove', (e) => {
+        const r = canvas.getBoundingClientRect();
+        pointer.x = (e.clientX - r.left) * dpr;
+        pointer.y = (e.clientY - r.top) * dpr;
+        pointer.on = true;
+      });
+      host.addEventListener('pointerleave', () => (pointer.on = false));
+    }
+  }
+
+  // Depois do carregamento e com a thread livre: não disputa com a primeira pintura.
+  const boot = () => document.querySelectorAll<HTMLCanvasElement>('canvas[data-neural]').forEach(start);
+  const idle = (fn: () => void) => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 300));
+  if (document.readyState === 'complete') idle(boot);
+  else addEventListener('load', () => idle(boot), { once: true });
+</script>

@@ -166,13 +166,15 @@ const clinica: ClientConfig = {
   // ─── Layout (opcional) ──────────────────────────────────────
   // Para as prévias não ficarem iguais.
   // style: {
-  //   hero: 'circle',      // 'arch' (foto em arco que se abre) | 'circle' (foto/monograma em círculo com anel de texto) | 'cinema' (tela cheia escura)
+  //   hero: 'circle',      // 'arch' (foto em arco que se abre) | 'circle' (foto/monograma em círculo com anel de texto) | 'cinema' (tela cheia escura) | 'neural' (rede neural viva, monograma desenhado, letterbox)
   //   conditions: 'chips', // 'marquee' (faixas deslizando) | 'chips' (etiquetas fixas)
-  //   finish: 'editorial', // 'soft' (arredondado) | 'editorial' (botões retos, seções numeradas, textura, fundo animado) | 'cinema' (cenas escuras, títulos em foco)
+  //   finish: 'editorial', // 'soft' (arredondado) | 'editorial' (botões retos, seções numeradas, textura, fundo animado) | 'cinema' (cenas escuras, títulos em foco) | 'noir' (o cinema todo à noite; pede theme escuro)
   //   intro: true,         // abertura com cortina e monograma/logo (padrão: ligada no 'editorial')
   // },
   // approach: [{ title: 'Escuta atenta', text: '…' }], // vira a seção "Abordagem"
   // research: { enabled: true, heading: '…', title: '…', kind: 'Tese de doutorado', institution: '…', year: 2024, summary: '…', link: null }, // seção "Pesquisa"
+  // myths: [{ myth: 'Psiquiatra é só para casos graves.', truth: '…' }], // seção "Mitos": o mito é riscado e dá lugar à verdade ao rolar
+  // audiences: [{ label: 'Crianças', text: '…', highlights: ['TDAH', '…'] }], // seção "Fases da vida", em cartazes
   // articles: { enabled: true, heading: '…', intro: '…', items: [{ slug: '…', title: '…', excerpt: '…' }] }, // conteúdo educativo
   // (doctor.experience preenchido liga a seção "Trajetória": formação + experiência)
 

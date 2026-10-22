@@ -5,6 +5,11 @@ import Header from '../../components/shared/Header.astro';
 import Hero from './components/Hero.astro';
 import HeroCircle from './components/HeroCircle.astro';
 import HeroCinema from './components/HeroCinema.astro';
+import HeroNeural from './components/HeroNeural.astro';
+import NeuralField from './components/NeuralField.astro';
+import Monogram from './components/Monogram.astro';
+import Myths from './components/Myths.astro';
+import Audiences from './components/Audiences.astro';
 import Intro from './components/Intro.astro';
 import Research from './components/Research.astro';
 import Articles from './components/Articles.astro';
@@ -33,6 +38,10 @@ const { clinic } = Astro.props;
 const copy = getCopy(clinic);
 const hero = clinic.style?.hero ?? 'arch';
 const finish = clinic.style?.finish ?? 'soft';
+// "noir" é o "cinema" numa cena noturna: herda tudo do cinema (data-finish) e ganha data-noir.
+const noir = finish === 'noir';
+// Topo "neural": o fechamento espelha a abertura (a rede volta e o monograma reaparece, como créditos finais).
+const neural = hero === 'neural';
 const intro = clinic.style?.intro ?? finish !== 'soft';
 const textured = finish !== 'soft';
 const wa = whatsappUrl(clinic);
@@ -46,7 +55,7 @@ const nav = [
 ];
 ---
 
-<Layout clinic={clinic} schemaSpecialty={copy.schemaSpecialty} attrs={{ 'data-finish': finish, 'data-hero': hero }} intro={intro}>
+<Layout clinic={clinic} schemaSpecialty={copy.schemaSpecialty} attrs={{ 'data-finish': noir ? 'cinema' : finish, ...(noir ? { 'data-noir': 'true' } : {}), 'data-hero': hero }} intro={intro}>
   <Fragment slot="before">
     {intro && <Intro clinic={clinic} />}
     {textured && <div class="grain" aria-hidden="true" />}
@@ -62,11 +71,23 @@ const nav = [
   <main id="conteudo" data-tone-root data-tone="base">
     <div class:list={['hero-wrap relative', clinic.style?.finish === 'editorial' && 'overflow-hidden']}>
       {clinic.style?.finish === 'editorial' && <div class="aurora" aria-hidden="true" />}
-      {hero === 'circle' ? <HeroCircle clinic={clinic} /> : hero === 'cinema' ? <HeroCinema clinic={clinic} /> : <Hero clinic={clinic} />}
+      {
+        hero === 'circle' ? (
+          <HeroCircle clinic={clinic} />
+        ) : hero === 'cinema' ? (
+          <HeroCinema clinic={clinic} />
+        ) : hero === 'neural' ? (
+          <HeroNeural clinic={clinic} />
+        ) : (
+          <Hero clinic={clinic} />
+        )
+      }
     </div>
-    {hero !== 'cinema' && <FactsStrip items={factsFor(clinic)} />}
+    {hero !== 'cinema' && hero !== 'neural' && <FactsStrip items={factsFor(clinic)} />}
     <About clinic={clinic} eyebrow={copy.about.eyebrow} />
     <Research clinic={clinic} />
+    <Myths clinic={clinic} />
+    <Audiences clinic={clinic} />
     <LotusDivider src={clinic.clinic.logoMark} />
     <Approach clinic={clinic} />
     <Journey clinic={clinic} />
@@ -77,7 +98,18 @@ const nav = [
     <Faq title={copy.faq.title} items={clinic.faq} />
     <LotusDivider src={clinic.clinic.logoMark} />
     {clinic.modalities.presencial && <Location clinic={clinic} copy={copy.location} />}
-    <FinalCta clinic={clinic} copy={copy} />
+    {
+      neural ? (
+        <FinalCta clinic={clinic} copy={copy} class="final-neural relative isolate overflow-hidden">
+          <div slot="background" class="absolute inset-0 -z-10" aria-hidden="true">
+            <NeuralField class="absolute inset-0 size-full" density={0.8} />
+          </div>
+          <Monogram slot="mark" clinic={clinic} class="neural-mono w-16 md:w-20" />
+        </FinalCta>
+      ) : (
+        <FinalCta clinic={clinic} copy={copy} />
+      )
+    }
   </main>
   <Footer clinic={clinic} emergencyNotice={copy.emergencyNotice} legalNotice={copy.legalNotice} />
   <StickyCta href={wa} label={copy.scheduleCta} />

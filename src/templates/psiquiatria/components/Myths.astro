@@ -1,0 +1,103 @@
+---
+import Words from '../../../components/shared/Words.astro';
+import type { PsiquiatriaClient } from '../types';
+import { getCopy } from '../copy';
+
+/**
+ * Mitos e verdades (config `myths`). Com movimento, a seção fica presa na
+ * tela e a rolagem conduz a cena: cada mito aparece, é riscado e dá lugar à
+ * verdade na cor principal, um depois do outro (--a, --s, --v, --x por item,
+ * calculados no script). Sem JS ou com "reduzir movimento", vira uma lista
+ * fixa com os mitos já riscados. O texto inteiro fica sempre no HTML.
+ */
+interface Props {
+  clinic: PsiquiatriaClient;
+}
+const { clinic } = Astro.props;
+const myths = clinic.myths ?? [];
+const copy = getCopy(clinic).myths;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+{
+  myths.length > 0 && (
+    <section id="mitos" data-tone-at="base" class="myths" data-myths style={`--n:${myths.length}`} aria-labelledby="mitos-titulo">
+      <div class="myths-stage">
+        <div class="container-page myths-grid grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-24">
+          <div>
+            <p class="eyebrow mb-3.5" data-reveal>
+              {copy.eyebrow}
+            </p>
+            <h2 id="mitos-titulo" class="text-4xl leading-[1.08] text-ink md:text-5xl" data-words>
+              <Words text={copy.title} />
+            </h2>
+            <p class="mt-5 max-w-md text-lg leading-relaxed text-muted" data-reveal style="--i:1">
+              {copy.subtitle}
+            </p>
+            <p class="myths-count mt-8 hidden items-center gap-4 text-[12px] font-semibold tracking-[0.24em] text-muted" aria-hidden="true">
+              <span class="myths-cur text-ink">01</span>
+              <span class="myths-bar">
+                <span />
+              </span>
+              <span>{pad(myths.length)}</span>
+            </p>
+          </div>
+          <ol class="myths-list">
+            {myths.map((m, i) => (
+              <li class="myth" style={`--i:${i}`}>
+                <p class="myth-false">
+                  <span class="myth-label">{copy.mythLabel}</span>
+                  <s class="myth-text">{m.myth}</s>
+                </p>
+                <p class="myth-true">
+                  <span class="myth-label">{copy.truthLabel}</span>
+                  <span class="myth-truth">{m.truth}</span>
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  // Progresso da cena presa (0 a n): define em que ponto cada mito está.
+  const section = document.querySelector<HTMLElement>('[data-myths]');
+  const pinned = () => section && getComputedStyle(section).getPropertyValue('--pinned').trim() === '1';
+  if (section) {
+    const items = [...section.querySelectorAll<HTMLElement>('.myth')];
+    const cur = section.querySelector<HTMLElement>('.myths-cur');
+    const n = items.length;
+    const clamp = (v: number) => Math.min(1, Math.max(0, v));
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      if (!pinned()) return;
+      const r = section.getBoundingClientRect();
+      const run = Math.max(1, section.offsetHeight - innerHeight);
+      const p = clamp(-r.top / run) * n;
+      section.style.setProperty('--prog', (p / n).toFixed(3));
+      items.forEach((el, i) => {
+        const u = p - i;
+        const a = i === 0 ? 1 : clamp((u + 0.18) / 0.18);
+        const x = i === n - 1 ? 0 : clamp((u - 0.82) / 0.18);
+        el.style.setProperty('--a', a.toFixed(3));
+        el.style.setProperty('--s', clamp((u - 0.08) / 0.3).toFixed(3));
+        el.style.setProperty('--v', clamp((u - 0.36) / 0.26).toFixed(3));
+        el.style.setProperty('--x', x.toFixed(3));
+      });
+      if (cur) cur.textContent = String(Math.min(n, Math.floor(p) + 1)).padStart(2, '0');
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    update();
+  }
+</script>

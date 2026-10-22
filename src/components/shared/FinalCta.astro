@@ -4,19 +4,27 @@ import type { BaseClientConfig } from '../../clients/types';
 import { heightFor } from '../../lib/assetSize';
 import { whatsappUrl } from '../../lib/links';
 
+/**
+ * CTA final de agendamento. O template pode trocar o símbolo (slot "mark", no lugar do logoMark),
+ * pôr um fundo (slot "background") e acrescentar classes à seção (`class`).
+ */
 interface Props {
   clinic: BaseClientConfig;
   copy: { scheduleCta: string; finalCta: { title: string; titleEm: string; text: string; callPrefix: string } };
+  class?: string;
 }
-const { clinic, copy } = Astro.props;
+const { clinic, copy, class: className } = Astro.props;
+const customMark = Astro.slots.has('mark');
 const { phone } = clinic.contact;
 const markH = clinic.clinic.logoMark ? await heightFor(clinic.clinic.logoMark, 96) : 0;
 ---
 
-<section id="contato" data-tone-at="base" class="px-5 pb-24 md:pb-32" aria-labelledby="contato-titulo">
+<section id="contato" data-tone-at="base" class:list={['px-5 pb-24 md:pb-32', className]} aria-labelledby="contato-titulo">
+  <slot name="background" />
   <div class="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
+    <slot name="mark" />
     {
-      clinic.clinic.logoMark && (
+      !customMark && clinic.clinic.logoMark && (
         <img src={clinic.clinic.logoMark} alt="" aria-hidden="true" width="96" height={markH} loading="lazy" class="w-24" data-reveal />
       )
     }

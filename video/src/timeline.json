@@ -1,0 +1,119 @@
+{
+ "fps": 30,
+ "duration": 43,
+ "scenes": {
+  "hook": [
+   0,
+   3
+  ],
+  "search": [
+   3,
+   8
+  ],
+  "pain": [
+   8,
+   11
+  ],
+  "turn": [
+   11,
+   13
+  ],
+  "result": [
+   13,
+   17
+  ],
+  "desktop": [
+   17,
+   27
+  ],
+  "mobile": [
+   27,
+   34
+  ],
+  "proof": [
+   34,
+   38
+  ],
+  "closing": [
+   38,
+   43
+  ]
+ },
+ "typing": {
+  "start": 3.5,
+  "cps": 12,
+  "query": "{name} psiquiatra"
+ },
+ "enter": 7.45,
+ "resultEnter": 13.45,
+ "click": 16.2,
+ "desktopClips": [
+  {
+   "name": "d-hero",
+   "from": 0.3,
+   "seconds": 2.5,
+   "caption": "Apresentação que gera confiança",
+   "focus": [
+    0.5,
+    0.42
+   ]
+  },
+  {
+   "name": "d-myths",
+   "from": 0.9,
+   "seconds": 2.0,
+   "caption": "Conteúdo que quebra o estigma",
+   "focus": [
+    0.72,
+    0.55
+   ]
+  },
+  {
+   "name": "d-posters",
+   "from": 0.4,
+   "seconds": 2.0,
+   "caption": "Para crianças, adolescentes e adultos",
+   "focus": [
+    0.4,
+    0.6
+   ]
+  },
+  {
+   "name": "d-conditions",
+   "from": 0.4,
+   "seconds": 1.0,
+   "caption": "Especialidades claras",
+   "focus": [
+    0.5,
+    0.25
+   ]
+  },
+  {
+   "name": "d-faq",
+   "from": 0.4,
+   "seconds": 1.0,
+   "caption": null,
+   "focus": [
+    0.45,
+    0.4
+   ]
+  },
+  {
+   "name": "d-cta",
+   "from": 0.6,
+   "seconds": 1.5,
+   "caption": "Agendamento em 1 toque",
+   "focus": [
+    0.5,
+    0.6
+   ]
+  }
+ ],
+ "mobileClip": {
+  "name": "m-tour",
+  "from": 0.4
+ },
+ "logoIn": 40.2,
+ "tagIn": 41.2,
+ "bpm": 120
+}

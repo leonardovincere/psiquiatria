@@ -41,6 +41,26 @@
       "has": [
         {
           "type": "host",
+          "value": "dr-luis-gustavo-lazzarotto.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/dr-luis-gustavo-lazzarotto"
+    },
+    {
+      "source": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "dr-luis-gustavo-lazzarotto.preview.vincereai.tech"
+        }
+      ],
+      "destination": "/dr-luis-gustavo-lazzarotto/robots.txt"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "exemplo-endocrino.preview.vincereai.tech"
         }
       ],
