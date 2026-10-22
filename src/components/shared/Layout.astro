@@ -1,7 +1,7 @@
 ---
 import { Font } from 'astro:assets';
 import '../../styles/global.css';
-import type { ClinicConfig } from '../../clinics/types';
+import type { BaseClientConfig } from '../../clients/types';
 import { legibleOn, readableOn } from '../../lib/links';
 import { getHeroPhoto, heroPhotoSizes } from '../../lib/heroPhoto';
 import { clinicUrl } from '../../lib/agency';
@@ -12,7 +12,7 @@ import { clinicUrl } from '../../lib/agency';
  * do template entra por props (`attrs`, `intro`) e pelo slot "before".
  */
 interface Props {
-  clinic: ClinicConfig;
+  clinic: BaseClientConfig;
   /** Especialidade no schema.org (valor vindo do template). */
   schemaSpecialty: string;
   /** Atributos extras no <html> (ganchos de estilo do template, ex.: data-finish). */

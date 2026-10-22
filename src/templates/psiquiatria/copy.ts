@@ -1,8 +1,8 @@
-import type { ClinicConfig, SiteCopy } from '../../clinics/types';
+import type { PsiquiatriaClient, PsiquiatriaCopy } from './types';
 import { resolveCopy } from '../../lib/copy';
 
 /** Textos padrão das seções de psiquiatria (tom de acolhimento). */
-export const PSIQUIATRIA_COPY: SiteCopy = {
+export const PSIQUIATRIA_COPY: PsiquiatriaCopy = {
   scheduleCta: 'Agendar pelo WhatsApp',
   hero: {
     eyebrowFallback: 'Psiquiatria · {publico} · {cidade}/{uf}',
@@ -51,4 +51,4 @@ export const PSIQUIATRIA_COPY: SiteCopy = {
 };
 
 /** Textos da clínica de psiquiatria (padrão + `copy` da config). */
-export const getCopy = (c: ClinicConfig): SiteCopy => resolveCopy(PSIQUIATRIA_COPY, c);
+export const getCopy = (c: PsiquiatriaClient): PsiquiatriaCopy => resolveCopy(PSIQUIATRIA_COPY, c);

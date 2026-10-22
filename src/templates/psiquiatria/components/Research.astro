@@ -1,6 +1,6 @@
 ---
 import Words from '../../../components/shared/Words.astro';
-import type { ClinicConfig } from '../../../clinics/types';
+import type { PsiquiatriaClient } from '../types';
 import { getCopy } from '../copy';
 
 /**
@@ -10,7 +10,7 @@ import { getCopy } from '../copy';
  * (.scene-dark) e escurece a página ao redor (data-tone-at="deep").
  */
 interface Props {
-  clinic: ClinicConfig;
+  clinic: PsiquiatriaClient;
 }
 const { clinic } = Astro.props;
 const r = clinic.research;

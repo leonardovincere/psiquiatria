@@ -1,6 +1,6 @@
 ---
 import WhatsAppButton from '../../../components/shared/WhatsAppButton.astro';
-import type { ClinicConfig } from '../../../clinics/types';
+import type { PsiquiatriaClient } from '../types';
 import { credentials, factsFor, whatsappUrl } from '../../../lib/links';
 import { getCopy } from '../copy';
 import { getHeroPhoto, heroPhotoSizes } from '../../../lib/heroPhoto';
@@ -13,7 +13,7 @@ import { getHeroPhoto, heroPhotoSizes } from '../../../lib/heroPhoto';
  * é pintado no 1º quadro (só desfoque, sem opacidade 0): não atrasa o LCP.
  */
 interface Props {
-  clinic: ClinicConfig;
+  clinic: PsiquiatriaClient;
 }
 const { clinic } = Astro.props;
 const { doctor } = clinic;

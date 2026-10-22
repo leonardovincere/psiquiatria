@@ -1,7 +1,12 @@
+import type { PsiquiatriaClient } from '../templates/psiquiatria/types';
+
 /**
- * Estrutura do config de cada clínica (src/clinics/<slug>.ts).
- * Os textos das seções que não vêm do config estão nos componentes,
- * montados a partir destes dados.
+ * Estrutura do config de cada cliente (src/clients/<slug>.ts).
+ *
+ * `ClientConfig` é um tipo discriminado pelo campo obrigatório `specialty`:
+ * a parte comum (BaseClientConfig) serve a qualquer especialidade, e cada
+ * template acrescenta os campos dele (src/templates/<especialidade>/types.ts).
+ * Faltou um campo obrigatório da especialidade escolhida? O build quebra.
  */
 
 export interface ClinicIdentity {
@@ -57,33 +62,6 @@ export interface Doctor {
   bio: string[];
 }
 
-/** Princípio da forma de atender (seção "Abordagem"). */
-export interface ApproachItem {
-  title: string;
-  text: string;
-}
-
-/** Escolhas de layout por clínica, para as prévias não ficarem iguais. */
-export interface LayoutStyle {
-  /**
-   * Topo: "arch" = foto em arco que se abre ao rolar (padrão); "circle" = foto/monograma em círculo com anel de texto girando;
-   * "cinema" = tela cheia escura com luz de projetor, título que entra em foco e créditos de cartaz (foto opcional, ao fundo).
-   */
-  hero?: 'arch' | 'circle' | 'cinema';
-  /** Condições: "marquee" = faixas deslizando (padrão); "chips" = grade fixa de etiquetas. */
-  conditions?: 'marquee' | 'chips';
-  /**
-   * Acabamento: "soft" (padrão: cantos arredondados, botões em pílula) ou "editorial"
-   * (botões retos, seções numeradas, filetes no lugar de cartões, textura de papel e
-   * fundo animado no topo).
-   * "cinema": botões retos com brilho, títulos que entram em foco, granulação de filme, faixas de condições
-   * como letreiro e primeira consulta com o título preso na rolagem. A abertura vira um letterbox que se abre.
-   */
-  finish?: 'soft' | 'editorial' | 'cinema';
-  /** Abertura: cortina com o monograma/logo que sobe revelando o site (só na 1ª visita). Padrão: ligada no "editorial" e no "cinema". */
-  intro?: boolean;
-}
-
 export interface Modalities {
   presencial: boolean;
   /** Controla a seção de teleconsulta. null = a confirmar (a seção não aparece). */
@@ -96,21 +74,11 @@ export interface Insurance {
   note: string | null;
 }
 
-export interface Condition {
-  name: string;
-  description: string;
-}
-
 export interface Service {
   name: string;
   description: string;
   /** Exibido somente quando showPrices = true. Ex.: "R$ 500". */
   price?: string | null;
-}
-
-export interface Step {
-  title: string;
-  text: string;
 }
 
 export interface Highlight {
@@ -125,31 +93,6 @@ export interface Highlight {
 
 /** Credencial em destaque (mesmo formato de Highlight). Usada quando não há `highlights`. */
 export type Credential = Highlight;
-
-/** Trabalho acadêmico em destaque (seção "Pesquisa", em estilo de capa de publicação). */
-export interface Research {
-  enabled: boolean;
-  /** Título da seção. Ex.: "Pesquisa que vem do consultório". */
-  heading: string;
-  /** Título do trabalho. */
-  title: string;
-  /** Ex.: "Tese de doutorado". */
-  kind: string;
-  institution: string;
-  year: number | null;
-  /** Por que o trabalho importa para o paciente (1–2 frases). */
-  summary: string | null;
-  /** Link para o trabalho publicado. */
-  link: string | null;
-}
-
-/** Conteúdo educativo (seção de perguntas comuns com respostas curtas). */
-export interface Articles {
-  enabled: boolean;
-  heading: string;
-  intro: string | null;
-  items: { slug: string; title: string; excerpt: string; href?: string | null }[];
-}
 
 /** Direção de arte (não exibida): referência para quem monta a prévia. */
 export interface DesignNotes {
@@ -240,21 +183,14 @@ export interface Compliance {
 }
 
 /**
- * Textos das seções. Todos têm padrão (src/lib/copy.ts); a clínica só
- * sobrescreve o que quiser em `copy`.
+ * Textos usados pelos componentes compartilhados. Cada template estende este
+ * formato com os textos das seções dele e define os padrões em copy.ts.
  * Variáveis: {medico} ("a Dra. Fulana" / "o Dr. Fulano"), {titulo}, {cidade}, {uf}, {publico}.
  */
-export interface SiteCopy {
+export interface BaseCopy {
   scheduleCta: string;
-  hero: { eyebrowFallback: string; subtitle: string; link: string; ringText: string };
-  approach: { eyebrow: string; title: string };
-  journey: { eyebrow: string; title: string; education: string; experience: string };
   about: { eyebrow: string };
-  conditions: { title: string; intro: string; note: string };
-  firstVisit: { eyebrow: string; title: string; extraPrefix: string; paymentPrefix: string };
   telehealth: { eyebrow: string; title: string; titleEm: string; subtitle: string; points: [string, string, string]; note: string };
-  research: { eyebrow: string; link: string };
-  articles: { eyebrow: string };
   faq: { title: string };
   location: { title: string; mapButton: string; mapsLink: string };
   finalCta: { title: string; titleEm: string; text: string; callPrefix: string };
@@ -265,16 +201,18 @@ export interface SiteCopy {
   schemaSpecialty: string;
 }
 
-type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? (T[K] extends unknown[] ? T[K] : DeepPartial<T[K]>) : T[K] };
-export type CopyOverrides = DeepPartial<SiteCopy>;
+export type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? (T[K] extends unknown[] ? T[K] : DeepPartial<T[K]>) : T[K] };
 
-export interface ClinicConfig {
+/** Campos comuns a todas as especialidades. */
+export interface BaseClientConfig {
+  /** Especialidade: escolhe o template (src/templates/registry.ts). */
+  specialty: string;
   /** Identificador e caminho da página (/<slug>, <slug>.preview.vincereai.tech). Igual ao nome do arquivo; minúsculas, números e hífen. */
   slug: string;
   /** Domínio próprio quando o site sair da prévia (canonical/OG). Padrão: https://<slug>.preview.vincereai.tech/ */
   siteUrl?: string | null;
-  /** Sobrescreve textos padrão das seções. */
-  copy?: CopyOverrides;
+  /** Sobrescreve textos padrão das seções (o formato depende da especialidade). */
+  copy?: unknown;
   /** Ativa noindex/nofollow, robots.txt bloqueado e a faixa previewBanner. */
   isPreview: boolean;
   previewBanner: string;
@@ -288,23 +226,13 @@ export interface ClinicConfig {
   insurance: Insurance;
   payment: string[] | null;
 
-  conditions: Condition[];
   services: Service[];
   showPrices: boolean;
-  firstVisitSteps: Step[];
-  /** Princípios da forma de atender (opcional): vira a seção "Abordagem". */
-  approach?: ApproachItem[];
-  /** Escolhas de layout (opcional). */
-  style?: LayoutStyle;
 
   /** Até 3 números/fatos em destaque abaixo do topo. Sem eles, usa `credentials` ou mostra formação e modalidades. */
   highlights?: Highlight[];
   /** Credenciais em destaque (alternativa a `highlights`, com `note` opcional). */
   credentials?: Credential[];
-  /** Trabalho acadêmico em destaque: liga a seção "Pesquisa". */
-  research?: Research;
-  /** Conteúdo educativo: liga a seção de perguntas comuns. */
-  articles?: Articles;
   /** Direção de arte (não exibida na página). */
   designNotes?: DesignNotes;
   socialProof: SocialProof;
@@ -318,3 +246,8 @@ export interface ClinicConfig {
   seo: Seo;
   compliance: Compliance;
 }
+
+/** Config de um cliente: uma variante por especialidade. */
+export type ClientConfig = PsiquiatriaClient;
+
+export type Specialty = ClientConfig['specialty'];

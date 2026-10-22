@@ -1,5 +1,5 @@
 import { getImage } from 'astro:assets';
-import type { ClinicConfig } from '../clinics/types';
+import type { BaseClientConfig } from '../clients/types';
 
 /**
  * Versões otimizadas da foto do topo. Usada pelo Hero (<img>) e pelo Layout
@@ -11,7 +11,7 @@ export const heroPhotoSizes =
 
 const cache = new Map<string, ReturnType<typeof getImage>>();
 
-export function getHeroPhoto(clinic: ClinicConfig) {
+export function getHeroPhoto(clinic: BaseClientConfig) {
   const src = clinic.doctor.photo;
   if (!src) return Promise.resolve(null);
   if (!cache.has(src)) {

@@ -3,9 +3,10 @@
 // Fonte: site atual dela (dramariliceteodoro.com.br, Hostinger Horizons), lido em 16/10/2026.
 // Itens marcados com TODO precisam ser confirmados antes de ir ao ar.
 
-import type { ClinicConfig } from "./types";
+import type { ClientConfig } from "./types";
 
-export const marilice: ClinicConfig = {
+export const marilice: ClientConfig = {
+  specialty: "psiquiatria",
   slug: "marilice-teodoro",
   isPreview: true, // ativa noindex + faixa "Prévia criada pela Vincere.AI"
   previewBanner: "Prévia criada pela Vincere.AI para a Dra. Marilice Teodoro",

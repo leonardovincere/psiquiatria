@@ -4,9 +4,10 @@
 // Ele não tem site, Doctoralia nem Google Meu Negócio: esta prévia sai do zero.
 // Itens marcados com TODO precisam ser confirmados antes de ir ao ar.
 
-import type { ClinicConfig } from "./types";
+import type { ClientConfig } from "./types";
 
-export const leonardoFabricio: ClinicConfig = {
+export const leonardoFabricio: ClientConfig = {
+  specialty: "psiquiatria",
   slug: "leonardo-fabricio",
   isPreview: true, // ativa noindex + faixa "Prévia criada pela Vincere.AI"
   previewBanner: "Prévia criada pela Vincere.AI para o Dr. Leonardo Fabrício",

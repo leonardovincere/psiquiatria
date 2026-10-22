@@ -1,11 +1,11 @@
 ---
 import SectionHeading from '../../../components/shared/SectionHeading.astro';
-import type { ClinicConfig } from '../../../clinics/types';
+import type { PsiquiatriaClient } from '../types';
 import { getCopy } from '../copy';
 
 /** Princípios da forma de atender (config `approach`). Numerais romanos marcam a ordem. */
 interface Props {
-  clinic: ClinicConfig;
+  clinic: PsiquiatriaClient;
 }
 const { clinic } = Astro.props;
 const copy = getCopy(clinic).approach;

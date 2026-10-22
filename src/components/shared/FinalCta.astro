@@ -1,11 +1,11 @@
 ---
 import WhatsAppButton from './WhatsAppButton.astro';
-import type { ClinicConfig } from '../../clinics/types';
+import type { BaseClientConfig } from '../../clients/types';
 import { heightFor } from '../../lib/assetSize';
 import { whatsappUrl } from '../../lib/links';
 
 interface Props {
-  clinic: ClinicConfig;
+  clinic: BaseClientConfig;
   copy: { scheduleCta: string; finalCta: { title: string; titleEm: string; text: string; callPrefix: string } };
 }
 const { clinic, copy } = Astro.props;

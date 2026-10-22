@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// MOLDE DE CLÍNICA — copie este arquivo para criar uma clínica nova.
+// MOLDE DE CLIENTE DE PSIQUIATRIA — copie este arquivo para criar uma clínica nova.
 //
-//   1. Copie para src/clinics/<slug>.ts  (ex.: src/clinics/serenamente.ts)
+//   1. Copie para src/clients/<slug>.ts  (ex.: src/clients/serenamente.ts)
 //      O nome do arquivo é o slug: só minúsculas, números e hífen.
 //      Arquivos que começam com "_" (como este) são ignorados no build.
 //   2. Troque `slug` abaixo pelo mesmo nome do arquivo.
@@ -18,9 +18,10 @@
 //   - CRM e RQE são obrigatórios.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import type { ClinicConfig } from './types';
+import type { ClientConfig } from './types';
 
-const clinica: ClinicConfig = {
+const clinica: ClientConfig = {
+  specialty: 'psiquiatria', // escolhe o template (src/templates/registry.ts)
   slug: 'nome-da-clinica', // = nome do arquivo
   isPreview: true, // true: noindex + robots bloqueado + faixa de prévia. Só mude para false quando a clínica aprovar.
   previewBanner: 'Prévia criada pela Vincere.AI para a Nome da Clínica', // "Vincere.AI" vira link automaticamente

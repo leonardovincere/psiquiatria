@@ -1,6 +1,6 @@
-import type { Address, ClinicConfig, Doctor, Highlight } from '../clinics/types';
+import type { Address, BaseClientConfig, Doctor, Highlight } from '../clients/types';
 
-export const whatsappUrl = (c: ClinicConfig) =>
+export const whatsappUrl = (c: BaseClientConfig) =>
   `https://wa.me/${c.contact.whatsapp}?text=${encodeURIComponent(c.contact.whatsappMessage)}`;
 
 export const formatAddress = (a: Address) =>
@@ -44,7 +44,7 @@ export const credentials = (d: Doctor) => {
 };
 
 /** Fatos da faixa de destaques: `highlights`, senão `credentials`, senão formação + modalidades + avaliações. */
-export const factsFor = (c: ClinicConfig): Highlight[] =>
+export const factsFor = (c: BaseClientConfig): Highlight[] =>
   c.highlights?.length
     ? c.highlights
     : c.credentials?.length

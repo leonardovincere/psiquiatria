@@ -1,4 +1,4 @@
-import type { Theme } from '../../clinics/types';
+import type { Theme } from '../../clients/types';
 
 /** Paleta de partida da psiquiatria: azul profundo, areia e dourado, com serifa itálica nos títulos. */
 export const PSIQUIATRIA_THEME: Theme = {

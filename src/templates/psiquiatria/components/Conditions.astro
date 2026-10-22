@@ -1,10 +1,10 @@
 ---
 import SectionHeading from '../../../components/shared/SectionHeading.astro';
-import type { ClinicConfig } from '../../../clinics/types';
+import type { PsiquiatriaClient } from '../types';
 import { getCopy } from '../copy';
 
 interface Props {
-  clinic: ClinicConfig;
+  clinic: PsiquiatriaClient;
 }
 const { clinic } = Astro.props;
 const copy = getCopy(clinic).conditions;

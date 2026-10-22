@@ -7,9 +7,9 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 // o subdomínio <slug>.preview.vincereai.tech).
 const site = process.env.SITE_URL || 'https://preview.vincereai.tech';
 
-// Todas as clínicas de src/clinics (cada uma vira /<slug>). Arquivos "_*.ts",
+// Todos os clientes de src/clients (cada um vira /<slug>). Arquivos "_*.ts",
 // index.ts e types.ts não são clínicas.
-const clinicFiles = readdirSync(new URL('./src/clinics/', import.meta.url)).filter(
+const clinicFiles = readdirSync(new URL('./src/clients/', import.meta.url)).filter(
   (f) => f.endsWith('.ts') && !f.startsWith('_') && !['index.ts', 'types.ts'].includes(f),
 );
 // O vercel.json precisa de uma regra por clínica (subdomínio → página). Se faltar alguma, o build para.
@@ -22,7 +22,7 @@ const clinicFiles = readdirSync(new URL('./src/clinics/', import.meta.url)).filt
 }
 
 const clinics = await Promise.all(
-  clinicFiles.map(async (f) => (await import(`./src/clinics/${f}`)).default),
+  clinicFiles.map(async (f) => (await import(`./src/clients/${f}`)).default),
 );
 
 /**

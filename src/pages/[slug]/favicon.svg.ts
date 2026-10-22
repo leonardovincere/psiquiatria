@@ -1,13 +1,13 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { clinics } from '../../clinics';
-import type { ClinicConfig } from '../../clinics/types';
+import { clients } from '../../clients';
+import type { BaseClientConfig } from '../../clients/types';
 import { initials, readableOn } from '../../lib/links';
 
 /** Favicon gerado com a cor da clínica, usado quando a config não tem `favicon`. */
-export const getStaticPaths = (() => clinics.map((clinic) => ({ params: { slug: clinic.slug }, props: { clinic } }))) satisfies GetStaticPaths;
+export const getStaticPaths = (() => clients.map((clinic) => ({ params: { slug: clinic.slug }, props: { clinic } }))) satisfies GetStaticPaths;
 
 export const GET: APIRoute = ({ props }) => {
-  const { theme, clinic, doctor } = (props as { clinic: ClinicConfig }).clinic;
+  const { theme, clinic, doctor } = (props as { clinic: BaseClientConfig }).clinic;
   const fg = readableOn(theme.primary);
   // Monograma com as iniciais (marca pessoal, sem logo); senão, um coração simples.
   const mono = initials(clinic.name.startsWith('Dr') ? doctor.name : clinic.name).slice(0, 2);

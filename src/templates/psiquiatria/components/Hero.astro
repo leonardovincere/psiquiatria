@@ -1,12 +1,12 @@
 ---
 import { getHeroPhoto, heroPhotoSizes } from '../../../lib/heroPhoto';
-import type { ClinicConfig } from '../../../clinics/types';
+import type { PsiquiatriaClient } from '../types';
 import { credentials, initials } from '../../../lib/links';
 import { getCopy } from '../copy';
 import { heightFor } from '../../../lib/assetSize';
 
 interface Props {
-  clinic: ClinicConfig;
+  clinic: PsiquiatriaClient;
 }
 const { clinic } = Astro.props;
 const { doctor } = clinic;

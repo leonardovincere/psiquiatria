@@ -1,6 +1,6 @@
 # Landing pages para clínicas de psiquiatria
 
-Astro + Tailwind CSS v4, multi-clínica. Cada clínica é um arquivo `src/clinics/<slug>.ts`; o build gera uma página
+Astro + Tailwind CSS v4, multi-clínica. Cada clínica é um arquivo `src/clients/<slug>.ts`; o build gera uma página
 estática por clínica em `/<slug>`. No ar, cada uma fica em `https://<slug>.preview.vincereai.tech`.
 
 ## Uso
@@ -14,8 +14,8 @@ npm run preview
 
 ## Nova clínica
 
-1. Copie `src/clinics/_template.ts` para `src/clinics/<slug>.ts` (minúsculas, números e hífen) e ajuste `slug`.
-   O template é comentado campo a campo; o tipo `ClinicConfig` (`src/clinics/types.ts`) documenta o resto.
+1. Copie `src/clients/_template-psiquiatria.ts` para `src/clients/<slug>.ts` (minúsculas, números e hífen) e ajuste `slug`.
+   O template é comentado campo a campo; o tipo `ClientConfig` (`src/clients/types.ts`) documenta o resto.
 2. Imagens em `public/clinics/<slug>/` (logo, símbolo, favicon). Tamanhos são lidos dos arquivos no build.
 3. Opcional: fontes recortadas em `src/assets/fonts/<slug>/` (`heading-normal.woff2`, `heading-italic.woff2`,
    `body-normal.woff2`). Sem elas, o build baixa do Google Fonts.

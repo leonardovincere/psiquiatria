@@ -1,11 +1,11 @@
 ---
 import SectionHeading from '../../../components/shared/SectionHeading.astro';
-import type { ClinicConfig } from '../../../clinics/types';
+import type { PsiquiatriaClient } from '../types';
 import { getCopy } from '../copy';
 
 /** Conteúdo educativo (config `articles`): perguntas comuns com resposta curta, em colunas numeradas. */
 interface Props {
-  clinic: ClinicConfig;
+  clinic: PsiquiatriaClient;
 }
 const { clinic } = Astro.props;
 const a = clinic.articles;

@@ -1,12 +1,12 @@
 ---
 import Icon from './Icon.astro';
 import Words from './Words.astro';
-import type { ClinicConfig, SiteCopy } from '../../clinics/types';
+import type { BaseClientConfig, BaseCopy } from '../../clients/types';
 import { heightFor } from '../../lib/assetSize';
 
 interface Props {
-  clinic: ClinicConfig;
-  copy: SiteCopy['telehealth'];
+  clinic: BaseClientConfig;
+  copy: BaseCopy['telehealth'];
 }
 const { clinic, copy } = Astro.props;
 const icons = ['video', 'lock', 'doc'] as const;

@@ -1,9 +1,9 @@
 ---
-import type { ClinicConfig } from '../../clinics/types';
+import type { BaseClientConfig } from '../../clients/types';
 import { assetSize } from '../../lib/assetSize';
 
 interface Props {
-  clinic: ClinicConfig;
+  clinic: BaseClientConfig;
   /** Itens do menu (desktop), definidos pelo template da especialidade. */
   nav: { href: string; label: string }[];
 }

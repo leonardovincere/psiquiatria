@@ -1,5 +1,5 @@
 ---
-import type { ClinicConfig } from '../../../clinics/types';
+import type { PsiquiatriaClient } from '../types';
 import { credentials, initials } from '../../../lib/links';
 import { getCopy } from '../copy';
 import { getHeroPhoto, heroPhotoSizes } from '../../../lib/heroPhoto';
@@ -10,7 +10,7 @@ import { getHeroPhoto, heroPhotoSizes } from '../../../lib/heroPhoto';
  * monograma com as iniciais segura a composição.
  */
 interface Props {
-  clinic: ClinicConfig;
+  clinic: PsiquiatriaClient;
 }
 const { clinic } = Astro.props;
 const { doctor } = clinic;

@@ -1,13 +1,16 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import { clinics } from '../clinics';
-import type { ClinicConfig } from '../clinics/types';
+import { clients } from '../clients';
+import type { ClientConfig } from '../clients/types';
 import { templateFor } from '../templates/registry';
 
-/** Rota única das prévias: uma página estática por clínica (/animus, /outra-clinica…), no template da especialidade. */
-export const getStaticPaths = (() => clinics.map((clinic) => ({ params: { slug: clinic.slug }, props: { clinic } }))) satisfies GetStaticPaths;
+/**
+ * Rota única das prévias: uma página estática por cliente (/animus, /outra-clinica…),
+ * renderizada pelo template da especialidade (campo `specialty`).
+ */
+export const getStaticPaths = (() => clients.map((clinic) => ({ params: { slug: clinic.slug }, props: { clinic } }))) satisfies GetStaticPaths;
 
-const { clinic } = Astro.props as { clinic: ClinicConfig };
+const { clinic } = Astro.props as { clinic: ClientConfig };
 const { Page } = templateFor(clinic);
 ---
 

@@ -1,4 +1,4 @@
-import type { ClinicConfig } from '../clinics/types';
+import type { BaseClientConfig } from '../clients/types';
 
 /**
  * Verificação automática de termos vedados ou de risco na publicidade médica
@@ -60,7 +60,7 @@ function collectStrings(value: unknown, path: string, out: { path: string; text:
  * @param templateRules termos vedados próprios da especialidade.
  * @param resolvedCopy  textos finais da página (padrão do template + `copy`), conferidos junto com a config.
  */
-export function assertCompliance(clinic: ClinicConfig, templateRules: ComplianceRule[] = [], resolvedCopy?: unknown) {
+export function assertCompliance(clinic: BaseClientConfig, templateRules: ComplianceRule[] = [], resolvedCopy?: unknown) {
   const problems: string[] = [];
 
   // CRM/RQE: obrigatórios para publicar. Na prévia, a página mostra "em confirmação" e o build só avisa.

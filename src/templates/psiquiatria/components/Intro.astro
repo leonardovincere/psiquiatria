@@ -1,5 +1,5 @@
 ---
-import type { ClinicConfig } from '../../../clinics/types';
+import type { PsiquiatriaClient } from '../types';
 import { initials } from '../../../lib/links';
 
 /**
@@ -9,7 +9,7 @@ import { initials } from '../../../lib/links';
  * "reduzir movimento".
  */
 interface Props {
-  clinic: ClinicConfig;
+  clinic: PsiquiatriaClient;
 }
 const { clinic } = Astro.props;
 const { logoMark } = clinic.clinic;

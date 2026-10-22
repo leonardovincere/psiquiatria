@@ -1,12 +1,12 @@
 ---
 import Icon from './Icon.astro';
-import type { ClinicConfig } from '../../clinics/types';
+import type { BaseClientConfig } from '../../clients/types';
 import { AGENCY } from '../../lib/agency';
 import { credentials } from '../../lib/links';
 import { assetSize } from '../../lib/assetSize';
 
 interface Props {
-  clinic: ClinicConfig;
+  clinic: BaseClientConfig;
   /** Aviso de emergência (cada especialidade tem o seu). */
   emergencyNotice: string;
   legalNotice: string;

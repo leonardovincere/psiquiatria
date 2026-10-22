@@ -1,11 +1,11 @@
-import type { ClinicConfig, Theme } from '../clinics/types';
+import type { BaseClientConfig, Theme } from '../clients/types';
 import type { ComplianceRule } from '../lib/compliance';
 
 /**
  * Formato que todo template de especialidade exporta (src/templates/<especialidade>/index.ts).
  * O registry (src/templates/registry.ts) liga cada valor de `specialty` ao seu template.
  */
-export interface SpecialtyTemplate<C extends ClinicConfig = ClinicConfig, K = unknown> {
+export interface SpecialtyTemplate<C extends BaseClientConfig = BaseClientConfig, K = unknown> {
   /** Igual ao campo `specialty` da config. */
   id: string;
   /** Nome exibido para quem monta a prévia. Ex.: "Psiquiatria". */

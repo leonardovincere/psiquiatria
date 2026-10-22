@@ -3,9 +3,10 @@
 // Fontes públicas consultadas em 14/10/2026: Doctoralia e Linktree da Dra. Luciane Cano.
 // Itens marcados com TODO precisam ser confirmados com a clínica antes de ir ao ar.
 
-import type { ClinicConfig } from "./types";
+import type { ClientConfig } from "./types";
 
-export const animus: ClinicConfig = {
+export const animus: ClientConfig = {
+  specialty: "psiquiatria",
   slug: "animus",
   isPreview: true, // ativa noindex + faixa "Prévia criada pela Vincere.AI"
   previewBanner: "Prévia criada pela Vincere.AI para a Animus Psiquiatria Avançada",

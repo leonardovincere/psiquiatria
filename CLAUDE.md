@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Molde multi-clínica de landing pages para psiquiatras, feito pela Vincere.AI.
-Astro 7 + Tailwind CSS v4, site estático. Cada clínica é um arquivo em `src/clinics/<slug>.ts` e vira a página `/<slug>`.
+Astro 7 + Tailwind CSS v4, site estático. Cada clínica é um arquivo em `src/clients/<slug>.ts` e vira a página `/<slug>`.
 Converse com o usuário em português do Brasil, sem jargão técnico desnecessário.
 
 ## Comandos
@@ -14,9 +14,9 @@ npm run build   # astro check + build; precisa terminar com "0 errors"
 
 ## Como funciona
 
-- `src/clinics/<slug>.ts`: dados da clínica (tipo `ClinicConfig` em `src/clinics/types.ts`).
-  `src/clinics/index.ts` carrega todos, menos `index.ts`, `types.ts` e arquivos `_*.ts`.
-- `src/clinics/_template.ts`: molde comentado. Copie-o para criar uma clínica nova.
+- `src/clients/<slug>.ts`: dados da clínica (tipo `ClientConfig` em `src/clients/types.ts`).
+  `src/clients/index.ts` carrega todos, menos `index.ts`, `types.ts` e arquivos `_*.ts`.
+- `src/clients/_template-psiquiatria.ts`: molde comentado. Copie-o para criar uma clínica nova.
 - `src/pages/[slug].astro`: página de cada clínica. `src/pages/[slug]/robots.txt.ts` e `favicon.svg.ts` geram os arquivos por clínica.
 - `src/lib/copy.ts`: textos padrão das seções, que a clínica pode sobrescrever em `copy`.
   Variáveis disponíveis: `{medico}`, `{titulo}`, `{cidade}`, `{uf}`, `{publico}`.
@@ -30,14 +30,14 @@ Se um componente precisar de um dado novo, adicione um campo **opcional** em `ty
 
 ## Criar a prévia de uma clínica nova
 
-1. Copie `_template.ts` para `src/clinics/<slug>.ts` e use o mesmo `slug` (só minúsculas, números e hífen).
+1. Copie `_template-psiquiatria.ts` para `src/clients/<slug>.ts` e use o mesmo `slug` (só minúsculas, números e hífen).
    Se o usuário mandar um `.ts` pronto, use-o e adapte `types.ts` com campos opcionais em vez de mudar os dados dele.
 2. Imagens vão em `public/clinics/<slug>/`. Os tamanhos são lidos no build, não fixe `width`/`height` de clínica no código.
 3. Fontes: recorte e guarde em `src/assets/fonts/<slug>/` (`heading-normal.woff2`, `heading-italic.woff2`, `body-normal.woff2`).
    Baixe com `@fontsource-variable/<fonte>` do npm numa pasta de rascunho e recorte com fonttools (`varLib.instancer` para os pesos e `pyftsubset` para os caracteres do português).
    Sem esses arquivos, o build tenta baixar do Google Fonts. Neste ambiente de nuvem esse download costuma falhar e o site cai na fonte reserva, por isso prefira os arquivos locais.
 4. Deixe cada prévia com cara própria. Combine as opções de `style` de um jeito diferente das clínicas existentes
-   (`grep -n "style" src/clinics/*.ts` mostra o que cada uma usa; sem `style`, valem os padrões `arch` + `marquee` + `soft`, como na Animus):
+   (`grep -n "style" src/clients/*.ts` mostra o que cada uma usa; sem `style`, valem os padrões `arch` + `marquee` + `soft`, como na Animus):
    - `style.hero`: `arch` (foto em arco que se abre ao rolar), `circle` (foto ou monograma num círculo com anel de texto)
      ou `cinema` (tela cheia escura com luz de projetor, título que entra em foco, créditos de cartaz; foto opcional ao fundo).
      Com `cinema`, os destaques ficam no próprio topo (a faixa de destaques some).

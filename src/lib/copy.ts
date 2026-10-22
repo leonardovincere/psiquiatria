@@ -1,4 +1,4 @@
-import type { ClinicConfig } from '../clinics/types';
+import type { BaseClientConfig } from '../clients/types';
 
 /**
  * Mecanismo de textos, comum a todas as especialidades. Os textos padrão
@@ -19,13 +19,13 @@ function merge<T>(base: T, over: unknown): T {
 }
 
 /** "a Dra. Fulana" / "o Dr. Fulano". */
-export const doctorRef = (c: ClinicConfig) => {
+export const doctorRef = (c: BaseClientConfig) => {
   const article = c.doctor.article ?? (/^dra\b/i.test(c.doctor.shortName) ? 'a' : /^dr\b/i.test(c.doctor.shortName) ? 'o' : 'a');
   return `${article} ${c.doctor.shortName}`;
 };
 
 /** Textos da clínica: padrão do template + `copy` da config, com {medico}, {cidade}, {uf} e {publico} preenchidos. */
-export function resolveCopy<T>(defaults: T, c: ClinicConfig): T {
+export function resolveCopy<T>(defaults: T, c: BaseClientConfig): T {
   const merged = merge(defaults, c.copy);
   const vars: Record<string, string> = {
     medico: doctorRef(c),

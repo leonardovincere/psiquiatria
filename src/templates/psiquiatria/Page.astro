@@ -21,13 +21,13 @@ import LotusDivider from './components/LotusDivider.astro';
 import FinalCta from '../../components/shared/FinalCta.astro';
 import Footer from '../../components/shared/Footer.astro';
 import StickyCta from '../../components/shared/StickyCta.astro';
-import type { ClinicConfig } from '../../clinics/types';
+import type { PsiquiatriaClient } from './types';
 import { getCopy } from './copy';
 import { factsFor, whatsappUrl } from '../../lib/links';
 
 /** Página de psiquiatria. Renderizada pela rota única src/pages/[slug].astro, via registry. */
 interface Props {
-  clinic: ClinicConfig;
+  clinic: PsiquiatriaClient;
 }
 const { clinic } = Astro.props;
 const copy = getCopy(clinic);

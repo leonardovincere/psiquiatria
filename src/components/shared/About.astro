@@ -1,11 +1,11 @@
 ---
 import Icon from './Icon.astro';
 import Words from './Words.astro';
-import type { ClinicConfig } from '../../clinics/types';
+import type { BaseClientConfig } from '../../clients/types';
 import { credentials } from '../../lib/links';
 
 interface Props {
-  clinic: ClinicConfig;
+  clinic: BaseClientConfig;
   eyebrow: string;
 }
 const { clinic, eyebrow } = Astro.props;
